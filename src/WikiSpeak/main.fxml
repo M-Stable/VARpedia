@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox fx:controller="WikiSpeak.WikiSpeakController" prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/fxml" xmlns:fx="http://javafx.com/fxml/1">
+  <children>
+    <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="339.0" prefWidth="523.0" VBox.vgrow="ALWAYS">
+      <children>
+            <Button fx:id="playButton" onAction="#handlePlayButton" layoutX="376.0" layoutY="330.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="79.0" text="Play" />
+            <ListView fx:id="creationsList" layoutX="376.0" layoutY="70.0" prefHeight="242.0" prefWidth="200.0" />
+            <Button fx:id="deleteButton" onAction="#handleDeleteButton" layoutX="497.0" layoutY="330.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="79.0" text="Delete" />
+            <Button fx:id="newCreationButton" onAction="#handleNewCreationButton" layoutX="137.0" layoutY="187.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="183.0" text="New Creation" />
+      </children>
+    </AnchorPane>
+  </children>
+</VBox>
