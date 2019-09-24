@@ -5,23 +5,23 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class CreateCreationController {
+public class CreateCreationController implements Initializable {
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     @FXML
@@ -32,6 +32,10 @@ public class CreateCreationController {
 
     @FXML
     private TextField textCreationName;
+
+    @FXML
+    private ComboBox comboBox;
+
     @FXML
     public void handleBackButton(ActionEvent event) throws IOException {
         Parent mainParent = FXMLLoader.load(getClass().getResource("main.fxml"));
@@ -83,7 +87,22 @@ public class CreateCreationController {
     }
 
     @FXML
-    public void handlePreviewButton(ActionEvent actionEvent) {
+    public void handlePreviewButton(ActionEvent actionEvent) throws IOException {
+        String highlightedText = textArea.getSelectedText();
+        if (highlightedText.isEmpty()) {
+            AlertBox.display("Error", "Please select some text", "FF6347");
+        }
+        try {
+            if (comboBox.getValue().equals("Festival")) {
+                String command = "echo \"" + highlightedText + "\" | festival --tts";
+                ProcessBuilder pb = new ProcessBuilder("bash", "-c", command);
+                pb.start();
+            } else if (comboBox.getValue().equals("eSpeak")) {
+
+            }
+        } catch (Exception e) {
+            AlertBox.display("Error", "Please select a synthesizer", "FF6347");
+        }
     }
 
     @FXML
@@ -99,5 +118,10 @@ public class CreateCreationController {
 
     @FXML
     public void handleAddButton(ActionEvent actionEvent) {
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        comboBox.getItems().setAll("Festival", "eSpeak");
     }
 }
