@@ -12,9 +12,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -35,6 +33,11 @@ public class CreateCreationController implements Initializable {
 
     @FXML
     private ComboBox comboBox;
+
+    @FXML
+    private ListView<String> listAudio = new ListView<>();
+
+    private String highlightedText="";
 
     @FXML
     public void handleBackButton(ActionEvent event) throws IOException {
@@ -82,14 +85,16 @@ public class CreateCreationController implements Initializable {
             AlertBox.display("Error", "Please enter a search term", "FF6347");
         }
     }
-    private void clearText() {
-        searchField.clear();
-        textArea.clear();
-    }
 
     @FXML
     public void handlePreviewButton(ActionEvent actionEvent) throws IOException {
-        String highlightedText = textArea.getSelectedText();
+        highlightedText = textArea.getSelectedText();
+        String[] words = highlightedText.split("\\s+");
+        if (words.length > 40) {
+            AlertBox.display("Error", "Highlighted text too large", "FF6347");
+
+            return;
+        }
         if (highlightedText.isEmpty()) {
             AlertBox.display("Error", "Please select some text", "FF6347");
         }
@@ -120,11 +125,18 @@ public class CreateCreationController implements Initializable {
     }
 
     @FXML
-    public void handleAddButton(ActionEvent actionEvent) {
+    public void handleSendToCreationButton(ActionEvent actionEvent) {
     }
 
-    @FXML
-    public void handleSendToCreationButton(ActionEvent actionEvent) {
+    public void handleSaveAudioButton(ActionEvent actionEvent) {
+        AudioTask audioTask = new AudioTask(highlightedText);
+        executorService.submit(audioTask);
+        audioTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+            @Override
+            public void handle(WorkerStateEvent workerStateEvent) {
+
+            }
+        });
     }
 
     @Override
@@ -132,5 +144,12 @@ public class CreateCreationController implements Initializable {
         comboBox.getItems().setAll("Festival", "eSpeak");
         textArea.setDisable(true);
         textArea.setWrapText(true);
+        listAudio.getItems().addAll("test", "yesssss");
+        listAudio.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+    }
+
+    private void clearText() {
+        searchField.clear();
+        textArea.clear();
     }
 }
