@@ -39,4 +39,8 @@ public class CreateCreationController {
     @FXML
     public void handleAddButton(ActionEvent actionEvent) {
     }
+
+    @FXML
+    public void handleSendToCreationButton(ActionEvent actionEvent) {
+    }
 }
