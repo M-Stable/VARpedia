@@ -10,22 +10,22 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
+<?import javafx.scene.control.ComboBox?>
 <VBox prefHeight="423.0" prefWidth="998.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="WikiSpeak.CreateCreationController">
   <children>
     <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="417.0" prefWidth="985.0" VBox.vgrow="ALWAYS">
          <children>
-            <TextArea layoutX="20.0" layoutY="76.0" prefHeight="200.0" prefWidth="461.0" />
+            <TextArea fx:id="textArea" layoutX="20.0" layoutY="76.0" prefHeight="200.0" prefWidth="461.0" />
             <Button fx:id="backButton" layoutX="928.0" layoutY="16.0" mnemonicParsing="false" onAction="#handleBackButton" text="Back" />
             <Button fx:id="searchButton" layoutX="211.0" layoutY="29.0" mnemonicParsing="false" onAction="#handleSearchButton" text="Search" />
             <TextField id="search" fx:id="searchField" layoutX="26.0" layoutY="29.0" promptText="Search Term" />
             <Button fx:id="previewButton" layoutX="303.0" layoutY="284.0" mnemonicParsing="false" onAction="#handlePreviewButton" prefHeight="26.0" prefWidth="71.0" text="Preview" />
             <Button fx:id="createButton" layoutX="862.0" layoutY="370.0" mnemonicParsing="false" onAction="#handleCreateButton" prefHeight="26.0" prefWidth="81.0" text="Create" />
-            <ChoiceBox layoutX="164.0" layoutY="284.0" prefHeight="26.0" prefWidth="123.0" />
+            <ComboBox fx:id="comboBox" layoutX="164.0" layoutY="284.0" prefHeight="26.0" prefWidth="123.0" />
             <Label layoutX="20.0" layoutY="289.0" text="Speech Synthesizer:" />
             <ListView layoutX="529.0" layoutY="76.0" prefHeight="200.0" prefWidth="200.0" />
             <Label layoutX="529.0" layoutY="47.0" text="Audio Files" />
-            <Button fx:id="addButton" layoutX="569.0" layoutY="284.0" mnemonicParsing="false" onAction="#handleAddButton" text="Add to Creation" />
-            <TextField layoutX="679.0" layoutY="370.0" />
+            <TextField fx:id="textCreationName" layoutX="679.0" layoutY="370.0" />
             <Label layoutX="565.0" layoutY="375.0" text="Creation Name: " />
             <ListView layoutX="778.0" layoutY="76.0" prefHeight="200.0" prefWidth="200.0" />
             <Button fx:id="sendToCreationButton" layoutX="739.0" layoutY="163.0" mnemonicParsing="false" onAction="#handleSendToCreationButton" text="&gt;" />
