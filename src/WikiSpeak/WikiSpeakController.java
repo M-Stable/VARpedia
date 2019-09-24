@@ -16,18 +16,6 @@ import java.io.IOException;
 public class WikiSpeakController {
 
     @FXML
-    private Button playButton;
-
-    @FXML
-    private ListView creationsList;
-
-    @FXML
-    private Button deleteButton;
-
-    @FXML
-    private Button newCreationButton;
-
-    @FXML
     protected void handlePlayButton(ActionEvent event) {
     }
 

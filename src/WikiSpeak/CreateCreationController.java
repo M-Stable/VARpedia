@@ -25,12 +25,18 @@ public class CreateCreationController {
     }
 
     @FXML
-    public void handleNextButton(ActionEvent event) throws IOException {
-        Parent audioParent = FXMLLoader.load(getClass().getResource("audio.fxml"));
-        Scene audioCreation = new Scene(audioParent);
+    public void handleSearchButton(ActionEvent actionEvent) {
+    }
 
-        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
-        window.setScene(audioCreation);
-        window.show();
+    @FXML
+    public void handlePreviewButton(ActionEvent actionEvent) {
+    }
+
+    @FXML
+    public void handleCreateButton(ActionEvent actionEvent) {
+    }
+
+    @FXML
+    public void handleAddButton(ActionEvent actionEvent) {
     }
 }
