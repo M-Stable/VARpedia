@@ -48,7 +48,7 @@ public class CreateCreationController implements Initializable {
 
     @FXML
     public void handleSearchButton(ActionEvent actionEvent) {
-        textArea.setWrapText(true);
+        textArea.setDisable(false);
         //get search text
         String searchText = searchField.getText();
         //check if empty
@@ -66,6 +66,7 @@ public class CreateCreationController implements Initializable {
                             File file = new File("./" + searchField.getText() + ".txt");
                             file.delete();
                             clearText();
+                            textArea.setDisable(true);
 
                             return;
                         }else {
@@ -98,7 +99,9 @@ public class CreateCreationController implements Initializable {
                 ProcessBuilder pb = new ProcessBuilder("bash", "-c", command);
                 pb.start();
             } else if (comboBox.getValue().equals("eSpeak")) {
-
+                String command = "espeak \"" + highlightedText + "\"";
+                ProcessBuilder pb = new ProcessBuilder("bash", "-c", command);
+                pb.start();
             }
         } catch (Exception e) {
             AlertBox.display("Error", "Please select a synthesizer", "FF6347");
@@ -127,5 +130,7 @@ public class CreateCreationController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         comboBox.getItems().setAll("Festival", "eSpeak");
+        textArea.setDisable(true);
+        textArea.setWrapText(true);
     }
 }
