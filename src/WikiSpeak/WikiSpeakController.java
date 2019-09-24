@@ -16,7 +16,14 @@ import java.io.IOException;
 public class WikiSpeakController {
 
     @FXML
-    protected void handlePlayButton(ActionEvent event) {
+    protected void handlePlayButton(ActionEvent event) throws IOException {
+
+        Parent creationParent = FXMLLoader.load(getClass().getResource("media.fxml"));
+        Scene newCreationScene = new Scene(creationParent);
+
+        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
+        window.setScene(newCreationScene);
+        window.show();
     }
 
     @FXML
