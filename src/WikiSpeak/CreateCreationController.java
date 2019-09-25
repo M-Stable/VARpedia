@@ -35,7 +35,13 @@ public class CreateCreationController implements Initializable {
     private ComboBox comboBox;
 
     @FXML
+    private Spinner spinner;
+
+    @FXML
     private ListView<String> listAudio = new ListView<>();
+
+    @FXML
+    private ListView<String> listForCreation = new ListView<>();
 
     private String highlightedText="";
     private String searchText= "";
@@ -127,8 +133,12 @@ public class CreateCreationController implements Initializable {
 
     @FXML
     public void handleSendToCreationButton(ActionEvent actionEvent) {
+        for (String word : listAudio.getSelectionModel().getSelectedItems()) {
+            listForCreation.getItems().add(word);
+        }
     }
 
+    @FXML
     public void handleSaveAudioButton(ActionEvent actionEvent) {
         String audioName = AudioName.display();
         AudioTask audioTask = new AudioTask(textArea.getSelectedText(), comboBox.getValue().toString(), audioName);
@@ -147,6 +157,8 @@ public class CreateCreationController implements Initializable {
         textArea.setDisable(true);
         textArea.setWrapText(true);
         listAudio.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        SpinnerValueFactory<Integer> imagesValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1,10);
+        this.spinner.setValueFactory(imagesValueFactory);
     }
 
     private void clearText() {
