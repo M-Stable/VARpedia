@@ -10,6 +10,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
@@ -23,6 +24,7 @@ import javafx.stage.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 
@@ -84,6 +86,21 @@ public class WikiSpeakController implements Initializable {
 
     @FXML
     public void handleDeleteButton(ActionEvent event) {
+        String fileName = creationsList.getSelectionModel().getSelectedItem().toString() + ".mp4";
+        String filePath = "creations/" + fileName;
+        File selectedCreation = new File(filePath);
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirm Deletion");
+        alert.setHeaderText("Confirm Deletion");
+        alert.setContentText("Are you sure you want to delete " + selectedCreation.getName() + "?");
+
+        Optional<ButtonType> result = alert.showAndWait();
+
+        if(result.get() == ButtonType.OK) {
+            selectedCreation.delete();
+            updateCreationsList();
+        }
     }
 
     @Override
