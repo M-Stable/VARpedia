@@ -4,6 +4,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -21,6 +22,8 @@ import javafx.stage.WindowEvent;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
 
 
 public class WikiSpeakController {
@@ -72,5 +75,7 @@ public class WikiSpeakController {
 
     @FXML
     public void handleDeleteButton(ActionEvent event) {
+        File file = new File("test.mp4");
+        creationsList.getItems().add(file);
     }
 }
