@@ -139,6 +139,11 @@ public class CreateCreationController implements Initializable {
     }
 
     @FXML
+    public void handleDeleteAudioButton(ActionEvent actionEvent) {
+        listForCreation.getItems().removeAll(listForCreation.getSelectionModel().getSelectedItems());
+    }
+
+    @FXML
     public void handleSaveAudioButton(ActionEvent actionEvent) {
         String audioName = AudioName.display();
         AudioTask audioTask = new AudioTask(textArea.getSelectedText(), comboBox.getValue().toString(), audioName);
@@ -157,6 +162,7 @@ public class CreateCreationController implements Initializable {
         textArea.setDisable(true);
         textArea.setWrapText(true);
         listAudio.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        listForCreation.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         SpinnerValueFactory<Integer> imagesValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1,10);
         this.spinner.setValueFactory(imagesValueFactory);
     }
