@@ -38,6 +38,7 @@ public class CreateCreationController implements Initializable {
     private ListView<String> listAudio = new ListView<>();
 
     private String highlightedText="";
+    private String searchText= "";
 
     @FXML
     public void handleBackButton(ActionEvent event) throws IOException {
@@ -53,7 +54,7 @@ public class CreateCreationController implements Initializable {
     public void handleSearchButton(ActionEvent actionEvent) {
         textArea.setDisable(false);
         //get search text
-        String searchText = searchField.getText();
+        searchText = searchField.getText();
         //check if empty
         if ((searchText != null && !searchText.isEmpty())) {
             try {
@@ -129,12 +130,13 @@ public class CreateCreationController implements Initializable {
     }
 
     public void handleSaveAudioButton(ActionEvent actionEvent) {
-        AudioTask audioTask = new AudioTask(highlightedText);
+        String audioName = AudioName.display();
+        AudioTask audioTask = new AudioTask(textArea.getSelectedText(), comboBox.getValue().toString(), audioName);
         executorService.submit(audioTask);
         audioTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
             @Override
             public void handle(WorkerStateEvent workerStateEvent) {
-
+                listAudio.getItems().add(audioName + "_" + comboBox.getValue().toString());
             }
         });
     }
@@ -144,7 +146,6 @@ public class CreateCreationController implements Initializable {
         comboBox.getItems().setAll("Festival", "eSpeak");
         textArea.setDisable(true);
         textArea.setWrapText(true);
-        listAudio.getItems().addAll("test", "yesssss");
         listAudio.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     }
 
