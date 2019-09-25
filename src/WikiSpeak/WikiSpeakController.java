@@ -26,7 +26,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 
-public class WikiSpeakController {
+public class WikiSpeakController implements Initializable {
 
     @FXML
     private ListView creationsList;
@@ -50,15 +50,9 @@ public class WikiSpeakController {
             MediaController mediaController = loader.getController();
             mediaController.setPlayer(player);
 
-            Stage stage = new Stage();
-            stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-                @Override
-                public void handle(WindowEvent event) {
-                    player.stop();
-                }
-            });
-            stage.setScene(new Scene(root));
-            stage.show();
+            Stage window = (Stage) ((Node)event.getSource()).getScene().getWindow();
+            window.setScene(new Scene(root));
+            window.show();
         }
     }
 
@@ -75,7 +69,11 @@ public class WikiSpeakController {
 
     @FXML
     public void handleDeleteButton(ActionEvent event) {
-        File file = new File("test.mp4");
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        File file = new File("test2.mp4");
         creationsList.getItems().add(file);
     }
 }

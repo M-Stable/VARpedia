@@ -63,6 +63,8 @@ public class MediaController implements Initializable{
     }
 
     public void handleBackButton(ActionEvent actionEvent) throws IOException {
+        player.stop();
+
         Parent mainParent = FXMLLoader.load(getClass().getResource("main.fxml"));
         Scene mainMenu = new Scene(mainParent);
 
