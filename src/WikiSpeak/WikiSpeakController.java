@@ -31,6 +31,8 @@ public class WikiSpeakController implements Initializable {
     @FXML
     private ListView creationsList;
 
+    private File creationsDir;
+
     @FXML
     protected void handlePlayButton(ActionEvent event) throws IOException {
 
@@ -38,7 +40,8 @@ public class WikiSpeakController implements Initializable {
             Alert alert = new Alert(Alert.AlertType.ERROR, "No Creation selected");
             alert.show();
         } else {
-            File videoFile = (File) creationsList.getSelectionModel().getSelectedItem();
+            String fileName = creationsList.getSelectionModel().getSelectedItem().toString() + ".mp4";
+            File videoFile = new File("creations/" + fileName);
             Media video = new Media(videoFile.toURI().toString());
             MediaPlayer player = new MediaPlayer(video);
             player.setAutoPlay(true);
@@ -67,13 +70,27 @@ public class WikiSpeakController implements Initializable {
 
     }
 
+    public void updateCreationsList() {
+        File[] creations = creationsDir.listFiles();
+
+        creationsList.getItems().clear();
+
+        for(File creation : creations) {
+            if(creation.getName().contains(".mp4")) {
+                creationsList.getItems().add(creation.getName().replace(".mp4", ""));
+            }
+        }
+    }
+
     @FXML
     public void handleDeleteButton(ActionEvent event) {
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        File file = new File("test2.mp4");
-        creationsList.getItems().add(file);
+        File dir = new File("creations/");
+        dir.mkdir();
+        creationsDir = dir;
+        updateCreationsList();
     }
 }
