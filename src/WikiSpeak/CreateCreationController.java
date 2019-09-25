@@ -12,9 +12,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -37,6 +35,18 @@ public class CreateCreationController implements Initializable {
     private ComboBox comboBox;
 
     @FXML
+    private Spinner spinner;
+
+    @FXML
+    private ListView<String> listAudio = new ListView<>();
+
+    @FXML
+    private ListView<String> listForCreation = new ListView<>();
+
+    private String highlightedText="";
+    private String searchText= "";
+
+    @FXML
     public void handleBackButton(ActionEvent event) throws IOException {
         Parent mainParent = FXMLLoader.load(getClass().getResource("main.fxml"));
         Scene mainMenu = new Scene(mainParent);
@@ -48,9 +58,9 @@ public class CreateCreationController implements Initializable {
 
     @FXML
     public void handleSearchButton(ActionEvent actionEvent) {
-        textArea.setWrapText(true);
+        textArea.setDisable(false);
         //get search text
-        String searchText = searchField.getText();
+        searchText = searchField.getText();
         //check if empty
         if ((searchText != null && !searchText.isEmpty())) {
             try {
@@ -66,6 +76,7 @@ public class CreateCreationController implements Initializable {
                             File file = new File("./" + searchField.getText() + ".txt");
                             file.delete();
                             clearText();
+                            textArea.setDisable(true);
 
                             return;
                         }else {
@@ -81,14 +92,16 @@ public class CreateCreationController implements Initializable {
             AlertBox.display("Error", "Please enter a search term", "FF6347");
         }
     }
-    private void clearText() {
-        searchField.clear();
-        textArea.clear();
-    }
 
     @FXML
     public void handlePreviewButton(ActionEvent actionEvent) throws IOException {
-        String highlightedText = textArea.getSelectedText();
+        highlightedText = textArea.getSelectedText();
+        String[] words = highlightedText.split("\\s+");
+        if (words.length > 40) {
+            AlertBox.display("Error", "Highlighted text too large", "FF6347");
+
+            return;
+        }
         if (highlightedText.isEmpty()) {
             AlertBox.display("Error", "Please select some text", "FF6347");
         }
@@ -98,7 +111,9 @@ public class CreateCreationController implements Initializable {
                 ProcessBuilder pb = new ProcessBuilder("bash", "-c", command);
                 pb.start();
             } else if (comboBox.getValue().equals("eSpeak")) {
-
+                String command = "espeak \"" + highlightedText + "\"";
+                ProcessBuilder pb = new ProcessBuilder("bash", "-c", command);
+                pb.start();
             }
         } catch (Exception e) {
             AlertBox.display("Error", "Please select a synthesizer", "FF6347");
@@ -117,15 +132,43 @@ public class CreateCreationController implements Initializable {
     }
 
     @FXML
-    public void handleAddButton(ActionEvent actionEvent) {
+    public void handleSendToCreationButton(ActionEvent actionEvent) {
+        for (String word : listAudio.getSelectionModel().getSelectedItems()) {
+            listForCreation.getItems().add(word);
+        }
     }
 
     @FXML
-    public void handleSendToCreationButton(ActionEvent actionEvent) {
+    public void handleDeleteAudioButton(ActionEvent actionEvent) {
+        listForCreation.getItems().removeAll(listForCreation.getSelectionModel().getSelectedItems());
+    }
+
+    @FXML
+    public void handleSaveAudioButton(ActionEvent actionEvent) {
+        String audioName = AudioName.display();
+        AudioTask audioTask = new AudioTask(textArea.getSelectedText(), comboBox.getValue().toString(), audioName);
+        executorService.submit(audioTask);
+        audioTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+            @Override
+            public void handle(WorkerStateEvent workerStateEvent) {
+                listAudio.getItems().add(audioName + "_" + comboBox.getValue().toString());
+            }
+        });
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         comboBox.getItems().setAll("Festival", "eSpeak");
+        textArea.setDisable(true);
+        textArea.setWrapText(true);
+        listAudio.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        listForCreation.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        SpinnerValueFactory<Integer> imagesValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1,10);
+        this.spinner.setValueFactory(imagesValueFactory);
+    }
+
+    private void clearText() {
+        searchField.clear();
+        textArea.clear();
     }
 }
