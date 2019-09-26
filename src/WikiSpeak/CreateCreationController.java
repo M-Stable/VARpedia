@@ -15,6 +15,9 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -42,6 +45,9 @@ public class CreateCreationController implements Initializable {
 
     @FXML
     private ListView<String> listForCreation = new ListView<>();
+
+    private File audioDir = new File("audio/");
+    private File audioCreationDir = new File("audioCreation/");
 
     private String highlightedText="";
     private String searchText= "";
@@ -132,19 +138,22 @@ public class CreateCreationController implements Initializable {
     }
 
     @FXML
-    public void handleSendToCreationButton(ActionEvent actionEvent) {
-        for (String word : listAudio.getSelectionModel().getSelectedItems()) {
-            listForCreation.getItems().add(word);
+    public void handleSendToCreationButton(ActionEvent actionEvent) throws IOException {
+        System.out.println(listAudio.getSelectionModel().getSelectedItems().get(0));
+        for (String word : listAudio.getSelectionModel().getSelectedItems()){
+           Files.move(Paths.get("audio/" + word + ".wav"),
+                            Paths.get("audioCreation/" + word + ".wav"));
         }
-        listAudio.getItems().removeAll(listAudio.getSelectionModel().getSelectedItems());
+        initialiseTable();
     }
 
     @FXML
-    public void handleDeleteAudioButton(ActionEvent actionEvent) {
-        for (String word : listForCreation.getSelectionModel().getSelectedItems()) {
-            listAudio.getItems().add(word);
+    public void handleDeleteAudioButton(ActionEvent actionEvent) throws IOException {
+        for (String word : listForCreation.getSelectionModel().getSelectedItems()){
+            Files.move(Paths.get("audioCreation/" + word + ".wav"),
+                    Paths.get("audio/" + word + ".wav"));
         }
-        listForCreation.getItems().removeAll(listForCreation.getSelectionModel().getSelectedItems());
+        initialiseTable();
     }
 
     @FXML
@@ -169,10 +178,33 @@ public class CreateCreationController implements Initializable {
         listForCreation.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         SpinnerValueFactory<Integer> imagesValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1,10);
         this.spinner.setValueFactory(imagesValueFactory);
+        initialiseTable();
     }
 
     private void clearText() {
         searchField.clear();
         textArea.clear();
+    }
+
+    private void initialiseTable(){
+        File[] creations = audioDir.listFiles();
+
+        listAudio.getItems().clear();
+
+        for(File creation : creations) {
+            if(creation.getName().contains(".wav")) {
+                listAudio.getItems().add(creation.getName().replace(".wav", ""));
+            }
+        }
+
+        File[] creation1 = audioCreationDir.listFiles();
+
+        listForCreation.getItems().clear();
+
+        for(File creation2 : creation1) {
+            if(creation2.getName().contains(".wav")) {
+                listForCreation.getItems().add(creation2.getName().replace(".wav", ""));
+            }
+        }
     }
 }
