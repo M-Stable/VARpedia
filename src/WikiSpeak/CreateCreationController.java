@@ -142,7 +142,7 @@ public class CreateCreationController implements Initializable {
     }
 
     @FXML
-    public void handleDeleteAudioButton(ActionEvent actionEvent) {
+    public void handleRemoveAudioButton(ActionEvent actionEvent) {
         for (String word : listForCreation.getSelectionModel().getSelectedItems()) {
             listAudio.getItems().add(word);
         }
@@ -176,5 +176,11 @@ public class CreateCreationController implements Initializable {
     private void clearText() {
         searchField.clear();
         textArea.clear();
+    }
+
+    public void handleDeleteAllAudioButton(ActionEvent actionEvent) {
+    }
+
+    public void handleDeleteAudioButton(ActionEvent actionEvent) {
     }
 }
