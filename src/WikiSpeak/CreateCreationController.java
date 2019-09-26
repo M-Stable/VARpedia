@@ -209,7 +209,10 @@ public class CreateCreationController implements Initializable {
         audioTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
             @Override
             public void handle(WorkerStateEvent workerStateEvent) {
-                initialiseTable();
+                if (audioTask.getValue().equals("yes")) {
+                    initialiseTable();
+                }
+
             }
         });
     }

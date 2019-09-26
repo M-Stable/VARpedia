@@ -18,6 +18,7 @@ public class AudioTask extends Task<String> {
     @Override
     protected String call() throws Exception {
         String command = "";
+        String output = "";
         if (synthesiser.equals("Festival")) {
             command = "echo \"" + text + "\" | text2wave -o ./audio/" + fileName + "_" + synthesiser + ".wav";
         } else if (synthesiser.equals("eSpeak")) {
@@ -26,10 +27,16 @@ public class AudioTask extends Task<String> {
 
         ProcessBuilder pb = new ProcessBuilder("bash", "-c", command);
         try {
-            pb.start();
+            Process process = pb.start();
+            int exitStatus = process.waitFor();
+            if (exitStatus == 0) {
+                output ="yes";
+            } else {
+                output = "no";
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return "yes";
+        return output;
     }
 }
