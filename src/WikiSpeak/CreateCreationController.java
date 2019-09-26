@@ -18,6 +18,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -130,6 +131,7 @@ public class CreateCreationController implements Initializable {
     public void handleCreateButton(ActionEvent actionEvent) {
         //check if field is empty and if it already exists
         if (!textCreationName.getText().isEmpty()) {
+            List audioFiles = listForCreation.getItems();
 
         } else {
             AlertBox.display("ERROR", "Please type in creation name", "FF6347");
