@@ -158,6 +158,19 @@ public class CreateCreationController implements Initializable {
 
     @FXML
     public void handleSaveAudioButton(ActionEvent actionEvent) {
+        highlightedText = textArea.getSelectedText();
+        String[] words = highlightedText.split("\\s+");
+        if (words.length > 40) {
+            AlertBox.display("Error", "Highlighted text too large", "FF6347");
+            return;
+        }
+        if (highlightedText.isEmpty()) {
+            AlertBox.display("Error", "Please select some text", "FF6347");
+        }
+        if (comboBox.getValue() == null) {
+            AlertBox.display("Error", "Please select a synthesizer", "FF6347");
+            return;
+        }
         String audioName = AudioName.display();
         AudioTask audioTask = new AudioTask(textArea.getSelectedText(), comboBox.getValue().toString(), audioName);
         executorService.submit(audioTask);
