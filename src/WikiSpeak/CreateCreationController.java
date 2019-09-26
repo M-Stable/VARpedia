@@ -141,7 +141,6 @@ public class CreateCreationController implements Initializable {
 
     @FXML
     public void handleSendToCreationButton(ActionEvent actionEvent) throws IOException {
-        System.out.println(listAudio.getSelectionModel().getSelectedItems().get(0));
         for (String word : listAudio.getSelectionModel().getSelectedItems()){
            Files.move(Paths.get("audio/" + word + ".wav"),
                             Paths.get("audioCreation/" + word + ".wav"));
@@ -150,10 +149,30 @@ public class CreateCreationController implements Initializable {
     }
 
     @FXML
-    public void handleDeleteAudioButton(ActionEvent actionEvent) throws IOException {
+    public void handleRemoveAudioButton(ActionEvent actionEvent) throws IOException {
         for (String word : listForCreation.getSelectionModel().getSelectedItems()){
             Files.move(Paths.get("audioCreation/" + word + ".wav"),
                     Paths.get("audio/" + word + ".wav"));
+        }
+        initialiseTable();
+    }
+
+    @FXML
+    public void handleDeleteAllAudioButton(ActionEvent actionEvent) {
+        for(File file: audioDir.listFiles()) {
+            if (!file.isDirectory()) {
+                file.delete();
+            }
+        }
+        initialiseTable();
+
+    }
+
+    @FXML
+    public void handleDeleteAudioButton(ActionEvent actionEvent) {
+        for (String word : listAudio.getSelectionModel().getSelectedItems()){
+            File file = new File("audio/" + word);
+            file.delete();
         }
         initialiseTable();
     }
@@ -179,7 +198,7 @@ public class CreateCreationController implements Initializable {
         audioTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
             @Override
             public void handle(WorkerStateEvent workerStateEvent) {
-                listAudio.getItems().add(audioName + "_" + comboBox.getValue().toString());
+                initialiseTable();
             }
         });
     }
