@@ -35,6 +35,10 @@ public class WikiSpeakController implements Initializable {
 
     private File creationsDir;
 
+    private File audioDir;
+
+    private File videoDir;
+
     @FXML
     protected void handlePlayButton(ActionEvent event) throws IOException {
 
@@ -105,9 +109,12 @@ public class WikiSpeakController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        File dir = new File("creations/");
-        dir.mkdir();
-        creationsDir = dir;
+        creationsDir = new File("creations/");
+        audioDir = new File("audio/");
+        videoDir = new File("video/");
+        creationsDir.mkdir();
+        audioDir.mkdir();
+        videoDir.mkdir();
         updateCreationsList();
     }
 }
