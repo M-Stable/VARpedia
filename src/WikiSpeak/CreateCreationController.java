@@ -79,7 +79,8 @@ public class CreateCreationController implements Initializable {
                     //check if it is a valid search
                     public void handle(WorkerStateEvent workerStateEvent) {
                         if (wikit.getValue().equals(searchField.getText() + " not found :^(")) {
-                            AlertBox.display("ERROR", "No result found", "FF6347");
+                            Alert alert = new Alert(Alert.AlertType.ERROR, "Result not found");
+                            alert.show();
                             File file = new File("./" + searchField.getText() + ".txt");
                             file.delete();
                             clearText();
@@ -96,7 +97,8 @@ public class CreateCreationController implements Initializable {
                 e1.printStackTrace();
             }
         } else {
-            AlertBox.display("Error", "Please enter a search term", "FF6347");
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Please enter a search term");
+            alert.show();
         }
     }
 
@@ -105,12 +107,16 @@ public class CreateCreationController implements Initializable {
         highlightedText = textArea.getSelectedText();
         String[] words = highlightedText.split("\\s+");
         if (words.length > 40) {
-            AlertBox.display("Error", "Highlighted text too large", "FF6347");
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Highlighted text too large");
+            alert.show();
 
             return;
         }
         if (highlightedText.isEmpty()) {
-            AlertBox.display("Error", "Please select some text", "FF6347");
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Please select some text");
+            alert.show();
+
+            return;
         }
         try {
             if (comboBox.getValue().equals("Festival")) {
@@ -123,7 +129,8 @@ public class CreateCreationController implements Initializable {
                 pb.start();
             }
         } catch (Exception e) {
-            AlertBox.display("Error", "Please select a synthesizer", "FF6347");
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Please select a synthesizer");
+            alert.show();
         }
     }
 
@@ -134,7 +141,8 @@ public class CreateCreationController implements Initializable {
             List audioFiles = listForCreation.getItems();
 
         } else {
-            AlertBox.display("ERROR", "Please type in creation name", "FF6347");
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Please type in creation name");
+            alert.show();
         }
 
     }
@@ -182,14 +190,17 @@ public class CreateCreationController implements Initializable {
         highlightedText = textArea.getSelectedText();
         String[] words = highlightedText.split("\\s+");
         if (words.length > 40) {
-            AlertBox.display("Error", "Highlighted text too large", "FF6347");
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Highlighted text too large");
+            alert.show();
             return;
         }
         if (highlightedText.isEmpty()) {
-            AlertBox.display("Error", "Please select some text", "FF6347");
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Please select some text");
+            alert.show();
         }
         if (comboBox.getValue() == null) {
-            AlertBox.display("Error", "Please select a synthesizer", "FF6347");
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Please select a synthesizer");
+            alert.show();
             return;
         }
         String audioName = AudioName.display();
