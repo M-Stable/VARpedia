@@ -20,7 +20,6 @@ public class AudioTask extends Task<String> {
         String command = "";
         if (synthesiser.equals("Festival")) {
             command = "echo \"" + text + "\" | text2wave -o " + fileName + "_" + synthesiser + ".wav";
-            System.out.println(command);
         } else if (synthesiser.equals("eSpeak")) {
             command = "espeak \"" + text + "\" -w " + fileName + "_" + synthesiser + ".wav";
         }

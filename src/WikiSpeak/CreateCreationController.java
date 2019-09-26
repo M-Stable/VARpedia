@@ -136,10 +136,14 @@ public class CreateCreationController implements Initializable {
         for (String word : listAudio.getSelectionModel().getSelectedItems()) {
             listForCreation.getItems().add(word);
         }
+        listAudio.getItems().removeAll(listAudio.getSelectionModel().getSelectedItems());
     }
 
     @FXML
     public void handleDeleteAudioButton(ActionEvent actionEvent) {
+        for (String word : listForCreation.getSelectionModel().getSelectedItems()) {
+            listAudio.getItems().add(word);
+        }
         listForCreation.getItems().removeAll(listForCreation.getSelectionModel().getSelectedItems());
     }
 
