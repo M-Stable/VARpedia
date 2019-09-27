@@ -20,6 +20,7 @@ import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+
 public class CreateCreationController implements Initializable {
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
@@ -126,6 +127,8 @@ public class CreateCreationController implements Initializable {
         //check if field is empty and if it already exists
         if (!textCreationName.getText().isEmpty()) {
             List audioFiles = listForCreation.getItems();
+            FlickrTask flickrTask = new FlickrTask((Integer) spinner.getValue(), searchField.getText());
+            executorService.submit(flickrTask);
 
         } else {
             AlertBox.display("ERROR", "Please type in creation name", "FF6347");
