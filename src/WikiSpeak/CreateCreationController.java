@@ -217,6 +217,7 @@ public class CreateCreationController implements Initializable {
 
     @FXML
     public void handleSaveAudioButton(ActionEvent actionEvent) {
+
         highlightedText = textArea.getSelectedText();
         String[] words = highlightedText.split("\\s+");
         if (words.length > 40) {
@@ -234,6 +235,11 @@ public class CreateCreationController implements Initializable {
             return;
         }
         String audioName = AudioName.display();
+        if (audioName.equals("")) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Enter a file name");
+            alert.show();
+            return;
+        }
         File tmpDir = new File("audio/" + audioName + "_" + comboBox.getValue().toString() + ".wav");
         boolean exists = tmpDir.exists();
         if (exists) {
@@ -250,13 +256,16 @@ public class CreateCreationController implements Initializable {
         }
         AudioTask audioTask = new AudioTask(textArea.getSelectedText(), comboBox.getValue().toString(), audioName);
         executorService.submit(audioTask);
+        progressBar.setVisible(true);
+        disableNodes(true);
         audioTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
             @Override
             public void handle(WorkerStateEvent workerStateEvent) {
                 if (audioTask.getValue().equals("yes")) {
                     initialiseTable();
                 }
-
+                progressBar.setVisible(false);
+                disableNodes(false);
             }
         });
     }
@@ -278,7 +287,6 @@ public class CreateCreationController implements Initializable {
     private void disableNodes(boolean b) {
         previewButton.setDisable(b);
         saveAudioButton.setDisable(b);
-        createButton.setDisable(b);
     }
 
     private void clearText() {
