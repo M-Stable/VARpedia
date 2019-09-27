@@ -220,14 +220,26 @@ public class CreateCreationController implements Initializable {
             return;
         }
         String audioName = AudioName.display();
+        File tmpDir = new File("audio/" + audioName + "_" + comboBox.getValue().toString() + ".wav");
+        boolean exists = tmpDir.exists();
+        if (exists) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "File with that name already exists");
+            alert.show();
+            return;
+        }
+        File tmpDir1 = new File("audioCreation/" + audioName + "_" + comboBox.getValue().toString() + ".wav");
+        boolean check = tmpDir1.exists();
+        if (check) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "File with that name already exists");
+            alert.show();
+            return;
+        }
         AudioTask audioTask = new AudioTask(textArea.getSelectedText(), comboBox.getValue().toString(), audioName);
         executorService.submit(audioTask);
         audioTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
             @Override
             public void handle(WorkerStateEvent workerStateEvent) {
                 if (audioTask.getValue().equals("yes")) {
-//                    finalAudioName = audioName + "_" + comboBox.getValue();
-//                    listAudio.getItems().add(finalAudioName);
                     initialiseTable();
                 }
 
