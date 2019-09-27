@@ -126,33 +126,34 @@ public class CreateCreationController implements Initializable {
     @FXML
     public void handlePreviewButton(ActionEvent actionEvent) throws IOException {
         highlightedText = textArea.getSelectedText();
+        String comboBoxValue = comboBox.getValue().toString();
         String[] words = highlightedText.split("\\s+");
         if (words.length > 40) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Highlighted text too large");
             alert.show();
 
             return;
-        }
-        if (highlightedText.isEmpty()) {
+        } else if (highlightedText.isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Please select some text");
             alert.show();
 
             return;
-        }
-        try {
-            String command = "";
-            if (comboBox.getValue().equals("Festival")) {
-                command = "echo \"" + highlightedText + "\" | festival --tts";
-            } else if (comboBox.getValue().equals("eSpeak")) {
-                command = "espeak \"" + highlightedText + "\"";
-
-            }
-            ProcessBuilder pb = new ProcessBuilder("bash", "-c", command);
-            pb.start();
-        } catch (Exception e) {
+        } else if (comboBoxValue == null) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Please select a synthesizer");
             alert.show();
+
+            return;
         }
+        PreviewAudio previewAudio = new PreviewAudio(comboBoxValue, highlightedText);
+        executorService.submit(previewAudio);
+        previewButton.setDisable(true);
+        previewAudio.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+            @Override
+            public void handle(WorkerStateEvent workerStateEvent) {
+                previewButton.setDisable(false);
+            }
+        });
+
     }
 
     @FXML
