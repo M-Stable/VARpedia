@@ -27,14 +27,9 @@ public class VideoCreationTask extends Task<String> {
     protected String call() throws Exception {
         String output = "";
         double imageFrameRate = 0.3;
-                //audioDuration / (10*numImages);
-        String command = "ffmpeg -framerate " + imageFrameRate + " -i images/" + searchTerm + "%01d.jpg -vf \"drawtext=fontfile=./myfont.ttf:fontsize=50: fontcolor=red:x=(w-text_w)/2:y=(h-text_h)/2:text='" + searchTerm + "\" -t " + audioDuration + " video/video.mp4";
+    
+        String command = "ffmpeg -framerate " + imageFrameRate + " -i images/" + searchTerm + "%01d.jpg -vf \"scale=-2:270, drawtext=fontfile=./myfont.ttf:fontsize=50: fontcolor=red:x=trunc((w-text_w)/2):y=trunc((h-text_h)/2):text='" + searchTerm + "\" -t " + audioDuration + " video/video.mp4";
 
-        /*for(File image : images) {
-            command += image.getPath() + " ";
-        }*/
-
-        //command += "-r 25 video/video.mp4";
         ProcessBuilder pb = new ProcessBuilder("bash", "-c", command);
         Process process = pb.start();
 
