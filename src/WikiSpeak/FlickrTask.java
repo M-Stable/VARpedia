@@ -56,6 +56,10 @@ public class FlickrTask extends Task<String> {
 
         images = new ArrayList<File>();
 
+        if(results.size() == 0) {
+            return "fail";
+        }
+
         int imageID = 0;
         for(Photo photo : results) {
             try {
