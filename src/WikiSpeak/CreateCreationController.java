@@ -55,6 +55,9 @@ public class CreateCreationController implements Initializable {
     private String searchText= "";
 
     @FXML
+    private ProgressBar progressBar;
+
+    @FXML
     public void handleBackButton(ActionEvent event) throws IOException {
         Parent mainParent = FXMLLoader.load(getClass().getResource("main.fxml"));
         Scene mainMenu = new Scene(mainParent);
@@ -66,7 +69,6 @@ public class CreateCreationController implements Initializable {
 
     @FXML
     public void handleSearchButton(ActionEvent actionEvent) {
-        textArea.setDisable(false);
         //get search text
         searchText = searchField.getText();
         //check if empty
@@ -75,6 +77,7 @@ public class CreateCreationController implements Initializable {
                 //helper thread to do process
                 WikitTask wikit = new WikitTask(searchField, textArea);
                 executorService.submit(wikit);
+                progressBar.setVisible(true);
                 wikit.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
                     @Override
                     //check if it is a valid search
@@ -86,10 +89,12 @@ public class CreateCreationController implements Initializable {
                             file.delete();
                             clearText();
                             textArea.setDisable(true);
-
+                            progressBar.setDisable(true);
                             return;
                         }else {
+                            textArea.setDisable(false);
                             textArea.setText(wikit.getValue());
+                            progressBar.setVisible(false);
                         }
 
                     }
@@ -105,6 +110,7 @@ public class CreateCreationController implements Initializable {
 
     @FXML
     public void handlePreviewButton(ActionEvent actionEvent) throws IOException {
+
         highlightedText = textArea.getSelectedText();
         String[] words = highlightedText.split("\\s+");
         if (words.length > 40) {
@@ -255,6 +261,7 @@ public class CreateCreationController implements Initializable {
         listForCreation.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         SpinnerValueFactory<Integer> imagesValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1,10);
         this.spinner.setValueFactory(imagesValueFactory);
+        progressBar.setVisible(false);
         initialiseTable();
     }
 
