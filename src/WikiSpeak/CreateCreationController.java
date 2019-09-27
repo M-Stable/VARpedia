@@ -18,6 +18,8 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
@@ -151,9 +153,6 @@ public class CreateCreationController implements Initializable {
     @FXML
     public void handleSendToCreationButton(ActionEvent actionEvent) throws IOException {
         for (String word : listAudio.getSelectionModel().getSelectedItems()){
-            System.out.println(listAudio.getSelectionModel().getSelectedItems());
-//            listForCreation.getItems().add(word);
-//            listAudio.getItems().remove(word);
            Files.move(Paths.get("audio/" + word + ".wav"),
                             Paths.get("audioCreation/" + word + ".wav"));
         }
@@ -192,7 +191,12 @@ public class CreateCreationController implements Initializable {
         merge.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
             @Override
             public void handle(WorkerStateEvent workerStateEvent) {
-                System.out.println("Completed");
+                for(File file: audioCreationDir.listFiles()) {
+                    if (!file.isDirectory()) {
+                        file.delete();
+                    }
+                }
+                initialiseTable();
             }
         });
     }
@@ -251,6 +255,7 @@ public class CreateCreationController implements Initializable {
     private void initialiseTable(){
         File[] creations = audioDir.listFiles();
 
+        Arrays.sort(creations, (f1, f2) -> f1.compareTo(f2));
         listAudio.getItems().clear();
 
         for(File creation : creations) {
@@ -260,7 +265,7 @@ public class CreateCreationController implements Initializable {
         }
 
         File[] creation1 = audioCreationDir.listFiles();
-
+        Arrays.sort(creation1, (f1, f2) -> f1.compareTo(f2));
         listForCreation.getItems().clear();
 
         for(File creation2 : creation1) {
