@@ -16,11 +16,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -54,7 +51,6 @@ public class CreateCreationController implements Initializable {
 
     private String highlightedText="";
     private String searchText= "";
-    private String finalAudioName="";
 
     @FXML
     public void handleBackButton(ActionEvent event) throws IOException {
@@ -141,7 +137,19 @@ public class CreateCreationController implements Initializable {
     public void handleCreateButton(ActionEvent actionEvent) {
         //check if field is empty and if it already exists
         if (!textCreationName.getText().isEmpty()) {
-            List audioFiles = listForCreation.getItems();
+            MergeAudio merge = new MergeAudio();
+            executorService.submit(merge);
+            merge.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+                @Override
+                public void handle(WorkerStateEvent workerStateEvent) {
+                    for(File file: audioCreationDir.listFiles()) {
+                        if (!file.isDirectory()) {
+                            file.delete();
+                        }
+                    }
+                    initialiseTable();
+                }
+            });
 
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Please type in creation name");
@@ -181,24 +189,11 @@ public class CreateCreationController implements Initializable {
 
     @FXML
     public void handleDeleteAudioButton(ActionEvent actionEvent) {
-//        for (String word : listAudio.getSelectionModel().getSelectedItems()){
-//            File file = new File("audio/" + word);
-//            file.delete();
-//        }
-//        initialiseTable();
-        MergeAudio merge = new MergeAudio();
-        executorService.submit(merge);
-        merge.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-            @Override
-            public void handle(WorkerStateEvent workerStateEvent) {
-                for(File file: audioCreationDir.listFiles()) {
-                    if (!file.isDirectory()) {
-                        file.delete();
-                    }
-                }
-                initialiseTable();
-            }
-        });
+        for (String word : listAudio.getSelectionModel().getSelectedItems()){
+            File file = new File("audio/" + word + ".wav");
+            file.delete();
+        }
+        initialiseTable();
     }
 
     @FXML
@@ -262,6 +257,7 @@ public class CreateCreationController implements Initializable {
     private void clearText() {
         searchField.clear();
         textArea.clear();
+        textCreationName.clear();
     }
 
     private void initialiseTable(){
