@@ -9,11 +9,14 @@ import javafx.concurrent.Task;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FlickrTask extends Task<String> {
 
     private Integer numImages;
     private String query;
+    private List<File> images;
 
 
     public FlickrTask(Integer numImages, String query) {
@@ -50,19 +53,27 @@ public class FlickrTask extends Task<String> {
         params.setText(query);
 
         PhotoList<Photo> results = photos.search(params, numImages, 0);
-        System.out.println("Retrieving " + results.size() + " results");
 
+        images = new ArrayList<File>();
+
+        int imageID = 0;
         for(Photo photo : results) {
             try {
                 BufferedImage image = photos.getImage(photo, Size.LARGE);
-                String filename = query.trim().replace(' ', '-')+"-"+System.currentTimeMillis()+"-"+photo.getId()+".jpg";
+                String filename = query.trim()+imageID+".jpg";
                 File outputFile = new File("images/", filename);
+                images.add(outputFile);
                 ImageIO.write(image, "jpg", outputFile);
+                imageID++;
             } catch (FlickrException flickrException) {
 
             }
         }
 
         return "yes";
+    }
+
+    public List<File> getImages() {
+        return images;
     }
 }

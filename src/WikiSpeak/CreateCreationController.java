@@ -12,6 +12,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -58,6 +62,7 @@ public class CreateCreationController implements Initializable {
 
     private File audioDir = new File("audio/");
     private File audioCreationDir = new File("audioCreation/");
+    private File imagesDir = new File("images/");
 
     private String highlightedText="";
     private String searchText= "";
@@ -159,6 +164,43 @@ public class CreateCreationController implements Initializable {
             merge.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
                 @Override
                 public void handle(WorkerStateEvent workerStateEvent) {
+                    FlickrTask flickrTask = new FlickrTask((Integer) spinner.getValue(), searchField.getText());
+                    executorService.submit(flickrTask);
+                    flickrTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+                        @Override
+                        public void handle(WorkerStateEvent workerStateEvent) {
+                            List<File> images = flickrTask.getImages();
+                            File audioFile = new File("creations/merged.wav");
+                            double audioDuration = 0;
+                            try {
+                                AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(audioFile);
+                                AudioFormat audioFormat = audioInputStream.getFormat();
+                                long frames = audioInputStream.getFrameLength();
+                                 audioDuration = frames / audioFormat.getFrameRate();
+                            } catch (UnsupportedAudioFileException e) {
+                                e.printStackTrace();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+                            VideoCreationTask videoCreationTask = new VideoCreationTask(images, audioDuration, textCreationName.getText(), searchField.getText());
+                            executorService.submit(videoCreationTask);
+                            videoCreationTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+                                @Override
+                                public void handle(WorkerStateEvent workerStateEvent) {
+                                   for(File file: imagesDir.listFiles()) {
+                                        if (!file.isDirectory()) {
+                                            file.delete();
+                                        }
+                                    }
+
+                                    new File("video/video.mp4").delete();
+                                    new File("creations/merged.wav").delete();
+                                }
+                            });
+                        }
+                    });
+
                     for(File file: audioCreationDir.listFiles()) {
                         if (!file.isDirectory()) {
                             file.delete();
@@ -167,8 +209,7 @@ public class CreateCreationController implements Initializable {
                     initialiseTable();
                 }
             });
-            FlickrTask flickrTask = new FlickrTask((Integer) spinner.getValue(), searchField.getText());
-            executorService.submit(flickrTask);
+
 
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Please type in creation name");
