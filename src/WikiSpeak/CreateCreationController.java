@@ -15,7 +15,9 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -44,6 +46,9 @@ public class CreateCreationController implements Initializable {
 
     @FXML
     private ListView<String> listForCreation = new ListView<>();
+
+    private File audioDir = new File("audio/");
+    private File audioCreationDir = new File("audioCreation/");
 
     private String highlightedText="";
     private String searchText= "";
@@ -74,7 +79,8 @@ public class CreateCreationController implements Initializable {
                     //check if it is a valid search
                     public void handle(WorkerStateEvent workerStateEvent) {
                         if (wikit.getValue().equals(searchField.getText() + " not found :^(")) {
-                            AlertBox.display("ERROR", "No result found", "FF6347");
+                            Alert alert = new Alert(Alert.AlertType.ERROR, "Result not found");
+                            alert.show();
                             File file = new File("./" + searchField.getText() + ".txt");
                             file.delete();
                             clearText();
@@ -91,7 +97,8 @@ public class CreateCreationController implements Initializable {
                 e1.printStackTrace();
             }
         } else {
-            AlertBox.display("Error", "Please enter a search term", "FF6347");
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Please enter a search term");
+            alert.show();
         }
     }
 
@@ -100,12 +107,16 @@ public class CreateCreationController implements Initializable {
         highlightedText = textArea.getSelectedText();
         String[] words = highlightedText.split("\\s+");
         if (words.length > 40) {
-            AlertBox.display("Error", "Highlighted text too large", "FF6347");
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Highlighted text too large");
+            alert.show();
 
             return;
         }
         if (highlightedText.isEmpty()) {
-            AlertBox.display("Error", "Please select some text", "FF6347");
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Please select some text");
+            alert.show();
+
+            return;
         }
         try {
             if (comboBox.getValue().equals("Festival")) {
@@ -118,7 +129,8 @@ public class CreateCreationController implements Initializable {
                 pb.start();
             }
         } catch (Exception e) {
-            AlertBox.display("Error", "Please select a synthesizer", "FF6347");
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Please select a synthesizer");
+            alert.show();
         }
     }
 
@@ -126,41 +138,110 @@ public class CreateCreationController implements Initializable {
     public void handleCreateButton(ActionEvent actionEvent) {
         //check if field is empty and if it already exists
         if (!textCreationName.getText().isEmpty()) {
+            MergeAudio merge = new MergeAudio();
+            executorService.submit(merge);
+            merge.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+                @Override
+                public void handle(WorkerStateEvent workerStateEvent) {
+                    for(File file: audioCreationDir.listFiles()) {
+                        if (!file.isDirectory()) {
+                            file.delete();
+                        }
+                    }
+                    initialiseTable();
+                }
+            });
             List audioFiles = listForCreation.getItems();
             FlickrTask flickrTask = new FlickrTask((Integer) spinner.getValue(), searchField.getText());
             executorService.submit(flickrTask);
 
         } else {
-            AlertBox.display("ERROR", "Please type in creation name", "FF6347");
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Please type in creation name");
+            alert.show();
         }
 
     }
 
     @FXML
-    public void handleSendToCreationButton(ActionEvent actionEvent) {
-        for (String word : listAudio.getSelectionModel().getSelectedItems()) {
-            listForCreation.getItems().add(word);
+    public void handleSendToCreationButton(ActionEvent actionEvent) throws IOException {
+        for (String word : listAudio.getSelectionModel().getSelectedItems()){
+           Files.move(Paths.get("audio/" + word + ".wav"),
+                            Paths.get("audioCreation/" + word + ".wav"));
         }
-        listAudio.getItems().removeAll(listAudio.getSelectionModel().getSelectedItems());
+        initialiseTable();
     }
 
     @FXML
-    public void handleRemoveAudioButton(ActionEvent actionEvent) {
-        for (String word : listForCreation.getSelectionModel().getSelectedItems()) {
-            listAudio.getItems().add(word);
+    public void handleRemoveAudioButton(ActionEvent actionEvent) throws IOException {
+        for (String word : listForCreation.getSelectionModel().getSelectedItems()){
+            Files.move(Paths.get("audioCreation/" + word + ".wav"),
+                    Paths.get("audio/" + word + ".wav"));
         }
-        listForCreation.getItems().removeAll(listForCreation.getSelectionModel().getSelectedItems());
+        initialiseTable();
+    }
+
+    @FXML
+    public void handleDeleteAllAudioButton(ActionEvent actionEvent) {
+        for(File file: audioDir.listFiles()) {
+            if (!file.isDirectory()) {
+                file.delete();
+            }
+        }
+        initialiseTable();
+
+    }
+
+    @FXML
+    public void handleDeleteAudioButton(ActionEvent actionEvent) {
+        for (String word : listAudio.getSelectionModel().getSelectedItems()){
+            File file = new File("audio/" + word + ".wav");
+            file.delete();
+        }
+        initialiseTable();
     }
 
     @FXML
     public void handleSaveAudioButton(ActionEvent actionEvent) {
+        highlightedText = textArea.getSelectedText();
+        String[] words = highlightedText.split("\\s+");
+        if (words.length > 40) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Highlighted text too large");
+            alert.show();
+            return;
+        }
+        if (highlightedText.isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Please select some text");
+            alert.show();
+        }
+        if (comboBox.getValue() == null) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Please select a synthesizer");
+            alert.show();
+            return;
+        }
         String audioName = AudioName.display();
+        File tmpDir = new File("audio/" + audioName + "_" + comboBox.getValue().toString() + ".wav");
+        boolean exists = tmpDir.exists();
+        if (exists) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "File with that name already exists");
+            alert.show();
+            return;
+        }
+        File tmpDir1 = new File("audioCreation/" + audioName + "_" + comboBox.getValue().toString() + ".wav");
+        boolean check = tmpDir1.exists();
+        if (check) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "File with that name already exists");
+            alert.show();
+            return;
+        }
         AudioTask audioTask = new AudioTask(textArea.getSelectedText(), comboBox.getValue().toString(), audioName);
         executorService.submit(audioTask);
         audioTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
             @Override
             public void handle(WorkerStateEvent workerStateEvent) {
-                listAudio.getItems().add(audioName + "_" + comboBox.getValue().toString());
+                if (audioTask.getValue().equals("yes")) {
+                    initialiseTable();
+                }
+
             }
         });
     }
@@ -174,16 +255,35 @@ public class CreateCreationController implements Initializable {
         listForCreation.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         SpinnerValueFactory<Integer> imagesValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1,10);
         this.spinner.setValueFactory(imagesValueFactory);
+        initialiseTable();
     }
 
     private void clearText() {
         searchField.clear();
         textArea.clear();
+        textCreationName.clear();
     }
 
-    public void handleDeleteAllAudioButton(ActionEvent actionEvent) {
-    }
+    private void initialiseTable(){
+        File[] creations = audioDir.listFiles();
 
-    public void handleDeleteAudioButton(ActionEvent actionEvent) {
+        Arrays.sort(creations, (f1, f2) -> f1.compareTo(f2));
+        listAudio.getItems().clear();
+
+        for(File creation : creations) {
+            if(creation.getName().contains(".wav")) {
+                listAudio.getItems().add(creation.getName().replace(".wav", ""));
+            }
+        }
+
+        File[] creation1 = audioCreationDir.listFiles();
+        Arrays.sort(creation1, (f1, f2) -> f1.compareTo(f2));
+        listForCreation.getItems().clear();
+
+        for(File creation2 : creation1) {
+            if(creation2.getName().contains(".wav")) {
+                listForCreation.getItems().add(creation2.getName().replace(".wav", ""));
+            }
+        }
     }
 }
