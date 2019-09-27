@@ -48,6 +48,14 @@ public class CreateCreationController implements Initializable {
     @FXML
     private ListView<String> listForCreation = new ListView<>();
 
+    @FXML
+    private Button previewButton;
+    @FXML
+    private Button createButton;
+    @FXML
+    private Button saveAudioButton;
+
+
     private File audioDir = new File("audio/");
     private File audioCreationDir = new File("audioCreation/");
 
@@ -69,6 +77,7 @@ public class CreateCreationController implements Initializable {
 
     @FXML
     public void handleSearchButton(ActionEvent actionEvent) {
+        disableNodes(true);
         //get search text
         searchText = searchField.getText();
         //check if empty
@@ -95,6 +104,7 @@ public class CreateCreationController implements Initializable {
                             textArea.setDisable(false);
                             textArea.setText(wikit.getValue());
                             progressBar.setVisible(false);
+                            disableNodes(false);
                         }
 
                     }
@@ -110,7 +120,6 @@ public class CreateCreationController implements Initializable {
 
     @FXML
     public void handlePreviewButton(ActionEvent actionEvent) throws IOException {
-
         highlightedText = textArea.getSelectedText();
         String[] words = highlightedText.split("\\s+");
         if (words.length > 40) {
@@ -126,15 +135,15 @@ public class CreateCreationController implements Initializable {
             return;
         }
         try {
+            String command = "";
             if (comboBox.getValue().equals("Festival")) {
-                String command = "echo \"" + highlightedText + "\" | festival --tts";
-                ProcessBuilder pb = new ProcessBuilder("bash", "-c", command);
-                pb.start();
+                command = "echo \"" + highlightedText + "\" | festival --tts";
             } else if (comboBox.getValue().equals("eSpeak")) {
-                String command = "espeak \"" + highlightedText + "\"";
-                ProcessBuilder pb = new ProcessBuilder("bash", "-c", command);
-                pb.start();
+                command = "espeak \"" + highlightedText + "\"";
+
             }
+            ProcessBuilder pb = new ProcessBuilder("bash", "-c", command);
+            pb.start();
         } catch (Exception e) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Please select a synthesizer");
             alert.show();
@@ -263,6 +272,13 @@ public class CreateCreationController implements Initializable {
         this.spinner.setValueFactory(imagesValueFactory);
         progressBar.setVisible(false);
         initialiseTable();
+        disableNodes(true);
+    }
+
+    private void disableNodes(boolean b) {
+        previewButton.setDisable(b);
+        saveAudioButton.setDisable(b);
+        createButton.setDisable(b);
     }
 
     private void clearText() {
