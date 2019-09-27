@@ -52,6 +52,7 @@ public class CreateCreationController implements Initializable {
 
     private String highlightedText="";
     private String searchText= "";
+    private String finalAudioName="";
 
     @FXML
     public void handleBackButton(ActionEvent event) throws IOException {
@@ -150,6 +151,9 @@ public class CreateCreationController implements Initializable {
     @FXML
     public void handleSendToCreationButton(ActionEvent actionEvent) throws IOException {
         for (String word : listAudio.getSelectionModel().getSelectedItems()){
+            System.out.println(listAudio.getSelectionModel().getSelectedItems());
+//            listForCreation.getItems().add(word);
+//            listAudio.getItems().remove(word);
            Files.move(Paths.get("audio/" + word + ".wav"),
                             Paths.get("audioCreation/" + word + ".wav"));
         }
@@ -178,11 +182,19 @@ public class CreateCreationController implements Initializable {
 
     @FXML
     public void handleDeleteAudioButton(ActionEvent actionEvent) {
-        for (String word : listAudio.getSelectionModel().getSelectedItems()){
-            File file = new File("audio/" + word);
-            file.delete();
-        }
-        initialiseTable();
+//        for (String word : listAudio.getSelectionModel().getSelectedItems()){
+//            File file = new File("audio/" + word);
+//            file.delete();
+//        }
+//        initialiseTable();
+        MergeAudio merge = new MergeAudio();
+        executorService.submit(merge);
+        merge.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+            @Override
+            public void handle(WorkerStateEvent workerStateEvent) {
+                System.out.println("Completed");
+            }
+        });
     }
 
     @FXML
@@ -210,6 +222,8 @@ public class CreateCreationController implements Initializable {
             @Override
             public void handle(WorkerStateEvent workerStateEvent) {
                 if (audioTask.getValue().equals("yes")) {
+//                    finalAudioName = audioName + "_" + comboBox.getValue();
+//                    listAudio.getItems().add(finalAudioName);
                     initialiseTable();
                 }
 
