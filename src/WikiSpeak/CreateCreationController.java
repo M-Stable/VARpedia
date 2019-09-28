@@ -16,6 +16,7 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -162,58 +163,64 @@ public class CreateCreationController implements Initializable {
     public void handleCreateButton(ActionEvent actionEvent) {
         //check if field is empty and if it already exists
         if (!textCreationName.getText().isEmpty()) {
+            progressBar.setVisible(true);
             MergeAudio merge = new MergeAudio();
             executorService.submit(merge);
             merge.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
                 @Override
                 public void handle(WorkerStateEvent workerStateEvent) {
-                    FlickrTask flickrTask = new FlickrTask((Integer) spinner.getValue(), searchField.getText());
+                    FlickrTask flickrTask = new FlickrTask((Integer) spinner.getValue(), textCreationName.getText());
                     executorService.submit(flickrTask);
                     flickrTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
                         @Override
                         public void handle(WorkerStateEvent workerStateEvent) {
-                            List<File> images = flickrTask.getImages();
-                            File audioFile = new File("creations/merged.wav");
-                            double audioDuration = 0;
-                            try {
-                                AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(audioFile);
-                                AudioFormat audioFormat = audioInputStream.getFormat();
-                                long frames = audioInputStream.getFrameLength();
-                                 audioDuration = frames / audioFormat.getFrameRate();
-                            } catch (UnsupportedAudioFileException e) {
-                                e.printStackTrace();
-                            } catch (IOException e) {
-                                e.printStackTrace();
+
+                            if(flickrTask.getValue().equals("fail")) {
+                                new File("creations/merged.wav").delete();
+                                progressBar.setVisible(false);
+                                Alert alert = new Alert(Alert.AlertType.ERROR, "No images found. Please enter a different creation name");
+                                alert.show();
+                            } else {
+                                List<File> images = flickrTask.getImages();
+                                File audioFile = new File("creations/merged.wav");
+                                double audioDuration = 0;
+                                try {
+                                    AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(audioFile);
+                                    AudioFormat audioFormat = audioInputStream.getFormat();
+                                    long frames = audioInputStream.getFrameLength();
+                                    audioDuration = frames / audioFormat.getFrameRate();
+                                } catch (UnsupportedAudioFileException e) {
+                                    e.printStackTrace();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+
+                                VideoCreationTask videoCreationTask = new VideoCreationTask(images, audioDuration, textCreationName.getText(), searchField.getText());
+                                executorService.submit(videoCreationTask);
+                                videoCreationTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+                                    @Override
+                                    public void handle(WorkerStateEvent workerStateEvent) {
+
+                                        cleanUp();
+                                        initialiseTable();
+
+                                        progressBar.setVisible(false);
+
+                                        /*try {
+                                            handleBackButton(new ActionEvent());
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }*/
+                                        //handleBackButton(new ActionEvent());
+                                    }
+                                });
                             }
 
-                            VideoCreationTask videoCreationTask = new VideoCreationTask(images, audioDuration, textCreationName.getText(), searchField.getText());
-                            executorService.submit(videoCreationTask);
-                            videoCreationTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-                                @Override
-                                public void handle(WorkerStateEvent workerStateEvent) {
-                                   for(File file: imagesDir.listFiles()) {
-                                        if (!file.isDirectory()) {
-                                            file.delete();
-                                        }
-                                    }
-
-                                    new File("video/video.mp4").delete();
-                                    new File("creations/merged.wav").delete();
-                                }
-                            });
                         }
                     });
 
-                    for(File file: audioCreationDir.listFiles()) {
-                        if (!file.isDirectory()) {
-                            file.delete();
-                        }
-                    }
-                    initialiseTable();
                 }
             });
-
-
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Please type in creation name");
             alert.show();
@@ -324,6 +331,7 @@ public class CreateCreationController implements Initializable {
         SpinnerValueFactory<Integer> imagesValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1,10);
         this.spinner.setValueFactory(imagesValueFactory);
         progressBar.setVisible(false);
+        cleanUp();
         initialiseTable();
         disableNodes(true);
     }
@@ -337,6 +345,23 @@ public class CreateCreationController implements Initializable {
         searchField.clear();
         textArea.clear();
         textCreationName.clear();
+    }
+
+    private void cleanUp() {
+        for(File file: imagesDir.listFiles()) {
+            if (!file.isDirectory()) {
+                file.delete();
+            }
+        }
+
+        for(File file: audioCreationDir.listFiles()) {
+            if (!file.isDirectory()) {
+                file.delete();
+            }
+        }
+
+        new File("video/video.mp4").delete();
+        new File("creations/merged.wav").delete();
     }
 
     private void initialiseTable(){
