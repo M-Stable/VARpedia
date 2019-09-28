@@ -57,6 +57,9 @@ public class WikiSpeakController implements Initializable {
             player.setAutoPlay(true);
             MediaView mediaView = new MediaView(player);
 
+            mediaView.setFitHeight(720);
+
+
             FXMLLoader loader = new FXMLLoader(getClass().getResource("media.fxml"));
             BorderPane root = (BorderPane) loader.load();
             root.setCenter(mediaView);
