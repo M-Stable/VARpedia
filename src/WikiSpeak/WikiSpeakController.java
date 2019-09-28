@@ -21,9 +21,7 @@ import javafx.stage.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 
 
 public class WikiSpeakController implements Initializable {
@@ -88,12 +86,20 @@ public class WikiSpeakController implements Initializable {
         File[] creations = creationsDir.listFiles();
 
         if(toggleButton.isSelected()) {
-
+            Arrays.sort(creations, new Comparator<File>() {
+                @Override
+                public int compare(File file, File t1) {
+                    return Long.valueOf(file.lastModified()).compareTo(t1.lastModified());
+                }
+            });
         } else {
-            Arrays.sort(creations);
+            Arrays.sort(creations, new Comparator<File>() {
+                @Override
+                public int compare(File t, File t1) {
+                    return String.CASE_INSENSITIVE_ORDER.compare(t.toString(), t1.toString());
+                }
+            });
         }
-
-
 
         creationsList.getItems().clear();
 
@@ -142,8 +148,5 @@ public class WikiSpeakController implements Initializable {
         imagesDir.mkdir();
         audioCreationsDir.mkdir();
         updateCreationsList();
-    }
-
-    public void handletoggleButton(ActionEvent actionEvent) {
     }
 }
