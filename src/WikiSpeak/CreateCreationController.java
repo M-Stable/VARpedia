@@ -172,19 +172,20 @@ public class CreateCreationController implements Initializable {
 
     @FXML
     public void handleCreateButton(ActionEvent actionEvent) {
+        String creationName = textCreationName.getText();
         if (audioCreationList.isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Please transfer at least 1 audio file for creation");
             alert.show();
             return;
         }
         //check if field is empty and if it already exists
-        if (!textCreationName.getText().isEmpty()) {
-            if(textCreationName.getText().contains("\"") || textCreationName.getText().contains("\'") || textCreationName.getText().contains("\\")) {
+        if (!creationName.isEmpty()) {
+            if(creationName.contains("\"") || creationName.contains("\'") || creationName.contains("\\")) {
                 Alert alert = new Alert(Alert.AlertType.ERROR, "Invalid creation name. Cannot contain \\, \" or \'");
                 alert.show();
                 return;
             } else {
-                File tmpDir = new File("creations/" + textCreationName.getText() + ".mp4");
+                File tmpDir = new File("creations/" + creationName + ".mp4");
                 boolean exists = tmpDir.exists();
                 if (exists) {
                     Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -207,7 +208,7 @@ public class CreateCreationController implements Initializable {
                 merge.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
                     @Override
                     public void handle(WorkerStateEvent workerStateEvent) {
-                        FlickrTask flickrTask = new FlickrTask((Integer) spinner.getValue(), textCreationName.getText());
+                        FlickrTask flickrTask = new FlickrTask((Integer) spinner.getValue(), creationName);
                         executorService.submit(flickrTask);
                         flickrTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
                             @Override
@@ -234,13 +235,17 @@ public class CreateCreationController implements Initializable {
                                         e.printStackTrace();
                                     }
 
-                                    VideoCreationTask videoCreationTask = new VideoCreationTask(images, audioDuration, textCreationName.getText());
+                                    VideoCreationTask videoCreationTask = new VideoCreationTask(images, audioDuration, creationName);
                                     executorService.submit(videoCreationTask);
                                     videoCreationTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
                                         @Override
                                         public void handle(WorkerStateEvent workerStateEvent) {
                                             progressBar.setVisible(false);
-
+                                            disableNodes(false);
+                                            cleanUp();
+                                            initialiseTable();
+                                            searchButton.setDisable(false);
+                                            clearText();
                                             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                                             alert.setHeaderText("Successfully created");
                                             alert.setContentText("Would you like to play your creation?");
@@ -248,7 +253,7 @@ public class CreateCreationController implements Initializable {
                                             Optional<ButtonType> result = alert.showAndWait();
 
                                             if(result.get() == ButtonType.OK) {
-                                                File videoFile = new File("creations/" + textCreationName.getText() + ".mp4");
+                                                File videoFile = new File("creations/" + creationName + ".mp4");
                                                 Media video = new Media(videoFile.toURI().toString());
                                                 MediaPlayer player = new MediaPlayer(video);
                                                 player.setAutoPlay(true);
@@ -272,11 +277,7 @@ public class CreateCreationController implements Initializable {
                                                 window.setScene(new Scene(root));
                                                 window.show();
 
-                                                disableNodes(false);
-                                                cleanUp();
-                                                initialiseTable();
-                                                searchButton.setDisable(false);
-                                                clearText();
+
                                             }
                                         }
                                     });
