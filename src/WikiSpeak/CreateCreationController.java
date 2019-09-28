@@ -174,19 +174,34 @@ public class CreateCreationController implements Initializable {
                 Alert alert = new Alert(Alert.AlertType.ERROR, "Invalid creation name. Cannot contain \\, \" or \'");
                 alert.show();
             } else {
-            progressBar.setVisible(true);
-            disableNodes(true);
+                File tmpDir = new File("creations/" + textCreationName.getText() + ".mp4");
+                boolean exists = tmpDir.exists();
+                if (exists) {
+                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                    alert.setHeaderText("File name already exists");
+                    alert.setContentText("Would you like to overwrite?");
+
+                    Optional<ButtonType> result = alert.showAndWait();
+
+                    if(result.get() == ButtonType.OK) {
+                        tmpDir.delete();
+                    } else {
+                        return;
+                    }
+                }
+                progressBar.setVisible(true);
+                disableNodes(true);
                 searchButton.setDisable(true);
-            MergeAudio merge = new MergeAudio(audioCreationList);
-            executorService.submit(merge);
-            merge.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-                @Override
-                public void handle(WorkerStateEvent workerStateEvent) {
-                    FlickrTask flickrTask = new FlickrTask((Integer) spinner.getValue(), textCreationName.getText());
-                    executorService.submit(flickrTask);
-                    flickrTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-                        @Override
-                        public void handle(WorkerStateEvent workerStateEvent) {
+                MergeAudio merge = new MergeAudio(audioCreationList);
+                executorService.submit(merge);
+                merge.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+                    @Override
+                    public void handle(WorkerStateEvent workerStateEvent) {
+                        FlickrTask flickrTask = new FlickrTask((Integer) spinner.getValue(), textCreationName.getText());
+                        executorService.submit(flickrTask);
+                        flickrTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+                            @Override
+                            public void handle(WorkerStateEvent workerStateEvent) {
 
                                 if(flickrTask.getValue().equals("fail")) {
                                     new File("creations/merged.wav").delete();
@@ -266,7 +281,7 @@ public class CreateCreationController implements Initializable {
     public void handleSendToCreationButton(ActionEvent actionEvent) throws IOException {
         for (String word : listAudio.getSelectionModel().getSelectedItems()){
             Files.move(Paths.get("audio/" + word + ".wav"),
-                            Paths.get("audioCreation/" + word + ".wav"));
+                    Paths.get("audioCreation/" + word + ".wav"));
             audioCreationList.add(word);
         }
         initialiseTable();
