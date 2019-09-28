@@ -325,12 +325,19 @@ public class CreateCreationController implements Initializable {
 
     @FXML
     public void handleDeleteAllAudioButton(ActionEvent actionEvent) {
-        for(File file: audioDir.listFiles()) {
-            if (!file.isDirectory()) {
-                file.delete();
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setHeaderText("Delete all files?");
+        Optional<ButtonType> result = alert.showAndWait();
+
+        if(result.get() == ButtonType.OK) {
+            for(File file: audioDir.listFiles()) {
+                if (!file.isDirectory()) {
+                    file.delete();
+                }
             }
+            initialiseTable();
         }
-        initialiseTable();
+
 
     }
 
