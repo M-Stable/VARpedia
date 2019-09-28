@@ -26,6 +26,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -58,7 +59,7 @@ public class CreateCreationController implements Initializable {
     @FXML
     private Button previewButton;
     @FXML
-    private Button createButton;
+    private Button searchButton;
     @FXML
     private Button saveAudioButton;
     @FXML
@@ -174,6 +175,7 @@ public class CreateCreationController implements Initializable {
                 alert.show();
             } else {
             progressBar.setVisible(true);
+            disableNodes(true);
             MergeAudio merge = new MergeAudio(audioCreationList);
             executorService.submit(merge);
             merge.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
@@ -210,11 +212,30 @@ public class CreateCreationController implements Initializable {
                                     videoCreationTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
                                         @Override
                                         public void handle(WorkerStateEvent workerStateEvent) {
-
+                                            disableNodes(false);
                                             cleanUp();
                                             initialiseTable();
-
+                                            clearText();
                                             progressBar.setVisible(false);
+                                            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                                            alert.setHeaderText("Successfully created");
+                                            alert.setContentText("Return to main menu?");
+
+                                            Optional<ButtonType> result = alert.showAndWait();
+
+                                            if(result.get() == ButtonType.OK) {
+                                                Parent mainParent = null;
+                                                try {
+                                                    mainParent = FXMLLoader.load(getClass().getResource("main.fxml"));
+                                                } catch (IOException e) {
+                                                    e.printStackTrace();
+                                                }
+                                                Scene mainMenu = new Scene(mainParent);
+
+                                                Stage window = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+                                                window.setScene(mainMenu);
+                                                window.show();
+                                            }
 
                                         /*try {
                                             handleBackButton(new ActionEvent());
@@ -299,6 +320,7 @@ public class CreateCreationController implements Initializable {
         } else if (highlightedText.isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Please select some text");
             alert.show();
+            return;
         } else if (comboBox.getValue() == null) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Please select a synthesizer");
             alert.show();
@@ -358,6 +380,7 @@ public class CreateCreationController implements Initializable {
     private void disableNodes(boolean b) {
         previewButton.setDisable(b);
         saveAudioButton.setDisable(b);
+        searchButton.setDisable(b);
     }
 
     private void clearText() {
@@ -367,6 +390,7 @@ public class CreateCreationController implements Initializable {
     }
 
     private void cleanUp() {
+        audioCreationList.clear();
         for(File file: imagesDir.listFiles()) {
             if (!file.isDirectory()) {
                 file.delete();
