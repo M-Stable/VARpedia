@@ -113,9 +113,15 @@ public class CreateCreationController implements Initializable {
                             alert.show();
                             File file = new File("./" + searchField.getText() + ".txt");
                             file.delete();
-                            clearText();
-                            textArea.setDisable(true);
-                            progressBar.setDisable(true);
+                            searchField.clear();
+                            progressBar.setVisible(false);
+                            String isEmpty = textArea.getText();
+                            if (isEmpty.equals("")) {
+                                disableNodes(true);
+                                textArea.setDisable(true);
+                            } else {
+                                disableNodes(false);
+                            }
                             return;
                         }else {
                             textArea.setDisable(false);
@@ -334,7 +340,8 @@ public class CreateCreationController implements Initializable {
                                         @Override
                                         public void handle(WorkerStateEvent workerStateEvent) {
                                             progressBar.setVisible(false);
-                                            disableNodes(false);
+                                            disableNodes(true);
+                                            spinner.getValueFactory().setValue(1);
                                             cleanUp();
                                             initialiseTable();
                                             searchButton.setDisable(false);
@@ -369,8 +376,6 @@ public class CreateCreationController implements Initializable {
                                                 Stage window = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();
                                                 window.setScene(new Scene(root));
                                                 window.show();
-
-
                                             }
                                         }
                                     });
