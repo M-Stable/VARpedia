@@ -1,5 +1,7 @@
 package WikiSpeak;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -59,7 +61,8 @@ public class CreateCreationController implements Initializable {
     private Button createButton;
     @FXML
     private Button saveAudioButton;
-
+    @FXML
+    private ProgressBar progressBar;
 
     private File audioDir = new File("audio/");
     private File audioCreationDir = new File("audioCreation/");
@@ -68,8 +71,7 @@ public class CreateCreationController implements Initializable {
     private String highlightedText="";
     private String searchText= "";
 
-    @FXML
-    private ProgressBar progressBar;
+    private ObservableList<String> audioCreationList = FXCollections.observableArrayList();
 
     @FXML
     public void handleBackButton(ActionEvent event) throws IOException {
@@ -161,23 +163,27 @@ public class CreateCreationController implements Initializable {
 
     @FXML
     public void handleCreateButton(ActionEvent actionEvent) {
+        if (audioCreationList.isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Please transfer at least 1 audio file for creation");
+            alert.show();
+        }
         //check if field is empty and if it already exists
         if (!textCreationName.getText().isEmpty()) {
             if(textCreationName.getText().contains("\"") || textCreationName.getText().contains("\'") || textCreationName.getText().contains("\\")) {
                 Alert alert = new Alert(Alert.AlertType.ERROR, "Invalid creation name. Cannot contain \\, \" or \'");
                 alert.show();
             } else {
-                progressBar.setVisible(true);
-                MergeAudio merge = new MergeAudio();
-                executorService.submit(merge);
-                merge.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-                    @Override
-                    public void handle(WorkerStateEvent workerStateEvent) {
-                        FlickrTask flickrTask = new FlickrTask((Integer) spinner.getValue(), textCreationName.getText());
-                        executorService.submit(flickrTask);
-                        flickrTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-                            @Override
-                            public void handle(WorkerStateEvent workerStateEvent) {
+            progressBar.setVisible(true);
+            MergeAudio merge = new MergeAudio(audioCreationList);
+            executorService.submit(merge);
+            merge.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+                @Override
+                public void handle(WorkerStateEvent workerStateEvent) {
+                    FlickrTask flickrTask = new FlickrTask((Integer) spinner.getValue(), textCreationName.getText());
+                    executorService.submit(flickrTask);
+                    flickrTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+                        @Override
+                        public void handle(WorkerStateEvent workerStateEvent) {
 
                                 if(flickrTask.getValue().equals("fail")) {
                                     new File("creations/merged.wav").delete();
@@ -236,8 +242,9 @@ public class CreateCreationController implements Initializable {
     @FXML
     public void handleSendToCreationButton(ActionEvent actionEvent) throws IOException {
         for (String word : listAudio.getSelectionModel().getSelectedItems()){
-           Files.move(Paths.get("audio/" + word + ".wav"),
+            Files.move(Paths.get("audio/" + word + ".wav"),
                             Paths.get("audioCreation/" + word + ".wav"));
+            audioCreationList.add(word);
         }
         initialiseTable();
     }
@@ -245,8 +252,12 @@ public class CreateCreationController implements Initializable {
     @FXML
     public void handleRemoveAudioButton(ActionEvent actionEvent) throws IOException {
         for (String word : listForCreation.getSelectionModel().getSelectedItems()){
+            audioCreationList.remove(word);
             Files.move(Paths.get("audioCreation/" + word + ".wav"),
                     Paths.get("audio/" + word + ".wav"));
+            if (listForCreation.getSelectionModel().getSelectedItems().isEmpty()) {
+                break;
+            }
         }
         initialiseTable();
     }
@@ -280,12 +291,10 @@ public class CreateCreationController implements Initializable {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Highlighted text too large");
             alert.show();
             return;
-        }
-        if (highlightedText.isEmpty()) {
+        } else if (highlightedText.isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Please select some text");
             alert.show();
-        }
-        if (comboBox.getValue() == null) {
+        } else if (comboBox.getValue() == null) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Please select a synthesizer");
             alert.show();
             return;
@@ -381,14 +390,6 @@ public class CreateCreationController implements Initializable {
             }
         }
 
-        File[] creation1 = audioCreationDir.listFiles();
-        Arrays.sort(creation1, (f1, f2) -> f1.compareTo(f2));
-        listForCreation.getItems().clear();
-
-        for(File creation2 : creation1) {
-            if(creation2.getName().contains(".wav")) {
-                listForCreation.getItems().add(creation2.getName().replace(".wav", ""));
-            }
-        }
+        listForCreation.setItems(audioCreationList);
     }
 }
