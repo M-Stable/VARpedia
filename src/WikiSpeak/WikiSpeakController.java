@@ -94,21 +94,27 @@ public class WikiSpeakController implements Initializable {
 
     @FXML
     public void handleDeleteButton(ActionEvent event) {
-        String fileName = creationsList.getSelectionModel().getSelectedItem().toString() + ".mp4";
-        String filePath = "creations/" + fileName;
-        File selectedCreation = new File(filePath);
+        if(creationsList.getSelectionModel().getSelectedItem() == null) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "No Creation selected");
+            alert.show();
+        } else {
+            String fileName = creationsList.getSelectionModel().getSelectedItem().toString() + ".mp4";
+            String filePath = "creations/" + fileName;
+            File selectedCreation = new File(filePath);
 
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Confirm Deletion");
-        alert.setHeaderText("Confirm Deletion");
-        alert.setContentText("Are you sure you want to delete " + selectedCreation.getName() + "?");
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Confirm Deletion");
+            alert.setHeaderText("Confirm Deletion");
+            alert.setContentText("Are you sure you want to delete " + selectedCreation.getName() + "?");
 
-        Optional<ButtonType> result = alert.showAndWait();
+            Optional<ButtonType> result = alert.showAndWait();
 
-        if(result.get() == ButtonType.OK) {
-            selectedCreation.delete();
-            updateCreationsList();
+            if(result.get() == ButtonType.OK) {
+                selectedCreation.delete();
+                updateCreationsList();
+            }
         }
+
     }
 
     @Override
