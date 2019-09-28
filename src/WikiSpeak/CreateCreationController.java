@@ -238,20 +238,11 @@ public class CreateCreationController implements Initializable {
                                                 window.setScene(mainMenu);
                                                 window.show();
                                             }
-
-                                        /*try {
-                                            handleBackButton(new ActionEvent());
-                                        } catch (IOException e) {
-                                            e.printStackTrace();
-                                        }*/
-                                            //handleBackButton(new ActionEvent());
                                         }
                                     });
                                 }
-
                             }
                         });
-
                     }
                 });
             }

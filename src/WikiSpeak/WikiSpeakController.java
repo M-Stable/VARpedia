@@ -33,8 +33,6 @@ public class WikiSpeakController implements Initializable {
 
     private File audioDir;
 
-    private File videoDir;
-
     private File imagesDir;
 
     private File audioCreationsDir;
@@ -139,12 +137,10 @@ public class WikiSpeakController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         creationsDir = new File("creations/");
         audioDir = new File("audio/");
-        videoDir = new File("video/");
         imagesDir = new File("images/");
         audioCreationsDir = new File("audioCreation/");
         creationsDir.mkdir();
         audioDir.mkdir();
-        videoDir.mkdir();
         imagesDir.mkdir();
         audioCreationsDir.mkdir();
         updateCreationsList();
