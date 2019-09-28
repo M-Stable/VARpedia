@@ -12,6 +12,12 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import javafx.stage.Stage;
 
 import javax.sound.sampled.AudioFormat;
@@ -62,6 +68,8 @@ public class CreateCreationController implements Initializable {
     private Button searchButton;
     @FXML
     private Button saveAudioButton;
+    @FXML
+    private Button createButton;
     @FXML
     private ProgressBar progressBar;
 
@@ -167,32 +175,50 @@ public class CreateCreationController implements Initializable {
         if (audioCreationList.isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Please transfer at least 1 audio file for creation");
             alert.show();
+            return;
         }
         //check if field is empty and if it already exists
         if (!textCreationName.getText().isEmpty()) {
             if(textCreationName.getText().contains("\"") || textCreationName.getText().contains("\'") || textCreationName.getText().contains("\\")) {
                 Alert alert = new Alert(Alert.AlertType.ERROR, "Invalid creation name. Cannot contain \\, \" or \'");
                 alert.show();
+                return;
             } else {
-            progressBar.setVisible(true);
-            disableNodes(true);
+                File tmpDir = new File("creations/" + textCreationName.getText() + ".mp4");
+                boolean exists = tmpDir.exists();
+                if (exists) {
+                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                    alert.setHeaderText("File name already exists");
+                    alert.setContentText("Would you like to overwrite?");
+
+                    Optional<ButtonType> result = alert.showAndWait();
+
+                    if(result.get() == ButtonType.OK) {
+                        tmpDir.delete();
+                    } else {
+                        return;
+                    }
+                }
+                progressBar.setVisible(true);
+                disableNodes(true);
                 searchButton.setDisable(true);
-            MergeAudio merge = new MergeAudio(audioCreationList);
-            executorService.submit(merge);
-            merge.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-                @Override
-                public void handle(WorkerStateEvent workerStateEvent) {
-                    FlickrTask flickrTask = new FlickrTask((Integer) spinner.getValue(), textCreationName.getText());
-                    executorService.submit(flickrTask);
-                    flickrTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-                        @Override
-                        public void handle(WorkerStateEvent workerStateEvent) {
+                MergeAudio merge = new MergeAudio(audioCreationList);
+                executorService.submit(merge);
+                merge.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+                    @Override
+                    public void handle(WorkerStateEvent workerStateEvent) {
+                        FlickrTask flickrTask = new FlickrTask((Integer) spinner.getValue(), textCreationName.getText());
+                        executorService.submit(flickrTask);
+                        flickrTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+                            @Override
+                            public void handle(WorkerStateEvent workerStateEvent) {
 
                                 if(flickrTask.getValue().equals("fail")) {
                                     new File("creations/merged.wav").delete();
                                     progressBar.setVisible(false);
                                     Alert alert = new Alert(Alert.AlertType.ERROR, "No images found. Please enter a different creation name");
                                     alert.show();
+                                    return;
                                 } else {
                                     List<File> images = flickrTask.getImages();
                                     File audioFile = new File("creations/merged.wav");
@@ -213,30 +239,44 @@ public class CreateCreationController implements Initializable {
                                     videoCreationTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
                                         @Override
                                         public void handle(WorkerStateEvent workerStateEvent) {
-                                            disableNodes(false);
-                                            cleanUp();
-                                            initialiseTable();
-                                            searchButton.setDisable(false);
-                                            clearText();
                                             progressBar.setVisible(false);
+
                                             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                                             alert.setHeaderText("Successfully created");
-                                            alert.setContentText("Return to main menu?");
+                                            alert.setContentText("Would you like to play your creation?");
 
                                             Optional<ButtonType> result = alert.showAndWait();
 
                                             if(result.get() == ButtonType.OK) {
-                                                Parent mainParent = null;
+                                                File videoFile = new File("creations/" + textCreationName.getText() + ".mp4");
+                                                Media video = new Media(videoFile.toURI().toString());
+                                                MediaPlayer player = new MediaPlayer(video);
+                                                player.setAutoPlay(true);
+                                                MediaView mediaView = new MediaView(player);
+
+                                                mediaView.setFitHeight(720);
+
+
+                                                FXMLLoader loader = new FXMLLoader(getClass().getResource("media.fxml"));
+                                                BorderPane root = null;
                                                 try {
-                                                    mainParent = FXMLLoader.load(getClass().getResource("main.fxml"));
+                                                    root = (BorderPane) loader.load();
                                                 } catch (IOException e) {
                                                     e.printStackTrace();
                                                 }
-                                                Scene mainMenu = new Scene(mainParent);
+                                                root.setCenter(mediaView);
+                                                MediaController mediaController = loader.getController();
+                                                mediaController.setPlayer(player);
 
-                                                Stage window = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
-                                                window.setScene(mainMenu);
+                                                Stage window = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();
+                                                window.setScene(new Scene(root));
                                                 window.show();
+
+                                                disableNodes(false);
+                                                cleanUp();
+                                                initialiseTable();
+                                                searchButton.setDisable(false);
+                                                clearText();
                                             }
                                         }
                                     });
@@ -257,7 +297,7 @@ public class CreateCreationController implements Initializable {
     public void handleSendToCreationButton(ActionEvent actionEvent) throws IOException {
         for (String word : listAudio.getSelectionModel().getSelectedItems()){
             Files.move(Paths.get("audio/" + word + ".wav"),
-                            Paths.get("audioCreation/" + word + ".wav"));
+                    Paths.get("audioCreation/" + word + ".wav"));
             audioCreationList.add(word);
         }
         initialiseTable();
@@ -283,12 +323,19 @@ public class CreateCreationController implements Initializable {
 
     @FXML
     public void handleDeleteAllAudioButton(ActionEvent actionEvent) {
-        for(File file: audioDir.listFiles()) {
-            if (!file.isDirectory()) {
-                file.delete();
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setHeaderText("Delete all files?");
+        Optional<ButtonType> result = alert.showAndWait();
+
+        if(result.get() == ButtonType.OK) {
+            for(File file: audioDir.listFiles()) {
+                if (!file.isDirectory()) {
+                    file.delete();
+                }
             }
+            initialiseTable();
         }
-        initialiseTable();
+
 
     }
 
@@ -368,6 +415,24 @@ public class CreateCreationController implements Initializable {
         cleanUp();
         initialiseTable();
         disableNodes(true);
+        createButton.setStyle("-fx-background-color: #6495ED; -fx-text-fill: #FFFAF0;");
+
+        searchField.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent keyEvent) {
+                if (keyEvent.getCode().equals(KeyCode.ENTER)) {
+                    searchButton.fire();
+                }
+            }
+        });
+        textCreationName.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent keyEvent) {
+                if (keyEvent.getCode().equals(KeyCode.ENTER)) {
+                    createButton.fire();
+                }
+            }
+        });
     }
 
     private void disableNodes(boolean b) {

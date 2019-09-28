@@ -14,7 +14,7 @@
             <Button layoutX="947.0" layoutY="801.0" mnemonicParsing="false" onAction="#handlePlayButton" text="Pause/Play" />
             <Slider fx:id="volumeSlider" layoutX="80.0" layoutY="806.5" />
             <Label layoutX="80.0" layoutY="790.0" text="Volume" />
-            <Button layoutX="1049.0" layoutY="10.0" mnemonicParsing="false" onAction="#handleBackButton" text="Back" />
+            <Button layoutX="950" layoutY="10.0" mnemonicParsing="false" onAction="#handleBackButton" text="Main Menu" />
          </children>
     </AnchorPane>
   </children>
