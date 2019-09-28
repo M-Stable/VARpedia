@@ -13,14 +13,12 @@ public class VideoCreationTask extends Task<String> {
     private Integer numImages;
     private Double audioDuration;
     private String creationName;
-    private String searchTerm;
 
-    public VideoCreationTask(List<File> images, Double audioDuration, String creationName, String searchTerm) {
+    public VideoCreationTask(List<File> images, Double audioDuration, String creationName) {
         this.images = images;
         this.numImages = images.size();
         this.audioDuration = audioDuration;
         this.creationName = creationName;
-        this.searchTerm = searchTerm;
     }
 
     @Override
@@ -28,7 +26,7 @@ public class VideoCreationTask extends Task<String> {
         String output = "";
         double imageFrameRate = 1 / (audioDuration / numImages);
 
-        String command = "ffmpeg -framerate " + imageFrameRate + " -i images/" + creationName + "%01d.jpg -vf \"scale=-2:270, drawtext=fontfile=./myfont.ttf:fontsize=50: fontcolor=red:x=trunc((w-text_w)/2):y=trunc((h-text_h)/2):text='" + searchTerm + "\" -r 25 video/video.mp4";
+        String command = "ffmpeg -framerate " + imageFrameRate + " -i images/" + creationName + "%01d.jpg -vf \"scale=-2:270, drawtext=fontfile=./myfont.ttf:fontsize=50: fontcolor=red:x=trunc((w-text_w)/2):y=trunc((h-text_h)/2):text='" + creationName + "\" -r 25 video/video.mp4";
 
         ProcessBuilder pb = new ProcessBuilder("bash", "-c", command);
         Process process = pb.start();

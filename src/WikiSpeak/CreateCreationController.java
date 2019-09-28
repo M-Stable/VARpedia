@@ -163,64 +163,69 @@ public class CreateCreationController implements Initializable {
     public void handleCreateButton(ActionEvent actionEvent) {
         //check if field is empty and if it already exists
         if (!textCreationName.getText().isEmpty()) {
-            progressBar.setVisible(true);
-            MergeAudio merge = new MergeAudio();
-            executorService.submit(merge);
-            merge.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-                @Override
-                public void handle(WorkerStateEvent workerStateEvent) {
-                    FlickrTask flickrTask = new FlickrTask((Integer) spinner.getValue(), textCreationName.getText());
-                    executorService.submit(flickrTask);
-                    flickrTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-                        @Override
-                        public void handle(WorkerStateEvent workerStateEvent) {
+            if(textCreationName.getText().contains("\"") || textCreationName.getText().contains("\'") || textCreationName.getText().contains("\\")) {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Invalid creation name. Cannot contain \\, \" or \'");
+                alert.show();
+            } else {
+                progressBar.setVisible(true);
+                MergeAudio merge = new MergeAudio();
+                executorService.submit(merge);
+                merge.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+                    @Override
+                    public void handle(WorkerStateEvent workerStateEvent) {
+                        FlickrTask flickrTask = new FlickrTask((Integer) spinner.getValue(), textCreationName.getText());
+                        executorService.submit(flickrTask);
+                        flickrTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+                            @Override
+                            public void handle(WorkerStateEvent workerStateEvent) {
 
-                            if(flickrTask.getValue().equals("fail")) {
-                                new File("creations/merged.wav").delete();
-                                progressBar.setVisible(false);
-                                Alert alert = new Alert(Alert.AlertType.ERROR, "No images found. Please enter a different creation name");
-                                alert.show();
-                            } else {
-                                List<File> images = flickrTask.getImages();
-                                File audioFile = new File("creations/merged.wav");
-                                double audioDuration = 0;
-                                try {
-                                    AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(audioFile);
-                                    AudioFormat audioFormat = audioInputStream.getFormat();
-                                    long frames = audioInputStream.getFrameLength();
-                                    audioDuration = frames / audioFormat.getFrameRate();
-                                } catch (UnsupportedAudioFileException e) {
-                                    e.printStackTrace();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
+                                if(flickrTask.getValue().equals("fail")) {
+                                    new File("creations/merged.wav").delete();
+                                    progressBar.setVisible(false);
+                                    Alert alert = new Alert(Alert.AlertType.ERROR, "No images found. Please enter a different creation name");
+                                    alert.show();
+                                } else {
+                                    List<File> images = flickrTask.getImages();
+                                    File audioFile = new File("creations/merged.wav");
+                                    double audioDuration = 0;
+                                    try {
+                                        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(audioFile);
+                                        AudioFormat audioFormat = audioInputStream.getFormat();
+                                        long frames = audioInputStream.getFrameLength();
+                                        audioDuration = frames / audioFormat.getFrameRate();
+                                    } catch (UnsupportedAudioFileException e) {
+                                        e.printStackTrace();
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
 
-                                VideoCreationTask videoCreationTask = new VideoCreationTask(images, audioDuration, textCreationName.getText(), searchField.getText());
-                                executorService.submit(videoCreationTask);
-                                videoCreationTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-                                    @Override
-                                    public void handle(WorkerStateEvent workerStateEvent) {
+                                    VideoCreationTask videoCreationTask = new VideoCreationTask(images, audioDuration, textCreationName.getText());
+                                    executorService.submit(videoCreationTask);
+                                    videoCreationTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+                                        @Override
+                                        public void handle(WorkerStateEvent workerStateEvent) {
 
-                                        cleanUp();
-                                        initialiseTable();
+                                            cleanUp();
+                                            initialiseTable();
 
-                                        progressBar.setVisible(false);
+                                            progressBar.setVisible(false);
 
                                         /*try {
                                             handleBackButton(new ActionEvent());
                                         } catch (IOException e) {
                                             e.printStackTrace();
                                         }*/
-                                        //handleBackButton(new ActionEvent());
-                                    }
-                                });
+                                            //handleBackButton(new ActionEvent());
+                                        }
+                                    });
+                                }
+
                             }
+                        });
 
-                        }
-                    });
-
-                }
-            });
+                    }
+                });
+            }
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Please type in creation name");
             alert.show();
