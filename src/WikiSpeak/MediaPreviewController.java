@@ -27,7 +27,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class MediaController implements Initializable{
+public class MediaPreviewController implements Initializable{
 
     @FXML
     private Slider volumeSlider;
@@ -59,18 +59,6 @@ public class MediaController implements Initializable{
         }
 
 
-
-    }
-
-    public void handleBackButton(ActionEvent actionEvent) throws IOException {
-        player.stop();
-
-        Parent mainParent = FXMLLoader.load(getClass().getResource("main.fxml"));
-        Scene mainMenu = new Scene(mainParent);
-
-        Stage window = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
-        window.setScene(mainMenu);
-        window.show();
 
     }
 
