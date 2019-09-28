@@ -12,6 +12,8 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -66,6 +68,8 @@ public class CreateCreationController implements Initializable {
     private Button searchButton;
     @FXML
     private Button saveAudioButton;
+    @FXML
+    private Button createButton;
     @FXML
     private ProgressBar progressBar;
 
@@ -171,12 +175,14 @@ public class CreateCreationController implements Initializable {
         if (audioCreationList.isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Please transfer at least 1 audio file for creation");
             alert.show();
+            return;
         }
         //check if field is empty and if it already exists
         if (!textCreationName.getText().isEmpty()) {
             if(textCreationName.getText().contains("\"") || textCreationName.getText().contains("\'") || textCreationName.getText().contains("\\")) {
                 Alert alert = new Alert(Alert.AlertType.ERROR, "Invalid creation name. Cannot contain \\, \" or \'");
                 alert.show();
+                return;
             } else {
                 File tmpDir = new File("creations/" + textCreationName.getText() + ".mp4");
                 boolean exists = tmpDir.exists();
@@ -212,6 +218,7 @@ public class CreateCreationController implements Initializable {
                                     progressBar.setVisible(false);
                                     Alert alert = new Alert(Alert.AlertType.ERROR, "No images found. Please enter a different creation name");
                                     alert.show();
+                                    return;
                                 } else {
                                     List<File> images = flickrTask.getImages();
                                     File audioFile = new File("creations/merged.wav");
@@ -417,6 +424,23 @@ public class CreateCreationController implements Initializable {
         cleanUp();
         initialiseTable();
         disableNodes(true);
+
+        searchField.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent keyEvent) {
+                if (keyEvent.getCode().equals(KeyCode.ENTER)) {
+                    searchButton.fire();
+                }
+            }
+        });
+        textCreationName.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent keyEvent) {
+                if (keyEvent.getCode().equals(KeyCode.ENTER)) {
+                    createButton.fire();
+                }
+            }
+        });
     }
 
     private void disableNodes(boolean b) {
