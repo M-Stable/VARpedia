@@ -233,7 +233,7 @@ public class CreateCreationController implements Initializable {
                                         e.printStackTrace();
                                     }
 
-                                    VideoCreationTask videoCreationTask = new VideoCreationTask(images, audioDuration, creationName);
+                                    VideoCreationTask videoCreationTask = new VideoCreationTask(images, audioDuration, creationName, searchField.getText());
                                     executorService.submit(videoCreationTask);
                                     videoCreationTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
                                         @Override
