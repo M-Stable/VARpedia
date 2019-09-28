@@ -8,10 +8,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
@@ -24,6 +21,7 @@ import javafx.stage.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -42,6 +40,9 @@ public class WikiSpeakController implements Initializable {
     private File imagesDir;
 
     private File audioCreationsDir;
+
+    @FXML
+    private ToggleButton toggleButton;
 
     @FXML
     protected void handlePlayButton(ActionEvent event) throws IOException {
@@ -85,6 +86,14 @@ public class WikiSpeakController implements Initializable {
 
     public void updateCreationsList() {
         File[] creations = creationsDir.listFiles();
+
+        if(toggleButton.isSelected()) {
+
+        } else {
+            Arrays.sort(creations);
+        }
+
+
 
         creationsList.getItems().clear();
 
@@ -133,5 +142,8 @@ public class WikiSpeakController implements Initializable {
         imagesDir.mkdir();
         audioCreationsDir.mkdir();
         updateCreationsList();
+    }
+
+    public void handletoggleButton(ActionEvent actionEvent) {
     }
 }

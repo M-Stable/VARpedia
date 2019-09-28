@@ -25,8 +25,14 @@ public class VideoCreationTask extends Task<String> {
     protected String call() throws Exception {
         String output = "";
         double imageFrameRate = 1 / (audioDuration / numImages);
+        String command;
+        if(numImages == 2) {
+            command = "cat *.jpg | ffmpeg -f image2pipe -framerate " + imageFrameRate + "-i - -i creations/merged.wav -c:v libx264 -pix_fmt yuv420p -vf \"scale=width*height\" -r 25 -max_muxing_queue_size 1024 -y out.mp4";
+        } else {
+            command = "ffmpeg -framerate " + imageFrameRate + " -i images/" + creationName + "%01d.jpg -vf \"scale=-2:270, drawtext=fontfile=./myfont.ttf:fontsize=50: fontcolor=red:x=trunc((w-text_w)/2):y=trunc((h-text_h)/2):text='" + creationName + "\" -r 25 video/video.mp4";
 
-        String command = "ffmpeg -framerate " + imageFrameRate + " -i images/" + creationName + "%01d.jpg -vf \"scale=-2:270, drawtext=fontfile=./myfont.ttf:fontsize=50: fontcolor=red:x=trunc((w-text_w)/2):y=trunc((h-text_h)/2):text='" + creationName + "\" -r 25 video/video.mp4";
+        }
+
 
         ProcessBuilder pb = new ProcessBuilder("bash", "-c", command);
         Process process = pb.start();
@@ -34,9 +40,7 @@ public class VideoCreationTask extends Task<String> {
         BufferedReader stdout = new BufferedReader(new InputStreamReader(process.getInputStream()));
         BufferedReader stderr = new BufferedReader(new InputStreamReader(process.getErrorStream()));
 
-        System.out.println(command);
         int exitStatus = process.waitFor();
-        System.out.println("done");
 
         if (exitStatus == 0) {
             String command2 = "ffmpeg -i video/video.mp4 -i creations/merged.wav -map 0:v -map 1:a creations/" + creationName + ".mp4";
@@ -46,9 +50,7 @@ public class VideoCreationTask extends Task<String> {
             BufferedReader stdout2 = new BufferedReader(new InputStreamReader(process2.getInputStream()));
             BufferedReader stderr2 = new BufferedReader(new InputStreamReader(process2.getErrorStream()));
 
-            System.out.println(command2);
             int exitStatus2 = process2.waitFor();
-            System.out.println("done2");
             if (exitStatus == 0) {
                 output = stdout2.readLine();
             } else {
