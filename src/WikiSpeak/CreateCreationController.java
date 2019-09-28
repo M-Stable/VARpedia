@@ -208,7 +208,7 @@ public class CreateCreationController implements Initializable {
                 merge.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
                     @Override
                     public void handle(WorkerStateEvent workerStateEvent) {
-                        FlickrTask flickrTask = new FlickrTask((Integer) spinner.getValue(), creationName);
+                        FlickrTask flickrTask = new FlickrTask((Integer) spinner.getValue(), searchField.getText());
                         executorService.submit(flickrTask);
                         flickrTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
                             @Override
@@ -235,7 +235,7 @@ public class CreateCreationController implements Initializable {
                                         e.printStackTrace();
                                     }
 
-                                    VideoCreationTask videoCreationTask = new VideoCreationTask(images, audioDuration, creationName);
+                                    VideoCreationTask videoCreationTask = new VideoCreationTask(images, audioDuration, creationName, searchField.getText());
                                     executorService.submit(videoCreationTask);
                                     videoCreationTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
                                         @Override

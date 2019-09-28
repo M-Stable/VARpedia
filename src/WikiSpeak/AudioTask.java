@@ -20,9 +20,9 @@ public class AudioTask extends Task<String> {
         String command = "";
         String output = "";
         if (synthesiser.equals("Festival")) {
-            command = "echo \"" + text + "\" | text2wave -o ./audio/" + fileName + "_" + synthesiser + ".wav";
+            command = "echo \"" + text + "\" | text2wave -o './audio/" + fileName + "_" + synthesiser + ".wav'";
         } else if (synthesiser.equals("eSpeak")) {
-            command = "espeak \"" + text + "\" -w ./audio/" + fileName + "_" + synthesiser + ".wav";
+            command = "espeak \"" + text + "\" -w './audio/" + fileName + "_" + synthesiser + ".wav'";
         }
 
         ProcessBuilder pb = new ProcessBuilder("bash", "-c", command);

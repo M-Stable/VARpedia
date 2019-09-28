@@ -23,7 +23,7 @@ public class MergeAudio extends Task<Integer> {
             System.out.println(creation1);
             String creation = "audioCreation/" + creation1 + ".wav";
             System.out.println(creation);
-            command += "-i " + creation + " ";
+            command += "-i '" + creation + "' ";
             count++;
         }
         System.out.println(command);
