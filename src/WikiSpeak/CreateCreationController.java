@@ -12,6 +12,10 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import javafx.stage.Stage;
 
 import javax.sound.sampled.AudioFormat;
@@ -228,30 +232,44 @@ public class CreateCreationController implements Initializable {
                                     videoCreationTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
                                         @Override
                                         public void handle(WorkerStateEvent workerStateEvent) {
-                                            disableNodes(false);
-                                            cleanUp();
-                                            initialiseTable();
-                                            searchButton.setDisable(false);
-                                            clearText();
                                             progressBar.setVisible(false);
+
                                             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                                             alert.setHeaderText("Successfully created");
-                                            alert.setContentText("Return to main menu?");
+                                            alert.setContentText("Would you like to play your creation?");
 
                                             Optional<ButtonType> result = alert.showAndWait();
 
                                             if(result.get() == ButtonType.OK) {
-                                                Parent mainParent = null;
+                                                File videoFile = new File("creations/" + textCreationName.getText() + ".mp4");
+                                                Media video = new Media(videoFile.toURI().toString());
+                                                MediaPlayer player = new MediaPlayer(video);
+                                                player.setAutoPlay(true);
+                                                MediaView mediaView = new MediaView(player);
+
+                                                mediaView.setFitHeight(720);
+
+
+                                                FXMLLoader loader = new FXMLLoader(getClass().getResource("media.fxml"));
+                                                BorderPane root = null;
                                                 try {
-                                                    mainParent = FXMLLoader.load(getClass().getResource("main.fxml"));
+                                                    root = (BorderPane) loader.load();
                                                 } catch (IOException e) {
                                                     e.printStackTrace();
                                                 }
-                                                Scene mainMenu = new Scene(mainParent);
+                                                root.setCenter(mediaView);
+                                                MediaController mediaController = loader.getController();
+                                                mediaController.setPlayer(player);
 
-                                                Stage window = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
-                                                window.setScene(mainMenu);
+                                                Stage window = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();
+                                                window.setScene(new Scene(root));
                                                 window.show();
+
+                                                disableNodes(false);
+                                                cleanUp();
+                                                initialiseTable();
+                                                searchButton.setDisable(false);
+                                                clearText();
                                             }
 
                                         /*try {
