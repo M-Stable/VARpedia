@@ -461,7 +461,7 @@ public class CreateCreationController implements Initializable {
             }
         }
 
-        new File("video/video.mp4").delete();
+        new File("creations/out.mp4").delete();
         new File("creations/merged.wav").delete();
     }
 
