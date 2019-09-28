@@ -176,6 +176,7 @@ public class CreateCreationController implements Initializable {
             } else {
             progressBar.setVisible(true);
             disableNodes(true);
+                searchButton.setDisable(true);
             MergeAudio merge = new MergeAudio(audioCreationList);
             executorService.submit(merge);
             merge.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
@@ -215,6 +216,7 @@ public class CreateCreationController implements Initializable {
                                             disableNodes(false);
                                             cleanUp();
                                             initialiseTable();
+                                            searchButton.setDisable(false);
                                             clearText();
                                             progressBar.setVisible(false);
                                             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -380,7 +382,6 @@ public class CreateCreationController implements Initializable {
     private void disableNodes(boolean b) {
         previewButton.setDisable(b);
         saveAudioButton.setDisable(b);
-        searchButton.setDisable(b);
     }
 
     private void clearText() {
