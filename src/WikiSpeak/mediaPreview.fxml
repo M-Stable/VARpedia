@@ -7,14 +7,13 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="840.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="WikiSpeak.MediaController">
+<BorderPane prefHeight="840.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="WikiSpeak.MediaPreviewController">
     <children>
         <AnchorPane fx:id="parentPane" maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
             <children>
                 <Button layoutX="947.0" layoutY="801.0" mnemonicParsing="false" onAction="#handlePlayButton" text="Pause/Play" />
                 <Slider fx:id="volumeSlider" layoutX="80.0" layoutY="806.5" />
                 <Label layoutX="80.0" layoutY="790.0" text="Volume" />
-                <Button layoutX="950" layoutY="10.0" mnemonicParsing="false" onAction="#handleBackButton" text="Main Menu" />
             </children>
         </AnchorPane>
     </children>
