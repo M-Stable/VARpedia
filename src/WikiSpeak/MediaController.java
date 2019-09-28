@@ -21,6 +21,7 @@ import javafx.scene.media.MediaView;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.stage.WindowEvent;
+import javafx.util.Duration;
 
 import java.io.IOException;
 import java.net.URL;
@@ -35,13 +36,26 @@ public class MediaController implements Initializable{
     @FXML
     private AnchorPane parentPane;
 
+    @FXML
+    private Slider timeSlider;
+
     private MediaPlayer player;
+
+    private boolean atEndOfMedia = false;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         volumeSlider.setMin(0);
         volumeSlider.setMax(1);
         volumeSlider.setValue(1);
+        timeSlider.setMax(player.getMedia().getDuration().toSeconds());
+
+        player.setOnEndOfMedia(new Runnable() {
+            @Override
+            public void run() {
+                atEndOfMedia = false;
+            }
+        });
 
         volumeSlider.valueProperty().addListener(new ChangeListener<Number>() {
             @Override
@@ -49,17 +63,43 @@ public class MediaController implements Initializable{
                 player.setVolume(newValue.doubleValue());
             }
         });
+
+        InvalidationListener timeSliderListener = new InvalidationListener() {
+            @Override
+            public void invalidated(Observable observable) {
+                if(timeSlider.isValueChanging()) {
+                    player.seek(new Duration(timeSlider.getValue()));
+                }
+            }
+        };
+
+
+        timeSlider.valueProperty().addListener(timeSliderListener);
+
+        player.currentTimeProperty().addListener(new InvalidationListener() {
+            @Override
+            public void invalidated(Observable observable) {
+                timeSlider.valueProperty().removeListener(timeSliderListener);
+                timeSlider.setValue(player.getCurrentTime().toSeconds());
+                timeSlider.valueProperty().addListener(timeSliderListener);
+            }
+        });
+
     }
 
     public void handlePlayButton(ActionEvent actionEvent) {
-        if(player.getStatus() == MediaPlayer.Status.PLAYING) {
-            player.pause();
-        } else {
+
+        MediaPlayer.Status status = player.getStatus();
+
+        if(status == MediaPlayer.Status.PAUSED || status == MediaPlayer.Status.READY || status == MediaPlayer.Status.STOPPED) {
+            if(atEndOfMedia) {
+                player.seek(player.getStartTime());
+                atEndOfMedia = false;
+            }
             player.play();
+        } else {
+            player.pause();
         }
-
-
-
     }
 
     public void handleBackButton(ActionEvent actionEvent) throws IOException {

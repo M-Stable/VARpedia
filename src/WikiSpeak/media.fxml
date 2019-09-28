@@ -15,6 +15,7 @@
                 <Slider fx:id="volumeSlider" layoutX="80.0" layoutY="806.5" />
                 <Label layoutX="80.0" layoutY="790.0" text="Volume" />
                 <Button layoutX="950" layoutY="10.0" mnemonicParsing="false" onAction="#handleBackButton" text="Main Menu" />
+            <Slider fx:id="timeSlider" layoutX="250.0" layoutY="797.0" prefHeight="35.0" prefWidth="667.0" />
             </children>
         </AnchorPane>
     </children>
