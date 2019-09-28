@@ -179,115 +179,88 @@ public class CreateCreationController implements Initializable {
             return;
         }
         //check if field is empty and if it already exists
-        if (!creationName.isEmpty()) {
-            if(creationName.contains("\"") || creationName.contains("\'") || creationName.contains("\\")) {
-                Alert alert = new Alert(Alert.AlertType.ERROR, "Invalid creation name. Cannot contain \\, \" or \'");
-                alert.show();
-                return;
-            } else {
-                File tmpDir = new File("creations/" + creationName + ".mp4");
-                boolean exists = tmpDir.exists();
-                if (exists) {
-                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                    alert.setHeaderText("File name already exists");
-                    alert.setContentText("Would you like to overwrite?");
 
-                    Optional<ButtonType> result = alert.showAndWait();
-
-                    if(result.get() == ButtonType.OK) {
-                        tmpDir.delete();
-                    } else {
-                        return;
-                    }
-                }
-                progressBar.setVisible(true);
-                MergeAudio merge = new MergeAudio(audioCreationList);
-                executorService.submit(merge);
-                merge.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+        progressBar.setVisible(true);
+        MergeAudio merge = new MergeAudio(audioCreationList);
+        executorService.submit(merge);
+        merge.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+            @Override
+            public void handle(WorkerStateEvent workerStateEvent) {
+                FlickrTask flickrTask = new FlickrTask((Integer) spinner.getValue(), searchField.getText());
+                executorService.submit(flickrTask);
+                flickrTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
                     @Override
                     public void handle(WorkerStateEvent workerStateEvent) {
-                        FlickrTask flickrTask = new FlickrTask((Integer) spinner.getValue(), creationName);
-                        executorService.submit(flickrTask);
-                        flickrTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-                            @Override
-                            public void handle(WorkerStateEvent workerStateEvent) {
 
-                                if(flickrTask.getValue().equals("fail")) {
-                                    new File("creations/merged.wav").delete();
+                        if(flickrTask.getValue().equals("fail")) {
+                            new File("creations/merged.wav").delete();
+                            progressBar.setVisible(false);
+                            Alert alert = new Alert(Alert.AlertType.ERROR, "No images found. Please enter a different creation name");
+                            alert.show();
+                            return;
+                        } else {
+                            List<File> images = flickrTask.getImages();
+                            File audioFile = new File("creations/merged.wav");
+                            double audioDuration = 0;
+                            try {
+                                AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(audioFile);
+                                AudioFormat audioFormat = audioInputStream.getFormat();
+                                long frames = audioInputStream.getFrameLength();
+                                audioDuration = frames / audioFormat.getFrameRate();
+                            } catch (UnsupportedAudioFileException e) {
+                                e.printStackTrace();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+                            VideoCreationTask videoCreationTask = new VideoCreationTask(images, audioDuration, "tempfile1", searchField.getText());
+                            executorService.submit(videoCreationTask);
+                            videoCreationTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+                                @Override
+                                public void handle(WorkerStateEvent workerStateEvent) {
                                     progressBar.setVisible(false);
-                                    Alert alert = new Alert(Alert.AlertType.ERROR, "No images found. Please enter a different creation name");
-                                    alert.show();
-                                    return;
-                                } else {
-                                    List<File> images = flickrTask.getImages();
-                                    File audioFile = new File("creations/merged.wav");
-                                    double audioDuration = 0;
+                                    for(File file: imagesDir.listFiles()) {
+                                        if (!file.isDirectory()) {
+                                            file.delete();
+                                        }
+                                    }
+                                    new File("creations/out.mp4").delete();
+                                    new File("creations/merged.wav").delete();
+
+
+                                    File videoFile = new File("creations/tempfile1.mp4");
+                                    Media video = new Media(videoFile.toURI().toString());
+                                    MediaPlayer player = new MediaPlayer(video);
+                                    player.setAutoPlay(true);
+                                    MediaView mediaView = new MediaView(player);
+
+                                    mediaView.setFitHeight(720);
+
+                                    FXMLLoader loader = new FXMLLoader(getClass().getResource("mediaPreview.fxml"));
+                                    BorderPane root = null;
                                     try {
-                                        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(audioFile);
-                                        AudioFormat audioFormat = audioInputStream.getFormat();
-                                        long frames = audioInputStream.getFrameLength();
-                                        audioDuration = frames / audioFormat.getFrameRate();
-                                    } catch (UnsupportedAudioFileException e) {
-                                        e.printStackTrace();
+                                        root = (BorderPane) loader.load();
                                     } catch (IOException e) {
                                         e.printStackTrace();
                                     }
-
-                                    VideoCreationTask videoCreationTask = new VideoCreationTask(images, audioDuration, creationName, searchField.getText());
-                                    executorService.submit(videoCreationTask);
-                                    videoCreationTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-                                        @Override
-                                        public void handle(WorkerStateEvent workerStateEvent) {
-                                            progressBar.setVisible(false);
-                                            for(File file: imagesDir.listFiles()) {
-                                                if (!file.isDirectory()) {
-                                                    file.delete();
-                                                }
-                                            }
-                                            new File("creations/out.mp4").delete();
-                                            new File("creations/merged.wav").delete();
-
-
-                                            File videoFile = new File("creations/" + creationName + ".mp4");
-                                            Media video = new Media(videoFile.toURI().toString());
-                                            MediaPlayer player = new MediaPlayer(video);
-                                            player.setAutoPlay(true);
-                                            MediaView mediaView = new MediaView(player);
-
-                                            mediaView.setFitHeight(720);
-
-                                            FXMLLoader loader = new FXMLLoader(getClass().getResource("mediaPreview.fxml"));
-                                            BorderPane root = null;
-                                            try {
-                                                root = (BorderPane) loader.load();
-                                            } catch (IOException e) {
-                                                e.printStackTrace();
-                                            }
-                                            root.setCenter(mediaView);
-                                            MediaPreviewController mediaPreviewController = loader.getController();
-                                            mediaPreviewController.setPlayer(player);
-                                            Stage stage = new Stage();
-                                            stage.setTitle("Preview");
-                                            stage.setScene(new Scene(root));
-                                            stage.show();
-
-
-//                                            Stage window = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();
-//                                            window.setScene(new Scene(root));
-//                                            window.show();
-
-                                        }
+                                    root.setCenter(mediaView);
+                                    MediaPreviewController mediaPreviewController = loader.getController();
+                                    mediaPreviewController.setPlayer(player);
+                                    Stage stage = new Stage();
+                                    stage.setTitle("Preview");
+                                    stage.setScene(new Scene(root));
+                                    stage.show();
+                                    stage.setOnCloseRequest(e -> {
+                                        new File("creations/tempfile1.mp4").delete();
                                     });
+
                                 }
-                            }
-                        });
+                            });
+                        }
                     }
                 });
             }
-        } else {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Please type in creation name");
-            alert.show();
-        }
+        });
     }
 
     @FXML

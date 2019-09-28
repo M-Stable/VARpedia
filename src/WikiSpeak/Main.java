@@ -32,6 +32,8 @@ public class Main extends Application {
                 primaryStage.close();
                 Platform.exit();
                 System.exit(0);
+            } else {
+                return;
             }
         });
     }
