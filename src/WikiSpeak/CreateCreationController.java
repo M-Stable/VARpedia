@@ -65,6 +65,8 @@ public class CreateCreationController implements Initializable {
     @FXML
     private Button previewButton;
     @FXML
+    private Button previewCreationButton;
+    @FXML
     private Button searchButton;
     @FXML
     private Button saveAudioButton;
@@ -124,7 +126,7 @@ public class CreateCreationController implements Initializable {
                             }
                             return;
                         }else {
-                            previewButton.setDisable(false);
+                            previewCreationButton.setDisable(false);
                             createButton.setDisable(false);
                             textArea.setDisable(false);
                             textArea.setText(wikit.getValue());
@@ -348,6 +350,8 @@ public class CreateCreationController implements Initializable {
                                             initialiseTable();
                                             searchButton.setDisable(false);
                                             clearText();
+                                            previewCreationButton.setDisable(true);
+                                            createButton.setDisable(true);
                                             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                                             alert.setHeaderText("Successfully created");
                                             alert.setContentText("Would you like to play your creation?");
@@ -508,7 +512,7 @@ public class CreateCreationController implements Initializable {
         comboBox.getItems().setAll("Festival", "eSpeak");
         textArea.setDisable(true);
         textArea.setWrapText(true);
-        previewButton.setDisable(true);
+        previewCreationButton.setDisable(true);
         createButton.setDisable(true);
         listAudio.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         listForCreation.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
