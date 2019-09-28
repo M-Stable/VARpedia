@@ -424,6 +424,7 @@ public class CreateCreationController implements Initializable {
         cleanUp();
         initialiseTable();
         disableNodes(true);
+        createButton.setStyle("-fx-background-color: #6495ED; -fx-text-fill: #FFFAF0;");
 
         searchField.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
