@@ -124,6 +124,8 @@ public class CreateCreationController implements Initializable {
                             }
                             return;
                         }else {
+                            previewButton.setDisable(false);
+                            createButton.setDisable(false);
                             textArea.setDisable(false);
                             textArea.setText(wikit.getValue());
                             progressBar.setVisible(false);
@@ -192,7 +194,7 @@ public class CreateCreationController implements Initializable {
         merge.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
             @Override
             public void handle(WorkerStateEvent workerStateEvent) {
-                FlickrTask flickrTask = new FlickrTask((Integer) spinner.getValue(), searchField.getText());
+                FlickrTask flickrTask = new FlickrTask((Integer) spinner.getValue(), searchText);
                 executorService.submit(flickrTask);
                 flickrTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
                     @Override
@@ -219,7 +221,7 @@ public class CreateCreationController implements Initializable {
                                 e.printStackTrace();
                             }
 
-                            VideoCreationTask videoCreationTask = new VideoCreationTask(images, audioDuration, "tempfile1", searchField.getText());
+                            VideoCreationTask videoCreationTask = new VideoCreationTask(images, audioDuration, "tempfile1", searchText);
                             executorService.submit(videoCreationTask);
                             videoCreationTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
                                 @Override
@@ -307,7 +309,7 @@ public class CreateCreationController implements Initializable {
                 merge.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
                     @Override
                     public void handle(WorkerStateEvent workerStateEvent) {
-                        FlickrTask flickrTask = new FlickrTask((Integer) spinner.getValue(), searchField.getText());
+                        FlickrTask flickrTask = new FlickrTask((Integer) spinner.getValue(), searchText);
                         executorService.submit(flickrTask);
                         flickrTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
                             @Override
@@ -334,7 +336,7 @@ public class CreateCreationController implements Initializable {
                                         e.printStackTrace();
                                     }
 
-                                    VideoCreationTask videoCreationTask = new VideoCreationTask(images, audioDuration, creationName, searchField.getText());
+                                    VideoCreationTask videoCreationTask = new VideoCreationTask(images, audioDuration, creationName, searchText);
                                     executorService.submit(videoCreationTask);
                                     videoCreationTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
                                         @Override
@@ -506,6 +508,8 @@ public class CreateCreationController implements Initializable {
         comboBox.getItems().setAll("Festival", "eSpeak");
         textArea.setDisable(true);
         textArea.setWrapText(true);
+        previewButton.setDisable(true);
+        createButton.setDisable(true);
         listAudio.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         listForCreation.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         SpinnerValueFactory<Integer> imagesValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1,10);
