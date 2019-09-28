@@ -251,13 +251,18 @@ public class CreateCreationController implements Initializable {
 
     @FXML
     public void handleRemoveAudioButton(ActionEvent actionEvent) throws IOException {
-        for (String word : listForCreation.getSelectionModel().getSelectedItems()){
-            audioCreationList.remove(word);
+        ObservableList<String> selected = listForCreation.getSelectionModel().getSelectedItems();
+        for (String word : selected){
             Files.move(Paths.get("audioCreation/" + word + ".wav"),
                     Paths.get("audio/" + word + ".wav"));
-            if (listForCreation.getSelectionModel().getSelectedItems().isEmpty()) {
-                break;
-            }
+        }
+        int size = selected.size();
+        String[] temp = new String[size];
+        for (int i = 0; i<size; i++) {
+            temp[i] = selected.get(i);
+        }
+        for (int i = 0; i<size; i++) {
+            audioCreationList.remove(temp[i]);
         }
         initialiseTable();
     }
