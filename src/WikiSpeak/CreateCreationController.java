@@ -147,10 +147,12 @@ public class CreateCreationController implements Initializable {
         PreviewAudio previewAudio = new PreviewAudio(comboBoxValue, highlightedText);
         executorService.submit(previewAudio);
         previewButton.setDisable(true);
+        saveAudioButton.setDisable(true);
         previewAudio.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
             @Override
             public void handle(WorkerStateEvent workerStateEvent) {
                 previewButton.setDisable(false);
+                saveAudioButton.setDisable(false);
             }
         });
 
