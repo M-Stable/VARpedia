@@ -85,9 +85,8 @@ public class CreateCreationController implements Initializable {
 
     @FXML
     public void handleBackButton(ActionEvent event) throws IOException {
-        /*
-        Switch scene back to the main menu
-         */
+        //Switch scene back to the main menu
+
         Parent mainParent = FXMLLoader.load(getClass().getResource("main.fxml"));
         Scene mainMenu = new Scene(mainParent);
 
@@ -98,36 +97,32 @@ public class CreateCreationController implements Initializable {
 
     @FXML
     public void handleSearchButton(ActionEvent actionEvent) {
-        /*
-        Disable some UI elements
-         */
+
+        //Disable some UI elements
+
         disableNodes(true);
 
-        /*
-        Check if search field is not empty
-         */
+        //Check if search field is not empty
+
         searchText = searchField.getText();
         if ((searchText != null && !searchText.isEmpty())) {
             try {
-
-                /*
-                Use wikit to return text from wikipedia based on search term
-                 */
+                //Use wikit to return text from wikipedia based on search term
                 WikitTask wikit = new WikitTask(searchField, textArea);
                 executorService.submit(wikit);
                 progressBar.setVisible(true);
                 wikit.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
                     @Override
                     public void handle(WorkerStateEvent workerStateEvent) {
-                        /*
-                        Check if the wikit search result was valid
-                         */
+
+                        //Check if the wikit search result was valid
+
                         if (wikit.getValue().equals(searchField.getText() + " not found :^(")) {
 
-                            /*
-                            Display alert to user before deleting unnecessary file, clearing the text field and
-                            disabling UI elements if no text is already present from a previous search
-                             */
+
+                            //Display alert to user before deleting unnecessary file, clearing the text field and
+                            //disabling UI elements if no text is already present from a previous search
+
                             Alert alert = new Alert(Alert.AlertType.ERROR, "Result not found");
                             alert.show();
                             File file = new File("./" + searchField.getText() + ".txt");
@@ -143,9 +138,9 @@ public class CreateCreationController implements Initializable {
                             }
                             return;
                         } else {
-                            /*
-                            Enable UI elements again, remove progress bar and display wikit result text
-                             */
+
+                            //Enable UI elements again, remove progress bar and display wikit result text
+
                             previewCreationButton.setDisable(false);
                             createButton.setDisable(false);
                             textArea.setDisable(false);
@@ -170,9 +165,9 @@ public class CreateCreationController implements Initializable {
         highlightedText = textArea.getSelectedText();
         String[] words = highlightedText.split("\\s+");
 
-        /*
-        Check if the user has entered a valid amount of text and selected a speech synthesizer
-         */
+
+        //Check if the user has entered a valid amount of text and selected a speech synthesizer
+
         if (words.length > 40) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Highlighted text too large");
             alert.show();
@@ -192,23 +187,20 @@ public class CreateCreationController implements Initializable {
 
         String comboBoxValue = comboBox.getValue().toString();
 
-        /*
-        Disable some UI elements
-         */
+
+        //Disable some UI elements
         previewButton.setDisable(true);
         saveAudioButton.setDisable(true);
 
-        /*
-        Play the selected text using the selected speech synthesizer
-         */
+
+        //Play the selected text using the selected speech synthesizer
         PreviewAudio previewAudio = new PreviewAudio(comboBoxValue, highlightedText);
         executorService.submit(previewAudio);
         previewAudio.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
             @Override
             public void handle(WorkerStateEvent workerStateEvent) {
-                /*
-                re-enable UI elements
-                 */
+
+                //re-enable UI elements
                 previewButton.setDisable(false);
                 saveAudioButton.setDisable(false);
             }
@@ -219,26 +211,23 @@ public class CreateCreationController implements Initializable {
 
     public void handlePreviewCreationButton(ActionEvent actionEvent) {
         String creationName = textCreationName.getText();
-        /*
-        Check if no audio files were selected for creation
-         */
+
+        //Check if no audio files were selected for creation
         if (audioCreationList.isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Please transfer at least 1 audio file for creation");
             alert.show();
             return;
         }
 
-        /*
-        Show progress and disable other UI elements while the preview creation process is occurring
-         */
+
+        //Show progress and disable other UI elements while the preview creation process is occurring
         progressBar.setVisible(true);
         createButton.setDisable(true);
         previewCreationButton.setDisable(true);
 
-        /*
-        Create preview creation for the user. Merges audio files, then gets images from Flickr, and then combines
-        these into the final creation before playing the preview for the user.
-         */
+        //Create preview creation for the user. Merges audio files, then gets images from Flickr, and then combines
+        //these into the final creation before playing the preview for the user.
+
         MergeAudio merge = new MergeAudio(audioCreationList);
         executorService.submit(merge);
         merge.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
@@ -250,9 +239,8 @@ public class CreateCreationController implements Initializable {
                     @Override
                     public void handle(WorkerStateEvent workerStateEvent) {
 
-                        /*
-                        Check if no images were found
-                         */
+                        //Check if no images were found
+
                         if (flickrTask.getValue().equals("fail")) {
                             new File("creations/merged.wav").delete();
                             progressBar.setVisible(false);
@@ -280,9 +268,8 @@ public class CreateCreationController implements Initializable {
                                 @Override
                                 public void handle(WorkerStateEvent workerStateEvent) {
 
-                                    /*
-                                    Remove progress bar and re-enable UI elements as well as deleting unnecessary files
-                                     */
+                                    //Remove progress bar and re-enable UI elements as well as deleting unnecessary files
+
                                     progressBar.setVisible(false);
                                     createButton.setDisable(false);
                                     previewCreationButton.setDisable(false);
@@ -295,9 +282,8 @@ public class CreateCreationController implements Initializable {
                                     new File("creations/out.mp4").delete();
                                     new File("creations/merged.wav").delete();
 
-                                    /*
-                                    Create and setup Media, MediaPlayer and MediaView before creating preview popup window
-                                     */
+
+                                    //Create and setup Media, MediaPlayer and MediaView before creating preview popup window
                                     File videoFile = new File("creations/tempfile1.mp4");
                                     Media video = new Media(videoFile.toURI().toString());
                                     MediaPlayer player = new MediaPlayer(video);
@@ -336,10 +322,10 @@ public class CreateCreationController implements Initializable {
     @FXML
     public void handleCreateButton(ActionEvent actionEvent) {
         String creationName = textCreationName.getText();
-        /*
-        Check if no audio files have been selected, if no creation name has been given and if a creation with the same
-        name already exists
-         */
+
+        //Check if no audio files have been selected, if no creation name has been given and if a creation with the same
+        //name already exists
+
         if (audioCreationList.isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Please transfer at least 1 audio file for creation");
             alert.show();
@@ -362,19 +348,18 @@ public class CreateCreationController implements Initializable {
                 }
             }
 
-            /*
-             Show progress and disable other UI elements while the preview creation process is occurring
-             */
+
+             //Show progress and disable other UI elements while the preview creation process is occurring
+
             progressBar.setVisible(true);
             disableNodes(true);
             createButton.setDisable(true);
             previewCreationButton.setDisable(true);
             searchButton.setDisable(true);
 
-            /*
-            Create users creation. Merge selected audio files, then get Flickr images and then combine these into the
-            final creation before prompting the user to return to the main menu
-             */
+
+            //Create users creation. Merge selected audio files, then get Flickr images and then combine these into the
+            //final creation before prompting the user to return to the main menu
             MergeAudio merge = new MergeAudio(audioCreationList);
             executorService.submit(merge);
             merge.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
