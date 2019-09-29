@@ -69,7 +69,7 @@ public class WikiSpeakController implements Initializable {
                 public void run() {
                     MediaView mediaView = new MediaView(player);
 
-                    mediaView.setFitHeight(720);
+                    mediaView.setFitHeight(360);
 
 
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("media.fxml"));
