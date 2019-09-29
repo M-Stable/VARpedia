@@ -310,7 +310,6 @@ public class CreateCreationController implements Initializable {
                     flickrTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
                         @Override
                         public void handle(WorkerStateEvent workerStateEvent) {
-
                             if(flickrTask.getValue().equals("fail")) {
                                 new File("creations/merged.wav").delete();
                                 progressBar.setVisible(false);
@@ -375,7 +374,7 @@ public class CreateCreationController implements Initializable {
                                                     }
                                                     root.setCenter(mediaView);
 
-                                                    Stage window = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();
+                                                    Stage window = (Stage) createButton.getScene().getWindow();
                                                     window.setScene(new Scene(root));
                                                     window.show();
                                                 }
