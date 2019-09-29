@@ -190,6 +190,8 @@ public class CreateCreationController implements Initializable {
         //check if field is empty and if it already exists
 
         progressBar.setVisible(true);
+        createButton.setDisable(true);
+        previewCreationButton.setDisable(true);
         MergeAudio merge = new MergeAudio(audioCreationList);
         executorService.submit(merge);
         merge.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
@@ -228,6 +230,8 @@ public class CreateCreationController implements Initializable {
                                 @Override
                                 public void handle(WorkerStateEvent workerStateEvent) {
                                     progressBar.setVisible(false);
+                                    createButton.setDisable(false);
+                                    previewCreationButton.setDisable(false);
                                     for(File file: imagesDir.listFiles()) {
                                         if (!file.isDirectory()) {
                                             file.delete();
@@ -299,6 +303,8 @@ public class CreateCreationController implements Initializable {
             }
             progressBar.setVisible(true);
             disableNodes(true);
+            createButton.setDisable(true);
+            previewCreationButton.setDisable(true);
             searchButton.setDisable(true);
             MergeAudio merge = new MergeAudio(audioCreationList);
             executorService.submit(merge);
