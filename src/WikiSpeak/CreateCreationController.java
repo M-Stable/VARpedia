@@ -282,119 +282,113 @@ public class CreateCreationController implements Initializable {
         }
         //check if field is empty and if it already exists
         if (!creationName.isEmpty()) {
-            if(creationName.contains("\"") || creationName.contains("\'") || creationName.contains("\\")) {
-                Alert alert = new Alert(Alert.AlertType.ERROR, "Invalid creation name. Cannot contain \\, \" or \'");
-                alert.show();
-                return;
-            } else {
-                File tmpDir = new File("creations/" + creationName + ".mp4");
-                boolean exists = tmpDir.exists();
-                if (exists) {
-                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                    alert.setHeaderText("File name already exists");
-                    alert.setContentText("Would you like to overwrite?");
+            File tmpDir = new File("creations/" + creationName + ".mp4");
+            boolean exists = tmpDir.exists();
+            if (exists) {
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setHeaderText("File name already exists");
+                alert.setContentText("Would you like to overwrite?");
 
-                    Optional<ButtonType> result = alert.showAndWait();
+                Optional<ButtonType> result = alert.showAndWait();
 
-                    if(result.get() == ButtonType.OK) {
-                        tmpDir.delete();
-                    } else {
-                        return;
-                    }
+                if(result.get() == ButtonType.OK) {
+                    tmpDir.delete();
+                } else {
+                    return;
                 }
-                progressBar.setVisible(true);
-                disableNodes(true);
-                searchButton.setDisable(true);
-                MergeAudio merge = new MergeAudio(audioCreationList);
-                executorService.submit(merge);
-                merge.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-                    @Override
-                    public void handle(WorkerStateEvent workerStateEvent) {
-                        FlickrTask flickrTask = new FlickrTask((Integer) spinner.getValue(), searchText);
-                        executorService.submit(flickrTask);
-                        flickrTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-                            @Override
-                            public void handle(WorkerStateEvent workerStateEvent) {
-
-                                if(flickrTask.getValue().equals("fail")) {
-                                    new File("creations/merged.wav").delete();
-                                    progressBar.setVisible(false);
-                                    Alert alert = new Alert(Alert.AlertType.ERROR, "No images found. Please enter a different creation name");
-                                    alert.show();
-                                    return;
-                                } else {
-                                    List<File> images = flickrTask.getImages();
-                                    File audioFile = new File("creations/merged.wav");
-                                    double audioDuration = 0;
-                                    try {
-                                        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(audioFile);
-                                        AudioFormat audioFormat = audioInputStream.getFormat();
-                                        long frames = audioInputStream.getFrameLength();
-                                        audioDuration = frames / audioFormat.getFrameRate();
-                                    } catch (UnsupportedAudioFileException e) {
-                                        e.printStackTrace();
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
-
-                                    VideoCreationTask videoCreationTask = new VideoCreationTask(images, audioDuration, creationName, searchText);
-                                    executorService.submit(videoCreationTask);
-                                    videoCreationTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-                                        @Override
-                                        public void handle(WorkerStateEvent workerStateEvent) {
-                                            progressBar.setVisible(false);
-                                            disableNodes(true);
-                                            spinner.getValueFactory().setValue(1);
-                                            cleanUp();
-                                            initialiseTable();
-                                            searchButton.setDisable(false);
-                                            clearText();
-                                            previewCreationButton.setDisable(true);
-                                            createButton.setDisable(true);
-                                            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                                            alert.setHeaderText("Successfully created");
-                                            alert.setContentText("Would you like to play your creation?");
-
-                                            Optional<ButtonType> result = alert.showAndWait();
-
-                                            if(result.get() == ButtonType.OK) {
-                                                File videoFile = new File("creations/" + creationName + ".mp4");
-                                                Media video = new Media(videoFile.toURI().toString());
-                                                MediaPlayer player = new MediaPlayer(video);
-                                                player.setAutoPlay(true);
-                                                player.setOnReady(new Runnable() {
-                                                    @Override
-                                                    public void run() {
-                                                        MediaView mediaView = new MediaView(player);
-
-                                                        mediaView.setFitHeight(360);
-
-                                                        FXMLLoader loader = new FXMLLoader(getClass().getResource("media.fxml"));
-                                                        MediaController mediaController = new MediaController(player);
-                                                        loader.setController(mediaController);
-                                                        BorderPane root = null;
-                                                        try {
-                                                            root = (BorderPane) loader.load();
-                                                        } catch (IOException e) {
-                                                            e.printStackTrace();
-                                                        }
-                                                        root.setCenter(mediaView);
-
-                                                        Stage window = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();
-                                                        window.setScene(new Scene(root));
-                                                        window.show();
-                                                    }
-                                                });
-
-                                            }
-                                        }
-                                    });
-                                }
-                            }
-                        });
-                    }
-                });
             }
+            progressBar.setVisible(true);
+            disableNodes(true);
+            searchButton.setDisable(true);
+            MergeAudio merge = new MergeAudio(audioCreationList);
+            executorService.submit(merge);
+            merge.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+                @Override
+                public void handle(WorkerStateEvent workerStateEvent) {
+                    FlickrTask flickrTask = new FlickrTask((Integer) spinner.getValue(), searchText);
+                    executorService.submit(flickrTask);
+                    flickrTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+                        @Override
+                        public void handle(WorkerStateEvent workerStateEvent) {
+
+                            if(flickrTask.getValue().equals("fail")) {
+                                new File("creations/merged.wav").delete();
+                                progressBar.setVisible(false);
+                                Alert alert = new Alert(Alert.AlertType.ERROR, "No images found. Please enter a different creation name");
+                                alert.show();
+                                return;
+                            } else {
+                                List<File> images = flickrTask.getImages();
+                                File audioFile = new File("creations/merged.wav");
+                                double audioDuration = 0;
+                                try {
+                                    AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(audioFile);
+                                    AudioFormat audioFormat = audioInputStream.getFormat();
+                                    long frames = audioInputStream.getFrameLength();
+                                    audioDuration = frames / audioFormat.getFrameRate();
+                                } catch (UnsupportedAudioFileException e) {
+                                    e.printStackTrace();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+
+                                VideoCreationTask videoCreationTask = new VideoCreationTask(images, audioDuration, creationName, searchText);
+                                executorService.submit(videoCreationTask);
+                                videoCreationTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+                                    @Override
+                                    public void handle(WorkerStateEvent workerStateEvent) {
+                                        progressBar.setVisible(false);
+                                        disableNodes(true);
+                                        spinner.getValueFactory().setValue(1);
+                                        cleanUp();
+                                        initialiseTable();
+                                        searchButton.setDisable(false);
+                                        clearText();
+                                        previewCreationButton.setDisable(true);
+                                        createButton.setDisable(true);
+                                        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                                        alert.setHeaderText("Successfully created");
+                                        alert.setContentText("Would you like to play your creation?");
+
+                                        Optional<ButtonType> result = alert.showAndWait();
+
+                                        if(result.get() == ButtonType.OK) {
+                                            File videoFile = new File("creations/" + creationName + ".mp4");
+                                            Media video = new Media(videoFile.toURI().toString());
+                                            MediaPlayer player = new MediaPlayer(video);
+                                            player.setAutoPlay(true);
+                                            player.setOnReady(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    MediaView mediaView = new MediaView(player);
+
+                                                    mediaView.setFitHeight(360);
+
+                                                    FXMLLoader loader = new FXMLLoader(getClass().getResource("media.fxml"));
+                                                    MediaController mediaController = new MediaController(player);
+                                                    loader.setController(mediaController);
+                                                    BorderPane root = null;
+                                                    try {
+                                                        root = (BorderPane) loader.load();
+                                                    } catch (IOException e) {
+                                                        e.printStackTrace();
+                                                    }
+                                                    root.setCenter(mediaView);
+
+                                                    Stage window = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();
+                                                    window.setScene(new Scene(root));
+                                                    window.show();
+                                                }
+                                            });
+
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    });
+                }
+            });
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Please type in creation name");
             alert.show();
@@ -531,6 +525,23 @@ public class CreateCreationController implements Initializable {
         disableNodes(true);
         createButton.setStyle("-fx-background-color: #6495ED; -fx-text-fill: #FFFAF0;");
 
+        textCreationName.textProperty().addListener((observable, oldValue, newValue) -> {
+            if ((newValue.contains("/"))
+                    || (newValue.contains("\0"))
+                    || (newValue.contains("?"))
+                    || (newValue.contains("%"))
+                    || (newValue.contains(":"))
+                    || (newValue.contains("|"))
+                    || (newValue.contains("\\"))
+                    || (newValue.contains("<"))
+                    || (newValue.contains(">"))
+                    || (newValue.contains(" "))
+                    || (newValue.contains("("))
+                    || (newValue.contains(")"))
+                    || (newValue.contains("*"))) {
+                textCreationName.setText(oldValue);
+            }
+        });
         searchField.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent keyEvent) {

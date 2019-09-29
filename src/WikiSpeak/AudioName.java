@@ -25,6 +25,23 @@ public class AudioName {
         alert.setMinWidth(400);
 
         TextField textField = new TextField();
+        textField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if ((newValue.contains("/"))
+                    || (newValue.contains("\0"))
+                    || (newValue.contains("?"))
+                    || (newValue.contains("%"))
+                    || (newValue.contains(":"))
+                    || (newValue.contains("|"))
+                    || (newValue.contains("\\"))
+                    || (newValue.contains("<"))
+                    || (newValue.contains(">"))
+                    || (newValue.contains(" "))
+                    || (newValue.contains("("))
+                    || (newValue.contains(")"))
+                    || (newValue.contains("*"))) {
+                textField.setText(oldValue);
+            }
+        });
 
 
         Label label = new Label("What would you like to name your audio?");
