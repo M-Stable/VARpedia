@@ -48,7 +48,7 @@ public class MediaController implements Initializable{
         volumeSlider.setMin(0);
         volumeSlider.setMax(1);
         volumeSlider.setValue(1);
-        timeSlider.setMax(player.getMedia().getDuration().toSeconds());
+        //timeSlider.setMax(player.getMedia().getDuration().toSeconds());
 
         /*player.setOnEndOfMedia(new Runnable() {
             @Override
