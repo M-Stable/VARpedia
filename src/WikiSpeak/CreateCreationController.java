@@ -337,15 +337,7 @@ public class CreateCreationController implements Initializable {
                                 videoCreationTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
                                     @Override
                                     public void handle(WorkerStateEvent workerStateEvent) {
-                                        progressBar.setVisible(false);
-                                        disableNodes(true);
-                                        spinner.getValueFactory().setValue(1);
-                                        cleanUp();
-                                        initialiseTable();
-                                        searchButton.setDisable(false);
-                                        clearText();
-                                        previewCreationButton.setDisable(true);
-                                        createButton.setDisable(true);
+
                                         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                                         alert.setHeaderText("Successfully created");
                                         alert.setContentText("Would you like to play your creation?");
@@ -357,6 +349,7 @@ public class CreateCreationController implements Initializable {
                                             Media video = new Media(videoFile.toURI().toString());
                                             MediaPlayer player = new MediaPlayer(video);
                                             player.setAutoPlay(true);
+                                            Stage window = null;
                                             player.setOnReady(new Runnable() {
                                                 @Override
                                                 public void run() {
@@ -377,11 +370,31 @@ public class CreateCreationController implements Initializable {
 
                                                     Stage window = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();
                                                     window.setScene(new Scene(root));
+                                                    progressBar.setVisible(false);
+                                                    disableNodes(true);
+                                                    spinner.getValueFactory().setValue(1);
+                                                    cleanUp();
+                                                    initialiseTable();
+                                                    searchButton.setDisable(false);
+                                                    clearText();
+                                                    previewCreationButton.setDisable(true);
+                                                    createButton.setDisable(true);
                                                     window.show();
                                                 }
                                             });
 
+                                        } else {
+                                            progressBar.setVisible(false);
+                                            disableNodes(true);
+                                            spinner.getValueFactory().setValue(1);
+                                            cleanUp();
+                                            initialiseTable();
+                                            searchButton.setDisable(false);
+                                            clearText();
+                                            previewCreationButton.setDisable(true);
+                                            createButton.setDisable(true);
                                         }
+
                                     }
                                 });
                             }
