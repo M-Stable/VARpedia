@@ -17,7 +17,7 @@
             <ListView fx:id="creationsList" layoutX="376.0" layoutY="70.0" prefHeight="242.0" prefWidth="200.0" />
             <Button fx:id="deleteButton" layoutX="497.0" layoutY="330.0" mnemonicParsing="false" onAction="#handleDeleteButton" prefHeight="26.0" prefWidth="79.0" text="Delete" />
             <Button fx:id="newCreationButton" layoutX="100.0" layoutY="187.0" mnemonicParsing="false" onAction="#handleNewCreationButton" prefHeight="26.0" prefWidth="183.0" text="New Creation" />
-            <ToggleButton fx:id="toggleButton" onAction="#updateCreationsList" layoutX="376.0" layoutY="37.0" mnemonicParsing="false" text="[A-Z]/Time Created" />
+            <Button fx:id="toggleButton" onAction="#handleToggleButton" layoutX="376.0" layoutY="37.0" mnemonicParsing="false" text="Sort: name" />
       </children>
     </AnchorPane>
   </children>

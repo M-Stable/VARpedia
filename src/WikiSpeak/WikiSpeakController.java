@@ -47,8 +47,10 @@ public class WikiSpeakController implements Initializable {
 
     private File audioCreationsDir;
 
+    private boolean nameSort = true;
+
     @FXML
-    private ToggleButton toggleButton;
+    private Button toggleButton;
 
     @FXML
     protected void handlePlayButton(ActionEvent event) throws IOException {
@@ -109,7 +111,7 @@ public class WikiSpeakController implements Initializable {
     public void updateCreationsList() {
         File[] creations = creationsDir.listFiles();
 
-        if(toggleButton.isSelected()) {
+        if(!nameSort) {
             Arrays.sort(creations, new Comparator<File>() {
                 @Override
                 public int compare(File file, File t1) {
@@ -173,5 +175,16 @@ public class WikiSpeakController implements Initializable {
         welcomeText.setFont(Font.font("veranda", FontWeight.BOLD, FontPosture.REGULAR, 20));
         welcomeText.setFill(Color.DARKSLATEBLUE);
         newCreationButton.setStyle("-fx-background-color: #6495ED; -fx-text-fill: #FFFAF0;");
+    }
+
+    public void handleToggleButton(ActionEvent event) {
+        nameSort = !nameSort;
+
+        if(nameSort) {
+            toggleButton.setText("Sort: name");
+        } else {
+            toggleButton.setText("Sort: creation time");
+        }
+
     }
 }
