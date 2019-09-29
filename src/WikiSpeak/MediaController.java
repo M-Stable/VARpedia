@@ -41,21 +41,35 @@ public class MediaController implements Initializable{
 
     private MediaPlayer player;
 
+    private Duration videoLength;
+
     private boolean atEndOfMedia = false;
+
+    public MediaController(MediaPlayer player) {
+        this.player = player;
+    }
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         volumeSlider.setMin(0);
         volumeSlider.setMax(1);
         volumeSlider.setValue(1);
-        //timeSlider.setMax(player.getMedia().getDuration().toSeconds());
 
-        /*player.setOnEndOfMedia(new Runnable() {
+        timeSlider.setMin(0);
+        timeSlider.setMax(player.getMedia().getDuration().toSeconds());
+        timeSlider.setValue(0);
+
+        System.out.println(player.getMedia().getDuration().toSeconds());
+
+        System.out.println(timeSlider.getMax());
+
+        player.setOnEndOfMedia(new Runnable() {
             @Override
             public void run() {
                 atEndOfMedia = true;
             }
-        });*/
+        });
 
         volumeSlider.valueProperty().addListener(new ChangeListener<Number>() {
             @Override
@@ -64,15 +78,12 @@ public class MediaController implements Initializable{
             }
         });
 
-        /*InvalidationListener timeSliderListener = new InvalidationListener() {
+        ChangeListener timeSliderListener = new ChangeListener<Double>() {
             @Override
-            public void invalidated(Observable observable) {
-                if(timeSlider.isValueChanging()) {
-                    player.seek(new Duration(timeSlider.getValue()));
-                }
+            public void changed(ObservableValue<? extends Double> observable, Double oldValue, Double newValue) {
+                player.seek(Duration.seconds(newValue));
             }
         };
-
 
         timeSlider.valueProperty().addListener(timeSliderListener);
 
@@ -84,7 +95,7 @@ public class MediaController implements Initializable{
                 timeSlider.valueProperty().addListener(timeSliderListener);
             }
         });
-        */
+
     }
 
     public void handlePlayButton(ActionEvent actionEvent) {
@@ -117,5 +128,13 @@ public class MediaController implements Initializable{
 
     public void setPlayer(MediaPlayer mediaPlayer) {
         player = mediaPlayer;
+
+
+
+
+    }
+
+    public void setVideoLength(Duration duration){
+
     }
 }
