@@ -186,5 +186,6 @@ public class WikiSpeakController implements Initializable {
             toggleButton.setText("Sort: creation time");
         }
 
+        updateCreationsList();
     }
 }
