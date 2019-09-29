@@ -26,8 +26,8 @@ public class VideoCreationTask extends Task<String> {
     @Override
     protected String call() throws Exception {
         double imageFrameRate = 1 / (audioDuration / numImages);
-        String filter2 = "-vf \"drawtext=fontfile=./myfont.ttf:fontsize=20: fontcolor=red:x=(w-text_w)/2:y=(h-text_h)/2:text='" + searchTerm + "'\" ";
-        String filter = "-vf \"scale=-2:202\"";
+        String filter2 = "-vf \"drawtext=fontfile=./myfont.ttf:fontsize=100: fontcolor=red:x=(w-text_w)/2:y=(h-text_h)/2:text='" + searchTerm + "'\" ";
+        String filter = "-vf \"scale=1280:720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2\"";
 
         String input = "cat images/*.jpg | ffmpeg -f image2pipe -framerate " + imageFrameRate + " -i - -i creations/merged.wav -c:v libx264 -pix_fmt yuv420p  ";
 
