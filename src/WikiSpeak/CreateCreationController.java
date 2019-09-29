@@ -472,6 +472,9 @@ public class CreateCreationController implements Initializable {
             return;
         }
         String audioName = AudioName.display();
+        if (audioName == null) {
+            return;
+        }
         if (audioName.equals("")) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Enter a file name");
             alert.show();
