@@ -90,6 +90,7 @@ public class MediaController implements Initializable{
     public void handlePlayButton(ActionEvent actionEvent) {
 
         MediaPlayer.Status status = player.getStatus();
+        System.out.println(status);
 
         if(status == MediaPlayer.Status.PAUSED || status == MediaPlayer.Status.READY || status == MediaPlayer.Status.STOPPED) {
             if(atEndOfMedia) {
