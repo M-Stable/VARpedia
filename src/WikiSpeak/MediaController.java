@@ -53,7 +53,7 @@ public class MediaController implements Initializable{
         /*player.setOnEndOfMedia(new Runnable() {
             @Override
             public void run() {
-                atEndOfMedia = false;
+                atEndOfMedia = true;
             }
         });*/
 
