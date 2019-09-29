@@ -15,6 +15,11 @@ import javafx.scene.layout.Pane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -27,7 +32,12 @@ import java.util.*;
 public class WikiSpeakController implements Initializable {
 
     @FXML
+    public Button newCreationButton;
+    @FXML
     private ListView creationsList;
+
+    @FXML
+    private Text welcomeText;
 
     private File creationsDir;
 
@@ -144,5 +154,8 @@ public class WikiSpeakController implements Initializable {
         imagesDir.mkdir();
         audioCreationsDir.mkdir();
         updateCreationsList();
+        welcomeText.setFont(Font.font("veranda", FontWeight.BOLD, FontPosture.REGULAR, 20));
+        welcomeText.setFill(Color.DARKSLATEBLUE);
+        newCreationButton.setStyle("-fx-background-color: #6495ED; -fx-text-fill: #FFFAF0;");
     }
 }

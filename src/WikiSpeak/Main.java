@@ -21,6 +21,7 @@ public class Main extends Application {
         primaryStage.setScene(new Scene(root, 640, 400));
         primaryStage.show();
 
+        Platform.setImplicitExit(false);
         primaryStage.setOnCloseRequest(e -> {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setHeaderText("Are you sure you want to quit?");
@@ -28,12 +29,12 @@ public class Main extends Application {
             Optional<ButtonType> result = alert.showAndWait();
 
             if(result.get() == ButtonType.OK) {
-                e.consume();
+
                 primaryStage.close();
                 Platform.exit();
                 System.exit(0);
             } else {
-                return;
+                e.consume();
             }
         });
     }

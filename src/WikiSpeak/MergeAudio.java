@@ -20,13 +20,10 @@ public class MergeAudio extends Task<Integer> {
         int count = 0;
         String command = "ffmpeg ";
         for(String creation1 : audioCreationList) {
-            System.out.println(creation1);
             String creation = "audioCreation/" + creation1 + ".wav";
-            System.out.println(creation);
             command += "-i '" + creation + "' ";
             count++;
         }
-        System.out.println(command);
         command += "-filter_complex '";
         for (int i = 0; i<count; i++) {
             command += "[" + i + ":0]";

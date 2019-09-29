@@ -65,6 +65,8 @@ public class CreateCreationController implements Initializable {
     @FXML
     private Button previewButton;
     @FXML
+    private Button previewCreationButton;
+    @FXML
     private Button searchButton;
     @FXML
     private Button saveAudioButton;
@@ -113,11 +115,19 @@ public class CreateCreationController implements Initializable {
                             alert.show();
                             File file = new File("./" + searchField.getText() + ".txt");
                             file.delete();
-                            clearText();
-                            textArea.setDisable(true);
-                            progressBar.setDisable(true);
+                            searchField.clear();
+                            progressBar.setVisible(false);
+                            String isEmpty = textArea.getText();
+                            if (isEmpty.equals("")) {
+                                disableNodes(true);
+                                textArea.setDisable(true);
+                            } else {
+                                disableNodes(false);
+                            }
                             return;
                         }else {
+                            previewCreationButton.setDisable(false);
+                            createButton.setDisable(false);
                             textArea.setDisable(false);
                             textArea.setText(wikit.getValue());
                             progressBar.setVisible(false);
@@ -186,7 +196,7 @@ public class CreateCreationController implements Initializable {
         merge.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
             @Override
             public void handle(WorkerStateEvent workerStateEvent) {
-                FlickrTask flickrTask = new FlickrTask((Integer) spinner.getValue(), searchField.getText());
+                FlickrTask flickrTask = new FlickrTask((Integer) spinner.getValue(), searchText);
                 executorService.submit(flickrTask);
                 flickrTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
                     @Override
@@ -213,7 +223,7 @@ public class CreateCreationController implements Initializable {
                                 e.printStackTrace();
                             }
 
-                            VideoCreationTask videoCreationTask = new VideoCreationTask(images, audioDuration, "tempfile1", searchField.getText());
+                            VideoCreationTask videoCreationTask = new VideoCreationTask(images, audioDuration, "tempfile1", searchText);
                             executorService.submit(videoCreationTask);
                             videoCreationTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
                                 @Override
@@ -301,7 +311,7 @@ public class CreateCreationController implements Initializable {
                 merge.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
                     @Override
                     public void handle(WorkerStateEvent workerStateEvent) {
-                        FlickrTask flickrTask = new FlickrTask((Integer) spinner.getValue(), searchField.getText());
+                        FlickrTask flickrTask = new FlickrTask((Integer) spinner.getValue(), searchText);
                         executorService.submit(flickrTask);
                         flickrTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
                             @Override
@@ -328,17 +338,20 @@ public class CreateCreationController implements Initializable {
                                         e.printStackTrace();
                                     }
 
-                                    VideoCreationTask videoCreationTask = new VideoCreationTask(images, audioDuration, creationName, searchField.getText());
+                                    VideoCreationTask videoCreationTask = new VideoCreationTask(images, audioDuration, creationName, searchText);
                                     executorService.submit(videoCreationTask);
                                     videoCreationTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
                                         @Override
                                         public void handle(WorkerStateEvent workerStateEvent) {
                                             progressBar.setVisible(false);
-                                            disableNodes(false);
+                                            disableNodes(true);
+                                            spinner.getValueFactory().setValue(1);
                                             cleanUp();
                                             initialiseTable();
                                             searchButton.setDisable(false);
                                             clearText();
+                                            previewCreationButton.setDisable(true);
+                                            createButton.setDisable(true);
                                             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                                             alert.setHeaderText("Successfully created");
                                             alert.setContentText("Would you like to play your creation?");
@@ -369,8 +382,6 @@ public class CreateCreationController implements Initializable {
                                                 Stage window = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();
                                                 window.setScene(new Scene(root));
                                                 window.show();
-
-
                                             }
                                         }
                                     });
@@ -461,6 +472,9 @@ public class CreateCreationController implements Initializable {
             return;
         }
         String audioName = AudioName.display();
+        if (audioName == null) {
+            return;
+        }
         if (audioName.equals("")) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Enter a file name");
             alert.show();
@@ -501,6 +515,8 @@ public class CreateCreationController implements Initializable {
         comboBox.getItems().setAll("Festival", "eSpeak");
         textArea.setDisable(true);
         textArea.setWrapText(true);
+        previewCreationButton.setDisable(true);
+        createButton.setDisable(true);
         listAudio.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         listForCreation.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         SpinnerValueFactory<Integer> imagesValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1,10);

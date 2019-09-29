@@ -6,15 +6,18 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
+<?import javafx.scene.text.Text?>
 <VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="WikiSpeak.WikiSpeakController">
   <children>
     <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="339.0" prefWidth="523.0" VBox.vgrow="ALWAYS">
       <children>
+          <Text fx:id="welcomeText" layoutX="140" layoutY="60.0" text = "Welcome" />
+          <Text layoutX="60" layoutY="90.0" text = "Create a creation or play an existing one"/>
             <Button fx:id="playButton" layoutX="376.0" layoutY="330.0" mnemonicParsing="false" onAction="#handlePlayButton" prefHeight="26.0" prefWidth="79.0" text="Play" />
             <ListView fx:id="creationsList" layoutX="376.0" layoutY="70.0" prefHeight="242.0" prefWidth="200.0" />
             <Button fx:id="deleteButton" layoutX="497.0" layoutY="330.0" mnemonicParsing="false" onAction="#handleDeleteButton" prefHeight="26.0" prefWidth="79.0" text="Delete" />
-            <Button fx:id="newCreationButton" layoutX="137.0" layoutY="187.0" mnemonicParsing="false" onAction="#handleNewCreationButton" prefHeight="26.0" prefWidth="183.0" text="New Creation" />
-            <ToggleButton fx:id="toggleButton" onAction="#updateCreationsList" layoutX="497.0" layoutY="37.0" mnemonicParsing="false" text="ToggleButton" />
+            <Button fx:id="newCreationButton" layoutX="100.0" layoutY="187.0" mnemonicParsing="false" onAction="#handleNewCreationButton" prefHeight="26.0" prefWidth="183.0" text="New Creation" />
+            <ToggleButton fx:id="toggleButton" onAction="#updateCreationsList" layoutX="376.0" layoutY="37.0" mnemonicParsing="false" text="[A-Z]/Time Created" />
       </children>
     </AnchorPane>
   </children>

@@ -14,7 +14,10 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class AudioName {
+    static String answer;
+
     public static String display() {
+
         Stage alert = new Stage();
 
         alert.initModality(Modality.APPLICATION_MODAL);
@@ -34,7 +37,10 @@ public class AudioName {
                 }
             }
         });
-        btnYes.setOnAction(e -> alert.close());
+        btnYes.setOnAction(e -> {
+            alert.close();
+            answer = textField.getText();
+        });
 
         VBox layout = new VBox(10);
         layout.setPadding(new Insets(10,10,10,10));
@@ -45,6 +51,6 @@ public class AudioName {
         alert.setScene(scene);
         alert.showAndWait();
 
-        return textField.getText();
+        return answer;
     }
 }
