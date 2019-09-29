@@ -3,9 +3,6 @@ package WikiSpeak;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 
-import java.io.File;
-import java.util.Arrays;
-
 public class MergeAudio extends Task<Integer> {
 
     private ObservableList<String> audioCreationList;
@@ -17,6 +14,9 @@ public class MergeAudio extends Task<Integer> {
     @Override
     protected Integer call() throws Exception {
 
+        /*
+        Setup the ffmpeg command to merge all the given audio files
+         */
         int count = 0;
         String command = "ffmpeg ";
         for(String creation1 : audioCreationList) {
@@ -30,6 +30,9 @@ public class MergeAudio extends Task<Integer> {
         }
         command += "concat=n=" + count + ":v=0:a=1[out]' -map '[out]' creations/merged.wav";
 
+        /*
+        Run the ffmpeg command
+         */
         ProcessBuilder pb = new ProcessBuilder("bash", "-c", command);
         Process process = pb.start();
         int exitStatus = process.waitFor();

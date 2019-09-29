@@ -78,38 +78,56 @@ public class CreateCreationController implements Initializable {
     private File audioCreationDir = new File("audioCreation/");
     private File imagesDir = new File("images/");
 
-    private String highlightedText="";
-    private String searchText= "";
+    private String highlightedText = "";
+    private String searchText = "";
 
     private ObservableList<String> audioCreationList = FXCollections.observableArrayList();
 
     @FXML
     public void handleBackButton(ActionEvent event) throws IOException {
+        /*
+        Switch scene back to the main menu
+         */
         Parent mainParent = FXMLLoader.load(getClass().getResource("main.fxml"));
         Scene mainMenu = new Scene(mainParent);
 
-        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
+        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
         window.setScene(mainMenu);
         window.show();
     }
 
     @FXML
     public void handleSearchButton(ActionEvent actionEvent) {
+        /*
+        Disable some UI elements
+         */
         disableNodes(true);
-        //get search text
+
+        /*
+        Check if search field is not empty
+         */
         searchText = searchField.getText();
-        //check if empty
         if ((searchText != null && !searchText.isEmpty())) {
             try {
-                //helper thread to do process
+
+                /*
+                Use wikit to return text from wikipedia based on search term
+                 */
                 WikitTask wikit = new WikitTask(searchField, textArea);
                 executorService.submit(wikit);
                 progressBar.setVisible(true);
                 wikit.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
                     @Override
-                    //check if it is a valid search
                     public void handle(WorkerStateEvent workerStateEvent) {
+                        /*
+                        Check if the wikit search result was valid
+                         */
                         if (wikit.getValue().equals(searchField.getText() + " not found :^(")) {
+
+                            /*
+                            Display alert to user before deleting unnecessary file, clearing the text field and
+                            disabling UI elements if no text is already present from a previous search
+                             */
                             Alert alert = new Alert(Alert.AlertType.ERROR, "Result not found");
                             alert.show();
                             File file = new File("./" + searchField.getText() + ".txt");
@@ -124,7 +142,10 @@ public class CreateCreationController implements Initializable {
                                 disableNodes(false);
                             }
                             return;
-                        }else {
+                        } else {
+                            /*
+                            Enable UI elements again, remove progress bar and display wikit result text
+                             */
                             previewCreationButton.setDisable(false);
                             createButton.setDisable(false);
                             textArea.setDisable(false);
@@ -147,8 +168,11 @@ public class CreateCreationController implements Initializable {
     @FXML
     public void handlePreviewButton(ActionEvent actionEvent) throws IOException {
         highlightedText = textArea.getSelectedText();
-        String comboBoxValue = comboBox.getValue().toString();
         String[] words = highlightedText.split("\\s+");
+
+        /*
+        Check if the user has entered a valid amount of text and selected a speech synthesizer
+         */
         if (words.length > 40) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Highlighted text too large");
             alert.show();
@@ -159,19 +183,32 @@ public class CreateCreationController implements Initializable {
             alert.show();
 
             return;
-        } else if (comboBoxValue == null) {
+        } else if (comboBox.getValue() == null) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Please select a synthesizer");
             alert.show();
 
             return;
         }
-        PreviewAudio previewAudio = new PreviewAudio(comboBoxValue, highlightedText);
-        executorService.submit(previewAudio);
+
+        String comboBoxValue = comboBox.getValue().toString();
+
+        /*
+        Disable some UI elements
+         */
         previewButton.setDisable(true);
         saveAudioButton.setDisable(true);
+
+        /*
+        Play the selected text using the selected speech synthesizer
+         */
+        PreviewAudio previewAudio = new PreviewAudio(comboBoxValue, highlightedText);
+        executorService.submit(previewAudio);
         previewAudio.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
             @Override
             public void handle(WorkerStateEvent workerStateEvent) {
+                /*
+                re-enable UI elements
+                 */
                 previewButton.setDisable(false);
                 saveAudioButton.setDisable(false);
             }
@@ -182,16 +219,26 @@ public class CreateCreationController implements Initializable {
 
     public void handlePreviewCreationButton(ActionEvent actionEvent) {
         String creationName = textCreationName.getText();
+        /*
+        Check if no audio files were selected for creation
+         */
         if (audioCreationList.isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Please transfer at least 1 audio file for creation");
             alert.show();
             return;
         }
-        //check if field is empty and if it already exists
 
+        /*
+        Show progress and disable other UI elements while the preview creation process is occurring
+         */
         progressBar.setVisible(true);
         createButton.setDisable(true);
         previewCreationButton.setDisable(true);
+
+        /*
+        Create preview creation for the user. Merges audio files, then gets images from Flickr, and then combines
+        these into the final creation before playing the preview for the user.
+         */
         MergeAudio merge = new MergeAudio(audioCreationList);
         executorService.submit(merge);
         merge.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
@@ -203,10 +250,13 @@ public class CreateCreationController implements Initializable {
                     @Override
                     public void handle(WorkerStateEvent workerStateEvent) {
 
-                        if(flickrTask.getValue().equals("fail")) {
+                        /*
+                        Check if no images were found
+                         */
+                        if (flickrTask.getValue().equals("fail")) {
                             new File("creations/merged.wav").delete();
                             progressBar.setVisible(false);
-                            Alert alert = new Alert(Alert.AlertType.ERROR, "No images found. Please enter a different creation name");
+                            Alert alert = new Alert(Alert.AlertType.ERROR, "No images found. Please enter a different search term");
                             alert.show();
                             return;
                         } else {
@@ -229,10 +279,15 @@ public class CreateCreationController implements Initializable {
                             videoCreationTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
                                 @Override
                                 public void handle(WorkerStateEvent workerStateEvent) {
+
+                                    /*
+                                    Remove progress bar and re-enable UI elements as well as deleting unnecessary files
+                                     */
                                     progressBar.setVisible(false);
                                     createButton.setDisable(false);
                                     previewCreationButton.setDisable(false);
-                                    for(File file: imagesDir.listFiles()) {
+
+                                    for (File file : imagesDir.listFiles()) {
                                         if (!file.isDirectory()) {
                                             file.delete();
                                         }
@@ -240,7 +295,9 @@ public class CreateCreationController implements Initializable {
                                     new File("creations/out.mp4").delete();
                                     new File("creations/merged.wav").delete();
 
-
+                                    /*
+                                    Create and setup Media, MediaPlayer and MediaView before creating preview popup window
+                                     */
                                     File videoFile = new File("creations/tempfile1.mp4");
                                     Media video = new Media(videoFile.toURI().toString());
                                     MediaPlayer player = new MediaPlayer(video);
@@ -279,12 +336,15 @@ public class CreateCreationController implements Initializable {
     @FXML
     public void handleCreateButton(ActionEvent actionEvent) {
         String creationName = textCreationName.getText();
+        /*
+        Check if no audio files have been selected, if no creation name has been given and if a creation with the same
+        name already exists
+         */
         if (audioCreationList.isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Please transfer at least 1 audio file for creation");
             alert.show();
             return;
         }
-        //check if field is empty and if it already exists
         if (!creationName.isEmpty()) {
             File tmpDir = new File("creations/" + creationName + ".mp4");
             boolean exists = tmpDir.exists();
@@ -295,31 +355,45 @@ public class CreateCreationController implements Initializable {
 
                 Optional<ButtonType> result = alert.showAndWait();
 
-                if(result.get() == ButtonType.OK) {
+                if (result.get() == ButtonType.OK) {
                     tmpDir.delete();
                 } else {
                     return;
                 }
             }
+
+            /*
+             Show progress and disable other UI elements while the preview creation process is occurring
+             */
             progressBar.setVisible(true);
             disableNodes(true);
             createButton.setDisable(true);
             previewCreationButton.setDisable(true);
             searchButton.setDisable(true);
+
+            /*
+            Create users creation. Merge selected audio files, then get Flickr images and then combine these into the
+            final creation before prompting the user to return to the main menu
+             */
             MergeAudio merge = new MergeAudio(audioCreationList);
             executorService.submit(merge);
             merge.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+
                 @Override
                 public void handle(WorkerStateEvent workerStateEvent) {
                     FlickrTask flickrTask = new FlickrTask((Integer) spinner.getValue(), searchText);
                     executorService.submit(flickrTask);
                     flickrTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+
                         @Override
                         public void handle(WorkerStateEvent workerStateEvent) {
-                            if(flickrTask.getValue().equals("fail")) {
+                            /*
+                            Check if no images were found
+                             */
+                            if (flickrTask.getValue().equals("fail")) {
                                 new File("creations/merged.wav").delete();
                                 progressBar.setVisible(false);
-                                Alert alert = new Alert(Alert.AlertType.ERROR, "No images found. Please enter a different creation name");
+                                Alert alert = new Alert(Alert.AlertType.ERROR, "No images found. Please enter a different search term");
                                 alert.show();
                                 return;
                             } else {
@@ -327,6 +401,9 @@ public class CreateCreationController implements Initializable {
                                 File audioFile = new File("creations/merged.wav");
                                 double audioDuration = 0;
                                 try {
+                                    /*
+                                    Get the length of the merged audio for the video creation
+                                     */
                                     AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(audioFile);
                                     AudioFormat audioFormat = audioInputStream.getFormat();
                                     long frames = audioInputStream.getFrameLength();
@@ -340,6 +417,7 @@ public class CreateCreationController implements Initializable {
                                 VideoCreationTask videoCreationTask = new VideoCreationTask(images, audioDuration, creationName, searchText);
                                 executorService.submit(videoCreationTask);
                                 videoCreationTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+
                                     @Override
                                     public void handle(WorkerStateEvent workerStateEvent) {
                                         progressBar.setVisible(false);
@@ -353,39 +431,22 @@ public class CreateCreationController implements Initializable {
                                         createButton.setDisable(true);
                                         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                                         alert.setHeaderText("Successfully created");
-                                        alert.setContentText("Would you like to play your creation?");
+                                        alert.setContentText("Would you like to return to the menu?");
 
                                         Optional<ButtonType> result = alert.showAndWait();
 
-                                        if(result.get() == ButtonType.OK) {
-                                            File videoFile = new File("creations/" + creationName + ".mp4");
-                                            Media video = new Media(videoFile.toURI().toString());
-                                            MediaPlayer player = new MediaPlayer(video);
-                                            player.setAutoPlay(true);
-                                            player.setOnReady(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    MediaView mediaView = new MediaView(player);
+                                        if (result.get() == ButtonType.OK) {
+                                            Parent mainParent = null;
+                                            try {
+                                                mainParent = FXMLLoader.load(getClass().getResource("main.fxml"));
+                                            } catch (IOException e) {
+                                                e.printStackTrace();
+                                            }
+                                            Scene mainMenu = new Scene(mainParent);
 
-                                                    mediaView.setFitHeight(360);
-
-                                                    FXMLLoader loader = new FXMLLoader(getClass().getResource("media.fxml"));
-                                                    MediaController mediaController = new MediaController(player);
-                                                    loader.setController(mediaController);
-                                                    BorderPane root = null;
-                                                    try {
-                                                        root = (BorderPane) loader.load();
-                                                    } catch (IOException e) {
-                                                        e.printStackTrace();
-                                                    }
-                                                    root.setCenter(mediaView);
-
-                                                    Stage window = (Stage) createButton.getScene().getWindow();
-                                                    window.setScene(new Scene(root));
-                                                    window.show();
-                                                }
-                                            });
-
+                                            Stage window = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+                                            window.setScene(mainMenu);
+                                            window.show();
                                         }
                                     }
                                 });
@@ -401,9 +462,12 @@ public class CreateCreationController implements Initializable {
 
     }
 
+    /*
+    Move the selected audio files from the general audio files list to the audio files to be used in creation list
+     */
     @FXML
     public void handleSendToCreationButton(ActionEvent actionEvent) throws IOException {
-        for (String word : listAudio.getSelectionModel().getSelectedItems()){
+        for (String word : listAudio.getSelectionModel().getSelectedItems()) {
             Files.move(Paths.get("audio/" + word + ".wav"),
                     Paths.get("audioCreation/" + word + ".wav"));
             audioCreationList.add(word);
@@ -411,32 +475,38 @@ public class CreateCreationController implements Initializable {
         initialiseTable();
     }
 
+    /*
+    Move the selected audio files from the audio files to be used in creation list to the general audio files list
+     */
     @FXML
     public void handleRemoveAudioButton(ActionEvent actionEvent) throws IOException {
         ObservableList<String> selected = listForCreation.getSelectionModel().getSelectedItems();
-        for (String word : selected){
+        for (String word : selected) {
             Files.move(Paths.get("audioCreation/" + word + ".wav"),
                     Paths.get("audio/" + word + ".wav"));
         }
         int size = selected.size();
         String[] temp = new String[size];
-        for (int i = 0; i<size; i++) {
+        for (int i = 0; i < size; i++) {
             temp[i] = selected.get(i);
         }
-        for (int i = 0; i<size; i++) {
+        for (int i = 0; i < size; i++) {
             audioCreationList.remove(temp[i]);
         }
         initialiseTable();
     }
 
+    /*
+    Display a confirmation prompt to the user, confirming deletion of all audio files, before deleting all audio files
+     */
     @FXML
     public void handleDeleteAllAudioButton(ActionEvent actionEvent) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setHeaderText("Delete all files?");
+        alert.setHeaderText("Delete all audio files?");
         Optional<ButtonType> result = alert.showAndWait();
 
-        if(result.get() == ButtonType.OK) {
-            for(File file: audioDir.listFiles()) {
+        if (result.get() == ButtonType.OK) {
+            for (File file : audioDir.listFiles()) {
                 if (!file.isDirectory()) {
                     file.delete();
                 }
@@ -447,9 +517,12 @@ public class CreateCreationController implements Initializable {
 
     }
 
+    /*
+    Delete the selected audio files
+     */
     @FXML
     public void handleDeleteAudioButton(ActionEvent actionEvent) {
-        for (String word : listAudio.getSelectionModel().getSelectedItems()){
+        for (String word : listAudio.getSelectionModel().getSelectedItems()) {
             File file = new File("audio/" + word + ".wav");
             file.delete();
         }
@@ -458,9 +531,11 @@ public class CreateCreationController implements Initializable {
 
     @FXML
     public void handleSaveAudioButton(ActionEvent actionEvent) {
-
         highlightedText = textArea.getSelectedText();
         String[] words = highlightedText.split("\\s+");
+        /*
+        Check if the user has entered a valid amount of text and selected a speech synthesizer
+         */
         if (words.length > 40) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Highlighted text too large");
             alert.show();
@@ -474,7 +549,12 @@ public class CreateCreationController implements Initializable {
             alert.show();
             return;
         }
+
         String audioName = AudioName.display();
+
+        /*
+        Check if the user has entered an audioName and if and audio file with that name already exists
+         */
         if (audioName == null) {
             return;
         }
@@ -497,22 +577,36 @@ public class CreateCreationController implements Initializable {
             alert.show();
             return;
         }
-        AudioTask audioTask = new AudioTask(textArea.getSelectedText(), comboBox.getValue().toString(), audioName);
-        executorService.submit(audioTask);
+
+        /*
+        Disable some UI elements and show the progress bar
+         */
         progressBar.setVisible(true);
         disableNodes(true);
+
+        /*
+        Create the specified text-to-speech audio file and update audio file list
+         */
+        AudioTask audioTask = new AudioTask(textArea.getSelectedText(), comboBox.getValue().toString(), audioName);
+        executorService.submit(audioTask);
         audioTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
             @Override
             public void handle(WorkerStateEvent workerStateEvent) {
                 if (audioTask.getValue().equals("yes")) {
                     initialiseTable();
                 }
+                /*
+                Remove the progress bar and re-enable UI elements
+                 */
                 progressBar.setVisible(false);
                 disableNodes(false);
             }
         });
     }
 
+    /*
+    Set initial settings for UI elements and enable the user of the enter key instead of some buttons
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         comboBox.getItems().setAll("Festival", "eSpeak");
@@ -522,7 +616,7 @@ public class CreateCreationController implements Initializable {
         createButton.setDisable(true);
         listAudio.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         listForCreation.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        SpinnerValueFactory<Integer> imagesValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1,10);
+        SpinnerValueFactory<Integer> imagesValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10);
         this.spinner.setValueFactory(imagesValueFactory);
         progressBar.setVisible(false);
         cleanUp();
@@ -530,6 +624,9 @@ public class CreateCreationController implements Initializable {
         disableNodes(true);
         createButton.setStyle("-fx-background-color: #6495ED; -fx-text-fill: #FFFAF0;");
 
+        /*
+         Check if a change to the creation name text field contains invalid characters, and if it does remove them
+         */
         textCreationName.textProperty().addListener((observable, oldValue, newValue) -> {
             if ((newValue.contains("/"))
                     || (newValue.contains("\0"))
@@ -547,6 +644,10 @@ public class CreateCreationController implements Initializable {
                 textCreationName.setText(oldValue);
             }
         });
+
+        /*
+        Allow pressing of the enter key instead of clicking the search button
+         */
         searchField.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent keyEvent) {
@@ -555,6 +656,10 @@ public class CreateCreationController implements Initializable {
                 }
             }
         });
+
+        /*
+        Allow pressing of the enter key instead of clicking the create button
+         */
         textCreationName.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent keyEvent) {
@@ -565,26 +670,35 @@ public class CreateCreationController implements Initializable {
         });
     }
 
+    /*
+    Helper method to disable some UI elements
+     */
     private void disableNodes(boolean b) {
         previewButton.setDisable(b);
         saveAudioButton.setDisable(b);
     }
 
+    /*
+    Helper method to remove text from UI elements
+     */
     private void clearText() {
         searchField.clear();
         textArea.clear();
         textCreationName.clear();
     }
 
+    /*
+    Helper method to delete all unnecessary files
+     */
     private void cleanUp() {
         audioCreationList.clear();
-        for(File file: imagesDir.listFiles()) {
+        for (File file : imagesDir.listFiles()) {
             if (!file.isDirectory()) {
                 file.delete();
             }
         }
 
-        for(File file: audioCreationDir.listFiles()) {
+        for (File file : audioCreationDir.listFiles()) {
             if (!file.isDirectory()) {
                 file.delete();
             }
@@ -594,14 +708,17 @@ public class CreateCreationController implements Initializable {
         new File("creations/merged.wav").delete();
     }
 
-    private void initialiseTable(){
+    /*
+    Helper method to populate the audioList table
+     */
+    private void initialiseTable() {
         File[] creations = audioDir.listFiles();
 
         Arrays.sort(creations, (f1, f2) -> f1.compareTo(f2));
         listAudio.getItems().clear();
 
-        for(File creation : creations) {
-            if(creation.getName().contains(".wav")) {
+        for (File creation : creations) {
+            if (creation.getName().contains(".wav")) {
                 listAudio.getItems().add(creation.getName().replace(".wav", ""));
             }
         }

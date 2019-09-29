@@ -4,7 +4,8 @@ import javafx.concurrent.Task;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 
 public class WikitTask extends Task<String> {
@@ -20,6 +21,10 @@ public class WikitTask extends Task<String> {
     @Override
     protected String call() throws Exception {
         String output= "";
+
+        /*
+        Setup the wikit command and run it
+         */
         String command = "wikit " + textSearch.getText();
         ProcessBuilder pb = new ProcessBuilder("bash", "-c", command);
         Process process = pb.start();
@@ -27,6 +32,9 @@ public class WikitTask extends Task<String> {
         BufferedReader stdout = new BufferedReader(new InputStreamReader(process.getInputStream()));
         BufferedReader stderr = new BufferedReader(new InputStreamReader(process.getErrorStream()));
 
+        /*
+        Check if the wikit command was valid or not
+         */
         int exitStatus = process.waitFor();
         if (exitStatus == 0) {
             output = stdout.readLine();

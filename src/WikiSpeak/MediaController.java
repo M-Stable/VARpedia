@@ -16,6 +16,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -42,6 +43,9 @@ public class MediaController implements Initializable{
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        /*
+        Setup the values for the volume slider and time slider
+         */
         volumeSlider.setMin(0);
         volumeSlider.setMax(1);
         volumeSlider.setValue(1);
@@ -50,6 +54,9 @@ public class MediaController implements Initializable{
         timeSlider.setMax(player.getMedia().getDuration().toSeconds());
         timeSlider.setValue(0);
 
+        /*
+        When the video reaches the end, set atEndOfMedia to true
+         */
         player.setOnEndOfMedia(new Runnable() {
             @Override
             public void run() {
@@ -57,6 +64,9 @@ public class MediaController implements Initializable{
             }
         });
 
+        /*
+        When the user adjusts the volume slider, change the volume of the audio player
+         */
         volumeSlider.valueProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
@@ -64,6 +74,9 @@ public class MediaController implements Initializable{
             }
         });
 
+        /*
+        When the user adjusts the time slider, change the current time of the video
+         */
         ChangeListener timeSliderListener = new ChangeListener<Double>() {
             @Override
             public void changed(ObservableValue<? extends Double> observable, Double oldValue, Double newValue) {
@@ -73,6 +86,9 @@ public class MediaController implements Initializable{
 
         timeSlider.valueProperty().addListener(timeSliderListener);
 
+        /*
+        Adjust the time slider as the video plays
+         */
         player.currentTimeProperty().addListener(new InvalidationListener() {
             @Override
             public void invalidated(Observable observable) {
@@ -84,6 +100,9 @@ public class MediaController implements Initializable{
 
     }
 
+    /*
+    Play/pause the video. If the video is at the end of playback, returns to the start of the video
+     */
     public void handlePlayButton(ActionEvent actionEvent) {
         MediaPlayer.Status status = player.getStatus();
 
@@ -97,6 +116,9 @@ public class MediaController implements Initializable{
         }
     }
 
+    /*
+    Return to the main menu scene
+     */
     public void handleBackButton(ActionEvent actionEvent) throws IOException {
         player.stop();
 

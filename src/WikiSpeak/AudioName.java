@@ -25,6 +25,10 @@ public class AudioName {
         alert.setMinWidth(400);
 
         TextField textField = new TextField();
+
+        /*
+          Check if a change to textField contains invalid characters, and if it does remove them
+         */
         textField.textProperty().addListener((observable, oldValue, newValue) -> {
             if ((newValue.contains("/"))
                     || (newValue.contains("\0"))

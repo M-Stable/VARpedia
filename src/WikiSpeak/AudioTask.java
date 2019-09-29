@@ -17,14 +17,21 @@ public class AudioTask extends Task<String> {
 
     @Override
     protected String call() throws Exception {
-        String command = "";
         String output = "";
+
+        /*
+        Setup the audio creation command depending on which speech synthesiser was selected
+         */
+        String command = "";
         if (synthesiser.equals("Festival")) {
             command = "echo \"" + text + "\" | text2wave -o './audio/" + fileName + "_" + synthesiser + ".wav'";
         } else if (synthesiser.equals("eSpeak")) {
             command = "espeak \"" + text + "\" -w './audio/" + fileName + "_" + synthesiser + ".wav'";
         }
 
+        /*
+        Run the audio creation command and check if it was successful
+         */
         ProcessBuilder pb = new ProcessBuilder("bash", "-c", command);
         try {
             Process process = pb.start();

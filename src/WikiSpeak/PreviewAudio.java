@@ -14,13 +14,19 @@ public class PreviewAudio extends Task<String> {
 
     @Override
     protected String call() throws Exception {
+        /*
+        Setup the audio creation command depending on which speech synthesiser was selected
+         */
         String command = "";
         if (comboBoxValue.equals("Festival")) {
             command = "echo \"" + highlightedText + "\" | festival --tts";
         } else if (comboBoxValue.equals("eSpeak")) {
             command = "espeak \"" + highlightedText + "\"";
-
         }
+
+        /*
+        Run the audio creation command and check if it was successful
+         */
         ProcessBuilder pb = new ProcessBuilder("bash", "-c", command);
         try {
             Process process = pb.start();

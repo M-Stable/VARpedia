@@ -2,7 +2,6 @@ package WikiSpeak;
 
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -16,11 +15,18 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
+
+        /*
+          Setup the initial application window
+         */
         Parent root = FXMLLoader.load(getClass().getResource("main.fxml"));
         primaryStage.setTitle("WikiSpeak");
         primaryStage.setScene(new Scene(root, 640, 400));
         primaryStage.show();
 
+        /*
+           Prompt user before exiting application
+         */
         Platform.setImplicitExit(false);
         primaryStage.setOnCloseRequest(e -> {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -29,7 +35,6 @@ public class Main extends Application {
             Optional<ButtonType> result = alert.showAndWait();
 
             if(result.get() == ButtonType.OK) {
-
                 primaryStage.close();
                 Platform.exit();
                 System.exit(0);
