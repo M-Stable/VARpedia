@@ -247,7 +247,7 @@ public class CreateCreationController implements Initializable {
                                     player.setAutoPlay(true);
                                     MediaView mediaView = new MediaView(player);
 
-                                    mediaView.setFitHeight(720);
+                                    mediaView.setFitHeight(360);
 
                                     FXMLLoader loader = new FXMLLoader(getClass().getResource("mediaPreview.fxml"));
                                     BorderPane root = null;
