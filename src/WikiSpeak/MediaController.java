@@ -50,12 +50,12 @@ public class MediaController implements Initializable{
         volumeSlider.setValue(1);
         timeSlider.setMax(player.getMedia().getDuration().toSeconds());
 
-        player.setOnEndOfMedia(new Runnable() {
+        /*player.setOnEndOfMedia(new Runnable() {
             @Override
             public void run() {
                 atEndOfMedia = false;
             }
-        });
+        });*/
 
         volumeSlider.valueProperty().addListener(new ChangeListener<Number>() {
             @Override
@@ -64,7 +64,7 @@ public class MediaController implements Initializable{
             }
         });
 
-        InvalidationListener timeSliderListener = new InvalidationListener() {
+        /*InvalidationListener timeSliderListener = new InvalidationListener() {
             @Override
             public void invalidated(Observable observable) {
                 if(timeSlider.isValueChanging()) {
@@ -84,7 +84,7 @@ public class MediaController implements Initializable{
                 timeSlider.valueProperty().addListener(timeSliderListener);
             }
         });
-
+        */
     }
 
     public void handlePlayButton(ActionEvent actionEvent) {
