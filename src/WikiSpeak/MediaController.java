@@ -5,7 +5,6 @@ import javafx.beans.Observable;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -14,18 +13,11 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import javafx.scene.media.MediaView;
 import javafx.stage.Stage;
-import javafx.stage.Window;
-import javafx.stage.WindowEvent;
 import javafx.util.Duration;
-
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
 import java.util.ResourceBundle;
 
 public class MediaController implements Initializable{
@@ -40,8 +32,6 @@ public class MediaController implements Initializable{
     private Slider timeSlider;
 
     private MediaPlayer player;
-
-    private Duration videoLength;
 
     private boolean atEndOfMedia = false;
 
@@ -59,10 +49,6 @@ public class MediaController implements Initializable{
         timeSlider.setMin(0);
         timeSlider.setMax(player.getMedia().getDuration().toSeconds());
         timeSlider.setValue(0);
-
-        System.out.println(player.getMedia().getDuration().toSeconds());
-
-        System.out.println(timeSlider.getMax());
 
         player.setOnEndOfMedia(new Runnable() {
             @Override
@@ -99,15 +85,12 @@ public class MediaController implements Initializable{
     }
 
     public void handlePlayButton(ActionEvent actionEvent) {
-
         MediaPlayer.Status status = player.getStatus();
-        System.out.println(status);
 
-        if(status == MediaPlayer.Status.PAUSED || status == MediaPlayer.Status.READY || status == MediaPlayer.Status.STOPPED) {
-            if(atEndOfMedia) {
-                player.seek(player.getStartTime());
-                atEndOfMedia = false;
-            }
+        if(atEndOfMedia) {
+            player.seek(player.getStartTime());
+            atEndOfMedia = false;
+        } else if(status == MediaPlayer.Status.PAUSED || status == MediaPlayer.Status.READY || status == MediaPlayer.Status.STOPPED) {
             player.play();
         } else {
             player.pause();
@@ -123,18 +106,5 @@ public class MediaController implements Initializable{
         Stage window = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
         window.setScene(mainMenu);
         window.show();
-
-    }
-
-    public void setPlayer(MediaPlayer mediaPlayer) {
-        player = mediaPlayer;
-
-
-
-
-    }
-
-    public void setVideoLength(Duration duration){
-
     }
 }

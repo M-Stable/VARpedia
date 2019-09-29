@@ -24,7 +24,6 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
-import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -363,25 +362,30 @@ public class CreateCreationController implements Initializable {
                                                 Media video = new Media(videoFile.toURI().toString());
                                                 MediaPlayer player = new MediaPlayer(video);
                                                 player.setAutoPlay(true);
-                                                MediaView mediaView = new MediaView(player);
+                                                player.setOnReady(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        MediaView mediaView = new MediaView(player);
 
-                                                mediaView.setFitHeight(720);
+                                                        mediaView.setFitHeight(720);
 
+                                                        FXMLLoader loader = new FXMLLoader(getClass().getResource("media.fxml"));
+                                                        MediaController mediaController = new MediaController(player);
+                                                        loader.setController(mediaController);
+                                                        BorderPane root = null;
+                                                        try {
+                                                            root = (BorderPane) loader.load();
+                                                        } catch (IOException e) {
+                                                            e.printStackTrace();
+                                                        }
+                                                        root.setCenter(mediaView);
 
-                                                FXMLLoader loader = new FXMLLoader(getClass().getResource("media.fxml"));
-                                                BorderPane root = null;
-                                                try {
-                                                    root = (BorderPane) loader.load();
-                                                } catch (IOException e) {
-                                                    e.printStackTrace();
-                                                }
-                                                root.setCenter(mediaView);
-                                                MediaController mediaController = loader.getController();
-                                                mediaController.setPlayer(player);
+                                                        Stage window = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();
+                                                        window.setScene(new Scene(root));
+                                                        window.show();
+                                                    }
+                                                });
 
-                                                Stage window = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();
-                                                window.setScene(new Scene(root));
-                                                window.show();
                                             }
                                         }
                                     });
