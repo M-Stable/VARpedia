@@ -26,7 +26,7 @@
             <Font size="14.0" />
          </font>
       </Button>
-      <Button fx:id="toggleButton" layoutX="40.0" layoutY="360.0" mnemonicParsing="false" onAction="#handleToggleButton" prefHeight="26.0" prefWidth="92.0" text="Sort: name" />
+      <Button fx:id="toggleButton" layoutX="40.0" layoutY="360.0" mnemonicParsing="false" onAction="#handleToggleButton" prefHeight="26.0" prefWidth="202.0" text="Sort: name" />
       <VBox layoutX="266.0" layoutY="78.0" prefHeight="185.0" prefWidth="190.0" spacing="10.0">
          <children>
             <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Creation:">

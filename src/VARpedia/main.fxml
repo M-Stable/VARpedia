@@ -15,12 +15,12 @@
             <Image url="@../mainBackground.jpg" />
          </image>
       </ImageView>
-      <Text fx:id="welcomeText" fill="#67a6ff" layoutX="138.0" layoutY="54.0" text="Welcome to VARpedia">
+      <Text fx:id="welcomeText" fill="#67a6ff" layoutX="170.0" layoutY="54.0" text="Welcome to VARpedia">
          <font>
             <Font name="Arial Black" size="30.0" />
          </font>
       </Text>
-      <Text fill="WHITE" layoutX="163.0" layoutY="93.0" text="A study tool for students, designed by students">
+      <Text fill="WHITE" layoutX="160.0" layoutY="93.0" text="A study tool for students, designed by students">
          <font>
             <Font name="Ebrima" size="15.0" />
          </font>
