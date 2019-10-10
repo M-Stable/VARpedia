@@ -79,7 +79,7 @@ public class CreateCreationController implements Initializable {
     private File imagesDir = new File("images/");
 
     private String highlightedText = "";
-    private String searchText = "";
+    private String searchTextFinal = "";
 
     private ObservableList<String> audioCreationList = FXCollections.observableArrayList();
 
@@ -104,7 +104,7 @@ public class CreateCreationController implements Initializable {
 
         //Check if search field is not empty
 
-        searchText = searchField.getText();
+        String searchText = searchField.getText();
         if ((searchText != null && !searchText.isEmpty())) {
             try {
                 //Use wikit to return text from wikipedia based on search term
@@ -139,6 +139,7 @@ public class CreateCreationController implements Initializable {
                             return;
                         } else {
 
+                            searchTextFinal = searchText;
                             //Enable UI elements again, remove progress bar and display wikit result text
 
                             previewCreationButton.setDisable(false);
@@ -233,7 +234,7 @@ public class CreateCreationController implements Initializable {
         merge.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
             @Override
             public void handle(WorkerStateEvent workerStateEvent) {
-                FlickrTask flickrTask = new FlickrTask((Integer) spinner.getValue(), searchText);
+                FlickrTask flickrTask = new FlickrTask((Integer) spinner.getValue(), searchTextFinal);
                 executorService.submit(flickrTask);
                 flickrTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
                     @Override
@@ -262,7 +263,7 @@ public class CreateCreationController implements Initializable {
                                 e.printStackTrace();
                             }
 
-                            VideoCreationTask videoCreationTask = new VideoCreationTask(images, audioDuration, "tempfile1", searchText);
+                            VideoCreationTask videoCreationTask = new VideoCreationTask(images, audioDuration, "tempfile1", searchTextFinal);
                             executorService.submit(videoCreationTask);
                             videoCreationTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
                                 @Override
@@ -366,7 +367,7 @@ public class CreateCreationController implements Initializable {
 
                 @Override
                 public void handle(WorkerStateEvent workerStateEvent) {
-                    FlickrTask flickrTask = new FlickrTask((Integer) spinner.getValue(), searchText);
+                    FlickrTask flickrTask = new FlickrTask((Integer) spinner.getValue(), searchTextFinal);
                     executorService.submit(flickrTask);
                     flickrTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 
@@ -399,7 +400,7 @@ public class CreateCreationController implements Initializable {
                                     e.printStackTrace();
                                 }
 
-                                VideoCreationTask videoCreationTask = new VideoCreationTask(images, audioDuration, creationName, searchText);
+                                VideoCreationTask videoCreationTask = new VideoCreationTask(images, audioDuration, creationName, searchTextFinal);
                                 executorService.submit(videoCreationTask);
                                 videoCreationTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 
@@ -414,6 +415,7 @@ public class CreateCreationController implements Initializable {
                                         clearText();
                                         previewCreationButton.setDisable(true);
                                         createButton.setDisable(true);
+                                        textArea.setDisable(true);
                                         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                                         alert.setHeaderText("Successfully created");
                                         alert.setContentText("Would you like to return to the menu?");
