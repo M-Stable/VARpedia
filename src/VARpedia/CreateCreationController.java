@@ -536,35 +536,6 @@ public class CreateCreationController implements Initializable {
             alert.show();
             return;
         }
-
-        String audioName = AudioName.display();
-
-        /*
-        Check if the user has entered an audioName and if and audio file with that name already exists
-         */
-        if (audioName == null) {
-            return;
-        }
-        if (audioName.equals("")) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Enter a file name");
-            alert.show();
-            return;
-        }
-        File tmpDir = new File("audio/" + audioName + "_" + comboBox.getValue().toString() + ".wav");
-        boolean exists = tmpDir.exists();
-        if (exists) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "File with that name already exists");
-            alert.show();
-            return;
-        }
-        File tmpDir1 = new File("audioCreation/" + audioName + "_" + comboBox.getValue().toString() + ".wav");
-        boolean check = tmpDir1.exists();
-        if (check) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "File with that name already exists");
-            alert.show();
-            return;
-        }
-
         /*
         Disable some UI elements and show the progress bar
          */
@@ -574,7 +545,7 @@ public class CreateCreationController implements Initializable {
         /*
         Create the specified text-to-speech audio file and update audio file list
          */
-        AudioTask audioTask = new AudioTask(textArea.getSelectedText(), comboBox.getValue().toString(), audioName);
+        AudioTask audioTask = new AudioTask(textArea.getSelectedText(), comboBox.getValue().toString(), searchTextFinal);
         executorService.submit(audioTask);
         audioTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
             @Override
