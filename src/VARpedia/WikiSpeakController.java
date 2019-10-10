@@ -38,9 +38,6 @@ public class WikiSpeakController implements Initializable {
     @FXML
     private ListView creationsList;
 
-    @FXML
-    private Text welcomeText;
-
     private File creationsDir;
 
     private File audioDir;
@@ -188,10 +185,6 @@ public class WikiSpeakController implements Initializable {
         audioCreationsDir.mkdir();
 
         updateCreationsList();
-
-        welcomeText.setFont(Font.font("veranda", FontWeight.BOLD, FontPosture.REGULAR, 20));
-        welcomeText.setFill(Color.DARKSLATEBLUE);
-        newCreationButton.setStyle("-fx-background-color: #6495ED; -fx-text-fill: #FFFAF0;");
     }
 
     /*
@@ -207,5 +200,11 @@ public class WikiSpeakController implements Initializable {
         }
 
         updateCreationsList();
+    }
+
+    public void handleReviewButton(ActionEvent actionEvent) {
+    }
+
+    public void handleListButton(ActionEvent actionEvent) {
     }
 }
