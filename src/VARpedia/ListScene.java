@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -170,5 +171,14 @@ the toggleButton
         audioCreationsDir = new File("audioCreation/");
 
         updateCreationsList();
+    }
+
+    public void handleBackButton(ActionEvent actionEvent) throws IOException {
+        Parent mainParent = FXMLLoader.load(getClass().getResource("main.fxml"));
+        Scene mainMenu = new Scene(mainParent);
+
+        Stage window = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+        window.setScene(mainMenu);
+        window.show();
     }
 }
