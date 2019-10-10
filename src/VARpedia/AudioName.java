@@ -1,4 +1,4 @@
-package WikiSpeak;
+package VARpedia;
 
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;

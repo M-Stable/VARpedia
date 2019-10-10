@@ -1,4 +1,4 @@
-package WikiSpeak;
+package VARpedia;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;

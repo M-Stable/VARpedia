@@ -1,4 +1,4 @@
-package WikiSpeak;
+package VARpedia;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -20,7 +20,7 @@ public class Main extends Application {
           Setup the initial application window
          */
         Parent root = FXMLLoader.load(getClass().getResource("main.fxml"));
-        primaryStage.setTitle("WikiSpeak");
+        primaryStage.setTitle("VARpedia");
         primaryStage.setScene(new Scene(root, 640, 400));
         primaryStage.show();
 

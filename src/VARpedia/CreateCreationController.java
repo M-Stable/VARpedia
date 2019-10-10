@@ -1,4 +1,4 @@
-package WikiSpeak;
+package VARpedia;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 
 <?import javafx.scene.control.ProgressBar?>
-<VBox prefHeight="423.0" prefWidth="998.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="WikiSpeak.CreateCreationController">
+<VBox prefHeight="423.0" prefWidth="998.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="VARpedia.CreateCreationController">
   <children>
     <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="417.0" prefWidth="985.0" VBox.vgrow="ALWAYS">
          <children>

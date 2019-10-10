@@ -1,4 +1,4 @@
-package WikiSpeak;
+package VARpedia;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;

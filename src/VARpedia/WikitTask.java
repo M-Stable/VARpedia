@@ -1,4 +1,4 @@
-package WikiSpeak;
+package VARpedia;
 
 import javafx.concurrent.Task;
 import javafx.scene.control.TextArea;
