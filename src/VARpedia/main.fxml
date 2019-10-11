@@ -25,7 +25,7 @@
             <Font name="Ebrima" size="15.0" />
          </font>
       </Text>
-      <VBox layoutX="228.0" layoutY="144.0" prefHeight="192.0" prefWidth="183.0" spacing="30.0">
+      <VBox layoutX="228.0" layoutY="123.0" prefHeight="268.0" prefWidth="183.0" spacing="30.0">
          <children>
             <Button fx:id="newCreationButton" mnemonicParsing="false" onAction="#handleNewCreationButton" prefHeight="40.0" prefWidth="183.0" style="-fx-background-color: #6495ED; -fx-text-fill: #FFFAF0;" text="New Creation">
                <font>
@@ -38,6 +38,11 @@
                </font>
             </Button>
             <Button fx:id="listButton" mnemonicParsing="false" onAction="#handleListButton" prefHeight="40.0" prefWidth="183.0" style="-fx-background-color: #6495ED; -fx-text-fill: #FFFAF0;" text="List">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+            <Button fx:id="creditsButton" mnemonicParsing="false" onAction="#handleListButton" prefHeight="40.0" prefWidth="183.0" style="-fx-background-color: #6495ED; -fx-text-fill: #FFFAF0;" text="Credits">
                <font>
                   <Font size="14.0" />
                </font>
