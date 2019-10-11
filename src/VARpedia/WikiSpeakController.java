@@ -93,4 +93,14 @@ public class WikiSpeakController implements Initializable {
         window.setScene(newCreationScene);
         window.show();
     }
+
+    public void handleCreditsButton(ActionEvent event) throws IOException {
+        //Switch to credits scene
+        Parent creationParent = FXMLLoader.load(getClass().getResource("credits.fxml"));
+        Scene newCreationScene = new Scene(creationParent);
+
+        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        window.setScene(newCreationScene);
+        window.show();
+    }
 }

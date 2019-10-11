@@ -42,7 +42,7 @@
                   <Font size="14.0" />
                </font>
             </Button>
-            <Button fx:id="creditsButton" mnemonicParsing="false" onAction="#handleListButton" prefHeight="40.0" prefWidth="183.0" style="-fx-background-color: #6495ED; -fx-text-fill: #FFFAF0;" text="Credits">
+            <Button fx:id="creditsButton" mnemonicParsing="false" onAction="#handleCreditsButton" prefHeight="40.0" prefWidth="183.0" style="-fx-background-color: #6495ED; -fx-text-fill: #FFFAF0;" text="Credits">
                <font>
                   <Font size="14.0" />
                </font>

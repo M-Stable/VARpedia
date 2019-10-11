@@ -56,7 +56,7 @@ public class VideoCreationTask extends Task<String> {
         process2.waitFor();
 
         if(music != null && music != "None") {
-            String command3 = "ffmpeg -i 'music/" + music + ".mp3' -i 'creations/"+ creationName + ".mp4' -filter_complex \"[0:0]volume=0.08[a1]; [1:1]volume=1[a2]; [a1][a2]amerge\" -y creations/out.mp3";
+            String command3 = "ffmpeg -i 'music/" + music + ".mp3' -i 'creations/"+ creationName + ".mp4' -filter_complex \"[0:0]volume=0.1[a1]; [1:1]volume=1[a2]; [a1][a2]amerge\" -y creations/out.mp3";
             String command4 = "ffmpeg -i creations/out.mp3 -i creations/out.mp4 -y 'creations/" + creationName + ".mp4'";
 
             ProcessBuilder pb3 = new ProcessBuilder("bash", "-c", command3);
