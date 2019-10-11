@@ -73,6 +73,8 @@ public class CreateCreationController implements Initializable {
     private Button createButton;
     @FXML
     private ProgressBar progressBar;
+    @FXML
+    private ComboBox musicDropdown;
 
     private File audioDir = new File("audio/");
     private File audioCreationDir = new File("audioCreation/");
@@ -263,7 +265,8 @@ public class CreateCreationController implements Initializable {
                                 e.printStackTrace();
                             }
 
-                            VideoCreationTask videoCreationTask = new VideoCreationTask(images, audioDuration, "tempfile1", searchTextFinal);
+                            String music = (String) musicDropdown.getSelectionModel().getSelectedItem();
+                            VideoCreationTask videoCreationTask = new VideoCreationTask(images, audioDuration, "tempfile1", searchTextFinal, music);
                             executorService.submit(videoCreationTask);
                             videoCreationTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
                                 @Override
@@ -400,7 +403,8 @@ public class CreateCreationController implements Initializable {
                                     e.printStackTrace();
                                 }
 
-                                VideoCreationTask videoCreationTask = new VideoCreationTask(images, audioDuration, creationName, searchTextFinal);
+                                String music = (String) musicDropdown.getSelectionModel().getSelectedItem();
+                                VideoCreationTask videoCreationTask = new VideoCreationTask(images, audioDuration, creationName, searchTextFinal, music);
                                 executorService.submit(videoCreationTask);
                                 videoCreationTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 
@@ -567,6 +571,7 @@ public class CreateCreationController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        musicDropdown.getItems().setAll("None", "Transmutation", "", "", "");
         comboBox.getItems().setAll("Festival", "eSpeak");
         textArea.setDisable(true);
         textArea.setWrapText(true);
