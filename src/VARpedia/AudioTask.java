@@ -27,10 +27,9 @@ public class AudioTask extends Task<String> {
 
         while (exists) {
             if (synthesiser.equals("Festival")) {
-                File tmpDir = new File("audio/" + fileName + "_" + synthesiser + "_" + festivalCount + ".wav");
                 File tmpDir1 = new File("audioCreation/" + fileName + "_" + synthesiser + "_" + festivalCount + ".wav");
 
-                if (tmpDir.exists() || tmpDir1.exists()) {
+                if (tmpDir1.exists()) {
                     exists = true;
                 } else {
                     exists = false;
@@ -40,10 +39,9 @@ public class AudioTask extends Task<String> {
                     festivalCount++;
                 }
             } else if (synthesiser.equals("eSpeak")) {
-                File tmpDir = new File("audio/" + fileName + "_" + synthesiser + "_" + espeakCount + ".wav");
                 File tmpDir1 = new File("audioCreation/" + fileName + "_" + synthesiser + "_" + espeakCount + ".wav");
 
-                if (tmpDir.exists() || tmpDir1.exists()) {
+                if (tmpDir1.exists()) {
                     exists = true;
                 } else {
                     exists = false;
@@ -60,9 +58,9 @@ public class AudioTask extends Task<String> {
          */
         String command = "";
         if (synthesiser.equals("Festival")) {
-            command = "echo \"" + text + "\" | text2wave -o './audio/" + fileName + "_" + synthesiser + "_" + festivalCount + ".wav'";
+            command = "echo \"" + text + "\" | text2wave -o './audioCreation/" + fileName + "_" + synthesiser + "_" + festivalCount + ".wav'";
         } else if (synthesiser.equals("eSpeak")) {
-            command = "espeak \"" + text + "\" -w './audio/" + fileName + "_" + synthesiser + "_" + espeakCount + ".wav'";
+            command = "espeak \"" + text + "\" -w './audioCreation/" + fileName + "_" + synthesiser + "_" + espeakCount + ".wav'";
         }
 
         /*

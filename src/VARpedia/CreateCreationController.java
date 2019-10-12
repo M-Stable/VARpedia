@@ -14,6 +14,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -27,8 +28,6 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -54,9 +53,6 @@ public class CreateCreationController implements Initializable {
 
     @FXML
     private Spinner spinner;
-
-    @FXML
-    private ListView<String> listAudio = new ListView<>();
 
     @FXML
     private ListView<String> listForCreation = new ListView<>();
@@ -141,7 +137,6 @@ public class CreateCreationController implements Initializable {
                             } else {
                                 disableNodes(false);
                             }
-                            return;
                         } else {
 
                             searchTextFinal = searchText;
@@ -457,67 +452,31 @@ public class CreateCreationController implements Initializable {
     }
 
     /*
-    Move the selected audio files from the general audio files list to the audio files to be used in creation list
-     */
-    @FXML
-    public void handleSendToCreationButton(ActionEvent actionEvent) throws IOException {
-        for (String word : listAudio.getSelectionModel().getSelectedItems()) {
-            Files.move(Paths.get("audio/" + word + ".wav"),
-                    Paths.get("audioCreation/" + word + ".wav"));
-            audioCreationList.add(word);
-        }
-        initialiseTable();
-    }
-
-    /*
-    Move the selected audio files from the audio files to be used in creation list to the general audio files list
-     */
-    @FXML
-    public void handleRemoveAudioButton(ActionEvent actionEvent) throws IOException {
-        ObservableList<String> selected = listForCreation.getSelectionModel().getSelectedItems();
-        for (String word : selected) {
-            Files.move(Paths.get("audioCreation/" + word + ".wav"),
-                    Paths.get("audio/" + word + ".wav"));
-        }
-        int size = selected.size();
-        String[] temp = new String[size];
-        for (int i = 0; i < size; i++) {
-            temp[i] = selected.get(i);
-        }
-        for (int i = 0; i < size; i++) {
-            audioCreationList.remove(temp[i]);
-        }
-        initialiseTable();
-    }
-
-    /*
     Display a confirmation prompt to the user, confirming deletion of all audio files, before deleting all audio files
      */
     @FXML
-    public void handleDeleteAllAudioButton(ActionEvent actionEvent) {
+    public void handleDeleteAllAudioButton(MouseEvent actionEvent) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setHeaderText("Delete all audio files?");
         Optional<ButtonType> result = alert.showAndWait();
 
         if (result.get() == ButtonType.OK) {
-            for (File file : audioDir.listFiles()) {
+            for (File file : audioCreationDir.listFiles()) {
                 if (!file.isDirectory()) {
                     file.delete();
                 }
             }
             initialiseTable();
         }
-
-
     }
 
     /*
     Delete the selected audio files
      */
     @FXML
-    public void handleDeleteAudioButton(ActionEvent actionEvent) {
-        for (String word : listAudio.getSelectionModel().getSelectedItems()) {
-            File file = new File("audio/" + word + ".wav");
+    public void handleDeleteAudioButton(MouseEvent actionEvent) {
+        for (String word : listForCreation.getSelectionModel().getSelectedItems()) {
+            File file = new File("audioCreation/" + word + ".wav");
             file.delete();
         }
         initialiseTable();
@@ -580,7 +539,6 @@ public class CreateCreationController implements Initializable {
         textArea.setWrapText(true);
         previewCreationButton.setDisable(true);
         createButton.setDisable(true);
-        listAudio.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         listForCreation.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
       //  SpinnerValueFactory<Integer> imagesValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10);
         //this.spinner.setValueFactory(imagesValueFactory);
@@ -678,14 +636,14 @@ public class CreateCreationController implements Initializable {
     Helper method to populate the audioList table
      */
     private void initialiseTable() {
-        File[] creations = audioDir.listFiles();
+        File[] creations = audioCreationDir.listFiles();
 
         Arrays.sort(creations, (f1, f2) -> f1.compareTo(f2));
-        listAudio.getItems().clear();
+        listForCreation.getItems().clear();
 
         for (File creation : creations) {
             if (creation.getName().contains(".wav")) {
-                listAudio.getItems().add(creation.getName().replace(".wav", ""));
+                listForCreation.getItems().add(creation.getName().replace(".wav", ""));
             }
         }
 
@@ -693,5 +651,8 @@ public class CreateCreationController implements Initializable {
     }
 
     public void handleSelectImagesButton(ActionEvent actionEvent) {
+    }
+
+    public void handlePlayAudio(MouseEvent mouseEvent) {
     }
 }
