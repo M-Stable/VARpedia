@@ -80,7 +80,14 @@ public class WikiSpeakController implements Initializable {
 
 
 
-    public void handleReviewButton(ActionEvent actionEvent) {
+    public void handleReviewButton(ActionEvent event) throws IOException {
+        //Switch to review scene
+        Parent creationParent = FXMLLoader.load(getClass().getResource("review.fxml"));
+        Scene newCreationScene = new Scene(creationParent);
+
+        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        window.setScene(newCreationScene);
+        window.show();
     }
 
     public void handleListButton(ActionEvent event) throws IOException {

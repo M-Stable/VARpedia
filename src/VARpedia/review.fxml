@@ -12,7 +12,7 @@
 <?import javafx.scene.text.Text?>
 
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="640.0" style="-fx-background-color: #46555B;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="640.0" style="-fx-background-color: #46555B;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="VARpedia.ReviewController">
    <children>
       <Text fx:id="welcomeText" fill="WHITE" layoutX="254.0" layoutY="54.0" text="REVIEW">
          <font>
@@ -53,27 +53,27 @@
             </Text>
             <HBox prefHeight="30.0" prefWidth="174.0" spacing="6.0">
                <children>
-                  <ImageView fx:id="star1" fitHeight="30.0" fitWidth="30.0" onMouseClicked="#handleClick1" onMouseEntered="#handleEnter1" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="star1" fitHeight="30.0" fitWidth="30.0" onMouseClicked="#handleClick1" onMouseEntered="#handleEnter1" onMouseExited="#handleExit1" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../icons8-star-48.png" />
                      </image>
                   </ImageView>
-                  <ImageView fx:id="star2" fitHeight="30.0" fitWidth="30.0" onMouseClicked="#handleClick2" onMouseEntered="#handleEnter2" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="star2" fitHeight="30.0" fitWidth="30.0" onMouseClicked="#handleClick2" onMouseEntered="#handleEnter2" onMouseExited="#handleExit2" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../icons8-star-48.png" />
                      </image>
                   </ImageView>
-                  <ImageView fx:id="star3" fitHeight="30.0" fitWidth="30.0" onMouseClicked="#handleClick3" onMouseEntered="#handleEnter3" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="star3" fitHeight="30.0" fitWidth="30.0" onMouseClicked="#handleClick3" onMouseEntered="#handleEnter3" onMouseExited="#handleExit3"  pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../icons8-star-48.png" />
                      </image>
                   </ImageView>
-                  <ImageView fx:id="star4" fitHeight="30.0" fitWidth="30.0" onMouseClicked="#handleClick4" onMouseEntered="#handleEnter4" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="star4" fitHeight="30.0" fitWidth="30.0" onMouseClicked="#handleClick4" onMouseEntered="#handleEnter4" onMouseExited="#handleExit4"  pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../icons8-star-48.png" />
                      </image>
                   </ImageView>
-                  <ImageView fx:id="star5" fitHeight="30.0" fitWidth="30.0" onMouseClicked="#handleClick5" onMouseEntered="#handleEnter5" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="star5" fitHeight="30.0" fitWidth="30.0" onMouseClicked="#handleClick5" onMouseEntered="#handleEnter5" onMouseExited="#handleExit5"  pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../icons8-star-48.png" />
                      </image>
