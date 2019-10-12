@@ -21,12 +21,11 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.stage.Stage;
 
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.sound.sampled.*;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
@@ -74,7 +73,6 @@ public class CreateCreationController implements Initializable {
     @FXML
     private Button selectImagesButton;
 
-    private File audioDir = new File("audio/");
     private File audioCreationDir = new File("audioCreation/");
     private File imagesDir = new File("images/");
 
@@ -466,6 +464,7 @@ public class CreateCreationController implements Initializable {
                     file.delete();
                 }
             }
+            listForCreation.getItems().clear();
             initialiseTable();
         }
     }
@@ -479,6 +478,7 @@ public class CreateCreationController implements Initializable {
             File file = new File("audioCreation/" + word + ".wav");
             file.delete();
         }
+        listForCreation.getItems().remove(listForCreation.getSelectionModel().getSelectedItem());
         initialiseTable();
     }
 
@@ -516,9 +516,8 @@ public class CreateCreationController implements Initializable {
         audioTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
             @Override
             public void handle(WorkerStateEvent workerStateEvent) {
-                if (audioTask.getValue().equals("yes")) {
-                    initialiseTable();
-                }
+                listForCreation.getItems().add(audioTask.getValue());
+                initialiseTable();
                 /*
                 Remove the progress bar and re-enable UI elements
                  */
@@ -526,6 +525,40 @@ public class CreateCreationController implements Initializable {
                 disableNodes(false);
             }
         });
+    }
+
+    @FXML
+    public void handleMoveUp(ActionEvent actionEvent) {
+        int i = listForCreation.getSelectionModel().getSelectedIndex();
+        if (i > 0) {
+            String temp = listForCreation.getSelectionModel().getSelectedItem();
+            listForCreation.getItems().remove(i);
+            listForCreation.getItems().add(i-1,temp);
+            listForCreation.getSelectionModel().select(i-1);
+        }
+        initialiseTable();
+    }
+
+    @FXML
+    public void handleMoveDown(ActionEvent actionEvent) {
+        int i = listForCreation.getSelectionModel().getSelectedIndex();
+        if (i < listForCreation.getItems().size() - 1) {
+            String temp = listForCreation.getSelectionModel().getSelectedItem();
+            listForCreation.getItems().remove(i);
+            listForCreation.getItems().add(i+1,temp);
+            listForCreation.getSelectionModel().select(i+1);
+        }
+        initialiseTable();
+    }
+
+    @FXML
+    public void handleSelectImagesButton(ActionEvent actionEvent) {
+    }
+
+    @FXML
+    public void handlePlayAudio(MouseEvent mouseEvent) throws IOException, UnsupportedAudioFileException, LineUnavailableException {
+        String filePath = "audioCreation/" + listForCreation.getSelectionModel().getSelectedItem() + ".wav";
+
     }
 
     /*
@@ -539,12 +572,10 @@ public class CreateCreationController implements Initializable {
         textArea.setWrapText(true);
         previewCreationButton.setDisable(true);
         createButton.setDisable(true);
-        listForCreation.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
       //  SpinnerValueFactory<Integer> imagesValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10);
         //this.spinner.setValueFactory(imagesValueFactory);
         progressBar.setVisible(false);
         cleanUp();
-        initialiseTable();
         disableNodes(true);
         createButton.setStyle("-fx-background-color: #6495ED; -fx-text-fill: #FFFAF0;");
 
@@ -636,23 +667,25 @@ public class CreateCreationController implements Initializable {
     Helper method to populate the audioList table
      */
     private void initialiseTable() {
-        File[] creations = audioCreationDir.listFiles();
-
-        Arrays.sort(creations, (f1, f2) -> f1.compareTo(f2));
-        listForCreation.getItems().clear();
-
-        for (File creation : creations) {
-            if (creation.getName().contains(".wav")) {
-                listForCreation.getItems().add(creation.getName().replace(".wav", ""));
-            }
-        }
+//        File[] creations = audioCreationDir.listFiles();
+//
+//        Arrays.sort(creations, (f1, f2) -> f1.compareTo(f2));
+//        listForCreation.getItems().clear();
+//
+//        for (File creation : creations) {
+//            if (creation.getName().contains(".wav")) {
+//                listForCreation.getItems().add(creation.getName().replace(".wav", ""));
+//            }
+//        }
 
         listForCreation.setItems(audioCreationList);
+
+        System.out.println("/////");
+        for (String string : audioCreationList) {
+            System.out.println(string);
+        }
+        System.out.println("//////");
     }
 
-    public void handleSelectImagesButton(ActionEvent actionEvent) {
-    }
 
-    public void handlePlayAudio(MouseEvent mouseEvent) {
-    }
 }

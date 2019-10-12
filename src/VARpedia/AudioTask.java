@@ -71,7 +71,12 @@ public class AudioTask extends Task<String> {
             Process process = pb.start();
             int exitStatus = process.waitFor();
             if (exitStatus == 0) {
-                output ="yes";
+                output ="";
+                if (synthesiser.equals("Festival")) {
+                    output = fileName + "_" + synthesiser + "_" + festivalCount;
+                } else if (synthesiser.equals("eSpeak")) {
+                    output = fileName + "_" + synthesiser + "_" + espeakCount;
+                }
             } else {
                 output = "no";
             }

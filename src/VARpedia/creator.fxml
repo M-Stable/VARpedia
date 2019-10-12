@@ -65,12 +65,12 @@
             <Button fx:id="saveAudioButton" mnemonicParsing="false" onAction="#handleSaveAudioButton" prefHeight="26.0" prefWidth="89.0" style="-fx-background-color: #90B8C8; -fx-text-fill: #FFFAF0;" text="Save" />
          </children>
       </HBox>
-      <Button layoutX="247.0" layoutY="479.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="38.0" style="-fx-background-color: #90B8C8; -fx-text-fill: #FFFAF0;" text="↑">
+      <Button layoutX="247.0" layoutY="479.0" mnemonicParsing="false" onAction="#handleMoveUp" prefHeight="44.0" prefWidth="38.0" style="-fx-background-color: #90B8C8; -fx-text-fill: #FFFAF0;" text="↑">
          <font>
             <Font size="20.0" />
          </font>
       </Button>
-      <Button layoutX="248.0" layoutY="531.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="36.0" style="-fx-background-color: #90B8C8; -fx-text-fill: #FFFAF0;" text="↓">
+      <Button layoutX="248.0" layoutY="531.0" mnemonicParsing="false" onAction="#handleMoveDown" prefHeight="44.0" prefWidth="36.0" style="-fx-background-color: #90B8C8; -fx-text-fill: #FFFAF0;" text="↓">
          <font>
             <Font size="20.0" />
          </font>
