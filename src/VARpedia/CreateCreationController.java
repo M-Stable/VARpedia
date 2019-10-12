@@ -75,10 +75,13 @@ public class CreateCreationController implements Initializable {
     private ProgressBar progressBar;
     @FXML
     private ComboBox musicDropdown;
+    @FXML
+    private Button selectImagesButton;
 
     private File audioDir = new File("audio/");
     private File audioCreationDir = new File("audioCreation/");
     private File imagesDir = new File("images/");
+
 
     private String highlightedText = "";
     private String searchTextFinal = "";
@@ -370,7 +373,7 @@ public class CreateCreationController implements Initializable {
 
                 @Override
                 public void handle(WorkerStateEvent workerStateEvent) {
-                    FlickrTask flickrTask = new FlickrTask((Integer) spinner.getValue(), searchTextFinal);
+                    FlickrTask flickrTask = new FlickrTask((Integer) 10, searchTextFinal);
                     executorService.submit(flickrTask);
                     flickrTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 
@@ -412,7 +415,7 @@ public class CreateCreationController implements Initializable {
                                     public void handle(WorkerStateEvent workerStateEvent) {
                                         progressBar.setVisible(false);
                                         disableNodes(true);
-                                        spinner.getValueFactory().setValue(1);
+                                       // spinner.getValueFactory().setValue(1);
                                         cleanUp();
                                         initialiseTable();
                                         searchButton.setDisable(false);
@@ -579,8 +582,8 @@ public class CreateCreationController implements Initializable {
         createButton.setDisable(true);
         listAudio.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         listForCreation.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        SpinnerValueFactory<Integer> imagesValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10);
-        this.spinner.setValueFactory(imagesValueFactory);
+      //  SpinnerValueFactory<Integer> imagesValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10);
+        //this.spinner.setValueFactory(imagesValueFactory);
         progressBar.setVisible(false);
         cleanUp();
         initialiseTable();
@@ -689,4 +692,6 @@ public class CreateCreationController implements Initializable {
         listForCreation.setItems(audioCreationList);
     }
 
+    public void handleSelectImagesButton(ActionEvent actionEvent) {
+    }
 }
