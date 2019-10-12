@@ -209,6 +209,7 @@ public class CreateCreationController implements Initializable {
 
 
     public void handlePreviewCreationButton(ActionEvent actionEvent) {
+        listForCreation.setItems(audioCreationList);
         String creationName = textCreationName.getText();
 
         //Check if no audio files were selected for creation
@@ -321,6 +322,7 @@ public class CreateCreationController implements Initializable {
 
     @FXML
     public void handleCreateButton(ActionEvent actionEvent) {
+        listForCreation.setItems(audioCreationList);
         String creationName = textCreationName.getText();
 
         //Check if no audio files have been selected, if no creation name has been given and if a creation with the same
@@ -410,7 +412,7 @@ public class CreateCreationController implements Initializable {
                                         disableNodes(true);
                                        // spinner.getValueFactory().setValue(1);
                                         cleanUp();
-                                        initialiseTable();
+                                        listForCreation.getItems().clear();
                                         searchButton.setDisable(false);
                                         clearText();
                                         previewCreationButton.setDisable(true);
@@ -449,46 +451,13 @@ public class CreateCreationController implements Initializable {
 
     }
 
-    /*
-    Display a confirmation prompt to the user, confirming deletion of all audio files, before deleting all audio files
-     */
-    @FXML
-    public void handleDeleteAllAudioButton(MouseEvent actionEvent) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setHeaderText("Delete all audio files?");
-        Optional<ButtonType> result = alert.showAndWait();
-
-        if (result.get() == ButtonType.OK) {
-            for (File file : audioCreationDir.listFiles()) {
-                if (!file.isDirectory()) {
-                    file.delete();
-                }
-            }
-            listForCreation.getItems().clear();
-            initialiseTable();
-        }
-    }
-
-    /*
-    Delete the selected audio files
-     */
-    @FXML
-    public void handleDeleteAudioButton(MouseEvent actionEvent) {
-        for (String word : listForCreation.getSelectionModel().getSelectedItems()) {
-            File file = new File("audioCreation/" + word + ".wav");
-            file.delete();
-        }
-        listForCreation.getItems().remove(listForCreation.getSelectionModel().getSelectedItem());
-        initialiseTable();
-    }
-
     @FXML
     public void handleSaveAudioButton(ActionEvent actionEvent) {
         highlightedText = textArea.getSelectedText();
         String[] words = highlightedText.split("\\s+");
-        /*
-        Check if the user has entered a valid amount of text and selected a speech synthesizer
-         */
+
+        //Check if the user has entered a valid amount of text and selected a speech synthesizer
+
         if (words.length > 40) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Highlighted text too large");
             alert.show();
@@ -502,22 +471,18 @@ public class CreateCreationController implements Initializable {
             alert.show();
             return;
         }
-        /*
-        Disable some UI elements and show the progress bar
-         */
+        //Disable some UI elements and show the progress bar
         progressBar.setVisible(true);
         disableNodes(true);
 
-        /*
-        Create the specified text-to-speech audio file and update audio file list
-         */
+        //Create the specified text-to-speech audio file and update audio file list
+
         AudioTask audioTask = new AudioTask(textArea.getSelectedText(), comboBox.getValue().toString(), searchTextFinal);
         executorService.submit(audioTask);
         audioTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
             @Override
             public void handle(WorkerStateEvent workerStateEvent) {
                 listForCreation.getItems().add(audioTask.getValue());
-                initialiseTable();
                 /*
                 Remove the progress bar and re-enable UI elements
                  */
@@ -536,7 +501,6 @@ public class CreateCreationController implements Initializable {
             listForCreation.getItems().add(i-1,temp);
             listForCreation.getSelectionModel().select(i-1);
         }
-        initialiseTable();
     }
 
     @FXML
@@ -548,7 +512,39 @@ public class CreateCreationController implements Initializable {
             listForCreation.getItems().add(i+1,temp);
             listForCreation.getSelectionModel().select(i+1);
         }
-        initialiseTable();
+    }
+
+
+    /*
+    Display a confirmation prompt to the user, confirming deletion of all audio files, before deleting all audio files
+     */
+    @FXML
+    public void handleDeleteAllAudioButton(MouseEvent actionEvent) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setHeaderText("Delete all audio files?");
+        Optional<ButtonType> result = alert.showAndWait();
+
+        if (result.get() == ButtonType.OK) {
+            for (File file : audioCreationDir.listFiles()) {
+                if (!file.isDirectory()) {
+                    file.delete();
+                }
+            }
+            listForCreation.getItems().clear();
+            listForCreation.setItems(audioCreationList);
+        }
+    }
+
+    /*
+    Delete the selected audio files
+     */
+    @FXML
+    public void handleDeleteAudioButton(MouseEvent actionEvent) {
+        for (String word : listForCreation.getSelectionModel().getSelectedItems()) {
+            File file = new File("audioCreation/" + word + ".wav");
+            file.delete();
+        }
+        listForCreation.getItems().remove(listForCreation.getSelectionModel().getSelectedItem());
     }
 
     @FXML
@@ -667,24 +663,7 @@ public class CreateCreationController implements Initializable {
     Helper method to populate the audioList table
      */
     private void initialiseTable() {
-//        File[] creations = audioCreationDir.listFiles();
-//
-//        Arrays.sort(creations, (f1, f2) -> f1.compareTo(f2));
-//        listForCreation.getItems().clear();
-//
-//        for (File creation : creations) {
-//            if (creation.getName().contains(".wav")) {
-//                listForCreation.getItems().add(creation.getName().replace(".wav", ""));
-//            }
-//        }
-
         listForCreation.setItems(audioCreationList);
-
-        System.out.println("/////");
-        for (String string : audioCreationList) {
-            System.out.println(string);
-        }
-        System.out.println("//////");
     }
 
 
