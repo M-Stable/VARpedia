@@ -9,7 +9,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="640.0" style="-fx-background-color: #46555B;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="VARpedia.ListScene">
    <children>
-      <Button fx:id="backButton" layoutX="483.0" layoutY="306.0" mnemonicParsing="false" onAction="#handleBackButton" prefHeight="42.0" prefWidth="118.0" style="-fx-background-color: #90B8C8; -fx-text-fill: #FFFAF0;" text="Main Menu" />
+      <Button fx:id="backButton" layoutX="483.0" layoutY="339.0" mnemonicParsing="false" onAction="#handleBackButton" prefHeight="42.0" prefWidth="118.0" style="-fx-background-color: #90B8C8; -fx-text-fill: #FFFAF0;" text="Main Menu" />
       <ListView fx:id="creationsList" layoutX="40.0" layoutY="78.0" prefHeight="270.0" prefWidth="202.0" />
       <Text fx:id="welcomeText" fill="WHITE" layoutX="282.0" layoutY="54.0" text="LIST">
          <font>
