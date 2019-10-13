@@ -68,7 +68,6 @@ public class WikiSpeakController implements Initializable {
          the creations list and style the menu
          */
         creationsDir = new File("creations/");
-        audioDir = new File("audio/");
         imagesDir = new File("images/");
         audioCreationsDir = new File("audioCreation/");
         creationsDir.mkdir();

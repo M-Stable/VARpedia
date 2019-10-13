@@ -18,9 +18,9 @@ public class PreviewAudio extends Task<String> {
         Setup the audio creation command depending on which speech synthesiser was selected
          */
         String command = "";
-        if (comboBoxValue.equals("Festival")) {
+        if (comboBoxValue.equals("Deep Voice")) {
             command = "echo \"" + highlightedText + "\" | festival --tts";
-        } else if (comboBoxValue.equals("eSpeak")) {
+        } else if (comboBoxValue.equals("Light Voice")) {
             command = "espeak \"" + highlightedText + "\"";
         }
 

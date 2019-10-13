@@ -26,7 +26,7 @@ public class AudioTask extends Task<String> {
         String output = "";
 
         while (exists) {
-            if (synthesiser.equals("Festival")) {
+            if (synthesiser.equals("DeepVoice")) {
                 File tmpDir1 = new File("audioCreation/" + fileName + "_" + synthesiser + "_" + festivalCount + ".wav");
 
                 if (tmpDir1.exists()) {
@@ -38,7 +38,7 @@ public class AudioTask extends Task<String> {
                 if (exists) {
                     festivalCount++;
                 }
-            } else if (synthesiser.equals("eSpeak")) {
+            } else if (synthesiser.equals("LightVoice")) {
                 File tmpDir1 = new File("audioCreation/" + fileName + "_" + synthesiser + "_" + espeakCount + ".wav");
 
                 if (tmpDir1.exists()) {
@@ -57,9 +57,9 @@ public class AudioTask extends Task<String> {
         Setup the audio creation command depending on which speech synthesiser was selected
          */
         String command = "";
-        if (synthesiser.equals("Festival")) {
+        if (synthesiser.equals("DeepVoice")) {
             command = "echo \"" + text + "\" | text2wave -o './audioCreation/" + fileName + "_" + synthesiser + "_" + festivalCount + ".wav'";
-        } else if (synthesiser.equals("eSpeak")) {
+        } else if (synthesiser.equals("LightVoice")) {
             command = "espeak \"" + text + "\" -w './audioCreation/" + fileName + "_" + synthesiser + "_" + espeakCount + ".wav'";
         }
 
@@ -72,9 +72,9 @@ public class AudioTask extends Task<String> {
             int exitStatus = process.waitFor();
             if (exitStatus == 0) {
                 output ="";
-                if (synthesiser.equals("Festival")) {
+                if (synthesiser.equals("DeepVoice")) {
                     output = fileName + "_" + synthesiser + "_" + festivalCount;
-                } else if (synthesiser.equals("eSpeak")) {
+                } else if (synthesiser.equals("LightVoice")) {
                     output = fileName + "_" + synthesiser + "_" + espeakCount;
                 }
             } else {

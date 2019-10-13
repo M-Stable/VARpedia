@@ -472,8 +472,14 @@ public class CreateCreationController implements Initializable {
         disableNodes(true);
 
         //Create the specified text-to-speech audio file and update audio file list
+        String comboValue = comboBox.getValue().toString();
+        if (comboValue.equals("Deep Voice")) {
+            comboValue = "DeepVoice";
+        } else {
+            comboValue = "LightVoice";
+        }
 
-        AudioTask audioTask = new AudioTask(textArea.getSelectedText(), comboBox.getValue().toString(), searchTextFinal);
+        AudioTask audioTask = new AudioTask(textArea.getSelectedText(), comboValue , searchTextFinal);
         executorService.submit(audioTask);
         audioTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
             @Override
@@ -559,7 +565,7 @@ public class CreateCreationController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         musicDropdown.getItems().setAll("None", "Transmutation", "", "", "");
-        comboBox.getItems().setAll("Festival", "eSpeak");
+        comboBox.getItems().setAll("Deep Voice", "Light Voice");
         textArea.setDisable(true);
         textArea.setWrapText(true);
         previewCreationButton.setDisable(true);
@@ -660,11 +666,6 @@ public class CreateCreationController implements Initializable {
      */
     private void initialiseTable() {
         listForCreation.setItems(audioCreationList);
-        System.out.println("//////////");
-        for (String string : audioCreationList) {
-            System.out.println(string);
-        }
-        System.out.println("//////////");
     }
 
 
