@@ -556,6 +556,8 @@ public class CreateCreationController implements Initializable {
     @FXML
     public void handlePlayAudio(MouseEvent mouseEvent) throws IOException, UnsupportedAudioFileException, LineUnavailableException {
         String filePath = "audioCreation/" + listForCreation.getSelectionModel().getSelectedItem() + ".wav";
+        PlayAudio play = new PlayAudio(filePath);
+        play.start();
 
     }
 
