@@ -236,66 +236,66 @@ public class CreateCreationController implements Initializable {
             @Override
             public void handle(WorkerStateEvent workerStateEvent) {
 
-                            File audioFile = new File("creations/merged.wav");
-                            double audioDuration = 0;
-                            try {
-                                AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(audioFile);
-                                AudioFormat audioFormat = audioInputStream.getFormat();
-                                long frames = audioInputStream.getFrameLength();
-                                audioDuration = frames / audioFormat.getFrameRate();
-                            } catch (UnsupportedAudioFileException e) {
-                                e.printStackTrace();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
+                File audioFile = new File("creations/merged.wav");
+                double audioDuration = 0;
+                try {
+                    AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(audioFile);
+                    AudioFormat audioFormat = audioInputStream.getFormat();
+                    long frames = audioInputStream.getFrameLength();
+                    audioDuration = frames / audioFormat.getFrameRate();
+                } catch (UnsupportedAudioFileException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
-                            String music = (String) musicDropdown.getSelectionModel().getSelectedItem();
-                            VideoCreationTask videoCreationTask = new VideoCreationTask(images, audioDuration, "tempfile1", searchTextFinal, music);
-                            executorService.submit(videoCreationTask);
-                            videoCreationTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-                                @Override
-                                public void handle(WorkerStateEvent workerStateEvent) {
+                String music = (String) musicDropdown.getSelectionModel().getSelectedItem();
+                VideoCreationTask videoCreationTask = new VideoCreationTask(images, audioDuration, "tempfile1", searchTextFinal, music);
+                executorService.submit(videoCreationTask);
+                videoCreationTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+                    @Override
+                    public void handle(WorkerStateEvent workerStateEvent) {
 
-                                    //Remove progress bar and re-enable UI elements as well as deleting unnecessary files
+                        //Remove progress bar and re-enable UI elements as well as deleting unnecessary files
 
-                                    progressBar.setVisible(false);
-                                    createButton.setDisable(false);
-                                    previewCreationButton.setDisable(false);
+                        progressBar.setVisible(false);
+                        createButton.setDisable(false);
+                        previewCreationButton.setDisable(false);
 
-                                    new File("creations/out.mp3").delete();
-                                    new File("creations/out.mp4").delete();
-                                    new File("creations/merged.wav").delete();
+                        new File("creations/out.mp3").delete();
+                        new File("creations/out.mp4").delete();
+                        new File("creations/merged.wav").delete();
 
 
-                                    //Create and setup Media, MediaPlayer and MediaView before creating preview popup window
-                                    File videoFile = new File("creations/tempfile1.mp4");
-                                    Media video = new Media(videoFile.toURI().toString());
-                                    MediaPlayer player = new MediaPlayer(video);
-                                    player.setAutoPlay(true);
-                                    MediaView mediaView = new MediaView(player);
+                        //Create and setup Media, MediaPlayer and MediaView before creating preview popup window
+                        File videoFile = new File("creations/tempfile1.mp4");
+                        Media video = new Media(videoFile.toURI().toString());
+                        MediaPlayer player = new MediaPlayer(video);
+                        player.setAutoPlay(true);
+                        MediaView mediaView = new MediaView(player);
 
-                                    mediaView.setFitHeight(360);
+                        mediaView.setFitHeight(360);
 
-                                    FXMLLoader loader = new FXMLLoader(getClass().getResource("mediaPreview.fxml"));
-                                    BorderPane root = null;
-                                    try {
-                                        root = (BorderPane) loader.load();
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
-                                    root.setCenter(mediaView);
-                                    MediaPreviewController mediaPreviewController = loader.getController();
-                                    mediaPreviewController.setPlayer(player);
-                                    Stage stage = new Stage();
-                                    stage.setTitle("Preview");
-                                    stage.setScene(new Scene(root));
-                                    stage.show();
-                                    stage.setOnCloseRequest(e -> {
-                                        new File("creations/tempfile1.mp4").delete();
-                                    });
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("mediaPreview.fxml"));
+                        BorderPane root = null;
+                        try {
+                            root = (BorderPane) loader.load();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        root.setCenter(mediaView);
+                        MediaPreviewController mediaPreviewController = loader.getController();
+                        mediaPreviewController.setPlayer(player);
+                        Stage stage = new Stage();
+                        stage.setTitle("Preview");
+                        stage.setScene(new Scene(root));
+                        stage.show();
+                        stage.setOnCloseRequest(e -> {
+                            new File("creations/tempfile1.mp4").delete();
+                        });
 
-                                }
-                            });
+                    }
+                });
             }
         });
     }
@@ -328,7 +328,7 @@ public class CreateCreationController implements Initializable {
                 }
             }
 
-             //Show progress and disable other UI elements while the preview creation process is occurring
+            //Show progress and disable other UI elements while the preview creation process is occurring
             progressBar.setVisible(true);
             disableNodes(true);
             createButton.setDisable(true);
@@ -379,6 +379,7 @@ public class CreateCreationController implements Initializable {
                             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                             alert.setHeaderText("Successfully created");
                             alert.setContentText("Would you like to return to the menu?");
+                            searchTextFinal = "";
 
                             Optional<ButtonType> result = alert.showAndWait();
 
