@@ -52,6 +52,7 @@ public class WikiSpeakController implements Initializable {
         Scene newCreationScene = new Scene(creationParent);
 
         Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        window.setResizable(false);
         window.setScene(newCreationScene);
         window.show();
 
@@ -82,6 +83,7 @@ public class WikiSpeakController implements Initializable {
         Scene newCreationScene = new Scene(creationParent);
 
         Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        window.setResizable(false);
         window.setScene(newCreationScene);
         window.show();
     }
@@ -93,6 +95,7 @@ public class WikiSpeakController implements Initializable {
         Scene newCreationScene = new Scene(creationParent);
 
         Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        window.setResizable(false);
         window.setScene(newCreationScene);
         window.show();
     }
@@ -103,6 +106,7 @@ public class WikiSpeakController implements Initializable {
         Scene newCreationScene = new Scene(creationParent);
 
         Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        window.setResizable(false);
         window.setScene(newCreationScene);
         window.show();
     }
