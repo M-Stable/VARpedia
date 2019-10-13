@@ -36,7 +36,7 @@ public class VideoCreationTask extends Task<String> {
          */
         String input = "cat images/*.jpg | ffmpeg -f image2pipe -framerate " + imageFrameRate + " -i - -i creations/merged.wav -c:v libx264 -pix_fmt yuv420p  ";
 
-        String filter = "-vf \"scale=1280:720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2\"";
+        String filter = "-vf \"scale=720:480:force_original_aspect_ratio=decrease,pad=720:480:(ow-iw)/2:(oh-ih)/2\"";
         String filter2 = "-vf \"drawtext=fontfile=./myfont.ttf:fontsize=100: fontcolor=red:x=(w-text_w)/2:y=(h-text_h)/2:text='" + searchTerm + "'\" ";
 
         String command = input + filter + " -r 25 -max_muxing_queue_size 1024 -y creations/out.mp4";
