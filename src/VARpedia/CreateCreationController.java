@@ -470,7 +470,7 @@ public class CreateCreationController implements Initializable {
     @FXML
     public void handleMoveDown(ActionEvent actionEvent) {
         int i = listForCreation.getSelectionModel().getSelectedIndex();
-        if (i < listForCreation.getItems().size() - 1) {
+        if (i >= 0 && i < listForCreation.getItems().size() - 1) {
             Collections.swap(audioCreationList, i, i+1);
             listForCreation.getSelectionModel().select(i+1);
             initialiseTable();
@@ -550,7 +550,7 @@ public class CreateCreationController implements Initializable {
     //Set initial settings for UI elements and enable the user of the enter key instead of some buttons
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        musicDropdown.getItems().setAll("None", "Transmutation", "", "", "");
+        musicDropdown.getItems().setAll("None", "Transmutation");
         comboBox.getItems().setAll("Deep Voice", "Light Voice");
         textArea.setDisable(true);
         textArea.setWrapText(true);
@@ -582,7 +582,7 @@ public class CreateCreationController implements Initializable {
             if (textCreationName.getText().equals("")) {
                 createButton.setDisable(true);
             }
-            if (!listForCreation.getItems().isEmpty() && musicDropdown != null) {
+            if (!listForCreation.getItems().isEmpty() && musicDropdown.getValue() != null) {
                 createButton.setDisable(false);
             }
         });
