@@ -27,10 +27,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -322,7 +319,6 @@ public class CreateCreationController implements Initializable {
 
     @FXML
     public void handleCreateButton(ActionEvent actionEvent) {
-        listForCreation.setItems(audioCreationList);
         String creationName = textCreationName.getText();
 
         //Check if no audio files have been selected, if no creation name has been given and if a creation with the same
@@ -482,7 +478,8 @@ public class CreateCreationController implements Initializable {
         audioTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
             @Override
             public void handle(WorkerStateEvent workerStateEvent) {
-                listForCreation.getItems().add(audioTask.getValue());
+                audioCreationList.add(audioTask.getValue());
+                initialiseTable();
                 /*
                 Remove the progress bar and re-enable UI elements
                  */
@@ -496,10 +493,9 @@ public class CreateCreationController implements Initializable {
     public void handleMoveUp(ActionEvent actionEvent) {
         int i = listForCreation.getSelectionModel().getSelectedIndex();
         if (i > 0) {
-            String temp = listForCreation.getSelectionModel().getSelectedItem();
-            listForCreation.getItems().remove(i);
-            listForCreation.getItems().add(i-1,temp);
+            Collections.swap(audioCreationList, i, i-1);
             listForCreation.getSelectionModel().select(i-1);
+            initialiseTable();
         }
     }
 
@@ -507,10 +503,9 @@ public class CreateCreationController implements Initializable {
     public void handleMoveDown(ActionEvent actionEvent) {
         int i = listForCreation.getSelectionModel().getSelectedIndex();
         if (i < listForCreation.getItems().size() - 1) {
-            String temp = listForCreation.getSelectionModel().getSelectedItem();
-            listForCreation.getItems().remove(i);
-            listForCreation.getItems().add(i+1,temp);
+            Collections.swap(audioCreationList, i, i+1);
             listForCreation.getSelectionModel().select(i+1);
+            initialiseTable();
         }
     }
 
@@ -544,7 +539,8 @@ public class CreateCreationController implements Initializable {
             File file = new File("audioCreation/" + word + ".wav");
             file.delete();
         }
-        listForCreation.getItems().remove(listForCreation.getSelectionModel().getSelectedItem());
+        audioCreationList.remove(listForCreation.getSelectionModel().getSelectedItems());
+        initialiseTable();
     }
 
     @FXML
@@ -664,6 +660,11 @@ public class CreateCreationController implements Initializable {
      */
     private void initialiseTable() {
         listForCreation.setItems(audioCreationList);
+        System.out.println("//////////");
+        for (String string : audioCreationList) {
+            System.out.println(string);
+        }
+        System.out.println("//////////");
     }
 
 
