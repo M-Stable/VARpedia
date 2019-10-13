@@ -16,10 +16,13 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.TilePane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import javax.sound.sampled.*;
@@ -58,6 +61,9 @@ public class CreateCreationController implements Initializable {
 
     private String highlightedText = "";
     private String searchTextFinal = "";
+
+    public List<File> images = new ArrayList<File>();
+
 
     private ObservableList<String> audioCreationList = FXCollections.observableArrayList();
 
@@ -147,6 +153,7 @@ public class CreateCreationController implements Initializable {
                             } else {
                                 disableNodes(true);
                             }
+                            selectImagesButton.setDisable(false);
                             textArea.setDisable(false);
                             textArea.setText(wikit.getValue());
                             progressBar.setVisible(false);
@@ -210,6 +217,10 @@ public class CreateCreationController implements Initializable {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Please transfer at least 1 audio file for creation");
             alert.show();
             return;
+        } else if (images.size() == 0) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Please select at least 1 image for creation");
+            alert.show();
+            return;
         }
 
         //Show progress and disable other UI elements while the preview creation process is occurring
@@ -224,22 +235,7 @@ public class CreateCreationController implements Initializable {
         merge.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
             @Override
             public void handle(WorkerStateEvent workerStateEvent) {
-                FlickrTask flickrTask = new FlickrTask((Integer) spinner.getValue(), searchTextFinal);
-                executorService.submit(flickrTask);
-                flickrTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-                    @Override
-                    public void handle(WorkerStateEvent workerStateEvent) {
 
-                        //Check if no images were found
-
-                        if (flickrTask.getValue().equals("fail")) {
-                            new File("creations/merged.wav").delete();
-                            progressBar.setVisible(false);
-                            Alert alert = new Alert(Alert.AlertType.ERROR, "No images found. Please enter a different search term");
-                            alert.show();
-                            return;
-                        } else {
-                            List<File> images = flickrTask.getImages();
                             File audioFile = new File("creations/merged.wav");
                             double audioDuration = 0;
                             try {
@@ -266,11 +262,7 @@ public class CreateCreationController implements Initializable {
                                     createButton.setDisable(false);
                                     previewCreationButton.setDisable(false);
 
-                                    for (File file : imagesDir.listFiles()) {
-                                        if (!file.isDirectory()) {
-                                            file.delete();
-                                        }
-                                    }
+                                    new File("creations/out.mp3").delete();
                                     new File("creations/out.mp4").delete();
                                     new File("creations/merged.wav").delete();
 
@@ -304,9 +296,6 @@ public class CreateCreationController implements Initializable {
 
                                 }
                             });
-                        }
-                    }
-                });
             }
         });
     }
@@ -354,75 +343,57 @@ public class CreateCreationController implements Initializable {
 
                 @Override
                 public void handle(WorkerStateEvent workerStateEvent) {
-                    FlickrTask flickrTask = new FlickrTask((Integer) 10, searchTextFinal);
-                    executorService.submit(flickrTask);
-                    flickrTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+
+                    File audioFile = new File("creations/merged.wav");
+                    double audioDuration = 0;
+                    try {
+                                    /*
+                                    Get the length of the merged audio for the video creation
+                                     */
+                        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(audioFile);
+                        AudioFormat audioFormat = audioInputStream.getFormat();
+                        long frames = audioInputStream.getFrameLength();
+                        audioDuration = frames / audioFormat.getFrameRate();
+                    } catch (UnsupportedAudioFileException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    String music = (String) musicDropdown.getSelectionModel().getSelectedItem();
+                    VideoCreationTask videoCreationTask = new VideoCreationTask(images, audioDuration, creationName, searchTextFinal, music);
+                    executorService.submit(videoCreationTask);
+                    videoCreationTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 
                         @Override
                         public void handle(WorkerStateEvent workerStateEvent) {
-                            /*
-                            Check if no images were found
-                             */
-                            if (flickrTask.getValue().equals("fail")) {
-                                new File("creations/merged.wav").delete();
-                                progressBar.setVisible(false);
-                                Alert alert = new Alert(Alert.AlertType.ERROR, "No images found. Please enter a different search term");
-                                alert.show();
-                                return;
-                            } else {
-                                List<File> images = flickrTask.getImages();
-                                File audioFile = new File("creations/merged.wav");
-                                double audioDuration = 0;
+                            progressBar.setVisible(false);
+                            disableNodes(true);
+                            cleanUp();
+                            listForCreation.getItems().clear();
+                            searchButton.setDisable(false);
+                            clearText();
+                            previewCreationButton.setDisable(true);
+                            createButton.setDisable(true);
+                            textArea.setDisable(true);
+                            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                            alert.setHeaderText("Successfully created");
+                            alert.setContentText("Would you like to return to the menu?");
+
+                            Optional<ButtonType> result = alert.showAndWait();
+
+                            if (result.get() == ButtonType.OK) {
+                                Parent mainParent = null;
                                 try {
-                                    //Get the length of the merged audio for the video creation
-                                    AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(audioFile);
-                                    AudioFormat audioFormat = audioInputStream.getFormat();
-                                    long frames = audioInputStream.getFrameLength();
-                                    audioDuration = frames / audioFormat.getFrameRate();
-                                } catch (UnsupportedAudioFileException e) {
-                                    e.printStackTrace();
+                                    mainParent = FXMLLoader.load(getClass().getResource("main.fxml"));
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
+                                Scene mainMenu = new Scene(mainParent);
 
-                                String music = (String) musicDropdown.getSelectionModel().getSelectedItem();
-                                VideoCreationTask videoCreationTask = new VideoCreationTask(images, audioDuration, creationName, searchTextFinal, music);
-                                executorService.submit(videoCreationTask);
-                                videoCreationTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-
-                                    @Override
-                                    public void handle(WorkerStateEvent workerStateEvent) {
-                                        progressBar.setVisible(false);
-                                        disableNodes(true);
-                                       // spinner.getValueFactory().setValue(1);
-                                        cleanUp();
-                                        listForCreation.getItems().clear();
-                                        searchButton.setDisable(false);
-                                        clearText();
-                                        previewCreationButton.setDisable(true);
-                                        createButton.setDisable(true);
-                                        textArea.setDisable(true);
-                                        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                                        alert.setHeaderText("Successfully created");
-                                        alert.setContentText("Would you like to return to the menu?");
-
-                                        Optional<ButtonType> result = alert.showAndWait();
-
-                                        if (result.get() == ButtonType.OK) {
-                                            Parent mainParent = null;
-                                            try {
-                                                mainParent = FXMLLoader.load(getClass().getResource("main.fxml"));
-                                            } catch (IOException e) {
-                                                e.printStackTrace();
-                                            }
-                                            Scene mainMenu = new Scene(mainParent);
-
-                                            Stage window = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-                                            window.setScene(mainMenu);
-                                            window.show();
-                                        }
-                                    }
-                                });
+                                Stage window = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+                                window.setScene(mainMenu);
+                                window.show();
                             }
                         }
                     });
@@ -545,6 +516,26 @@ public class CreateCreationController implements Initializable {
 
     @FXML
     public void handleSelectImagesButton(ActionEvent actionEvent) {
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("selectImages.fxml"));
+
+        SelectImagesController selectImagesController = new SelectImagesController(this, searchTextFinal);
+        loader.setController(selectImagesController);
+
+        Stage secondaryStage = new Stage();
+        secondaryStage.initModality(Modality.APPLICATION_MODAL);
+        secondaryStage.initOwner((Stage) ((Node) actionEvent.getSource()).getScene().getWindow());
+
+        AnchorPane root = null;
+        try {
+            root = (AnchorPane) loader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        secondaryStage.setTitle("Select Images");
+        secondaryStage.setScene(new Scene(root, 1080, 510));
+        secondaryStage.show();
     }
 
     @FXML
@@ -564,6 +555,7 @@ public class CreateCreationController implements Initializable {
         textArea.setDisable(true);
         textArea.setWrapText(true);
         previewCreationButton.setDisable(true);
+        selectImagesButton.setDisable(true);
         createButton.setDisable(true);
         progressBar.setVisible(false);
         cleanUp();
@@ -647,6 +639,9 @@ public class CreateCreationController implements Initializable {
                 file.delete();
             }
         }
+
+        new File("creations/out.mp3").delete();
+
 
         for (File file : audioCreationDir.listFiles()) {
             if (!file.isDirectory()) {
