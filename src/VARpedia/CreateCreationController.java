@@ -12,6 +12,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -33,6 +34,8 @@ import java.util.concurrent.Executors;
 
 
 public class CreateCreationController implements Initializable {
+    @FXML
+    public ImageView deleteAllAudioButton;
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     @FXML
@@ -72,6 +75,30 @@ public class CreateCreationController implements Initializable {
 
     @FXML
     public void handleSearchButton(ActionEvent actionEvent) {
+
+        if (!searchTextFinal.equals("")) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setHeaderText("Delete audio files?");
+            alert.setContentText("Searching another term results in deleting all saved audio files");
+
+            Optional<ButtonType> result = alert.showAndWait();
+
+            if (result.get() == ButtonType.OK) {
+                if (result.get() == ButtonType.OK) {
+                    for (File file : audioCreationDir.listFiles()) {
+                        if (!file.isDirectory()) {
+                            file.delete();
+                        }
+                    }
+                    listForCreation.getItems().clear();
+                    listForCreation.setItems(audioCreationList);
+                    previewCreationButton.setDisable(true);
+                    createButton.setDisable(true);
+                }
+            } else {
+                return;
+            }
+        }
 
         //Disable some UI elements
 
@@ -115,15 +142,15 @@ public class CreateCreationController implements Initializable {
 
                             searchTextFinal = searchText;
                             //Enable UI elements again, remove progress bar and display wikit result text
-
-                            previewCreationButton.setDisable(false);
-                            createButton.setDisable(false);
+                            if (comboBox.getValue() != null) {
+                                disableNodes(false);
+                            } else {
+                                disableNodes(true);
+                            }
                             textArea.setDisable(false);
                             textArea.setText(wikit.getValue());
                             progressBar.setVisible(false);
-                            disableNodes(false);
                         }
-
                     }
                 });
             } catch (Exception e1) {
@@ -414,7 +441,6 @@ public class CreateCreationController implements Initializable {
         String[] words = highlightedText.split("\\s+");
 
         //Check if the user has entered a valid amount of text and selected a speech synthesizer
-
         if (words.length > 40) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Highlighted text too large");
             alert.show();
@@ -450,6 +476,12 @@ public class CreateCreationController implements Initializable {
                 //Remove the progress bar and re-enable UI elements
                 progressBar.setVisible(false);
                 disableNodes(false);
+                if ((musicDropdown.getValue() != null)) {
+                    previewCreationButton.setDisable(false);
+                }
+                if (!textCreationName.getText().isEmpty() && (musicDropdown.getValue() != null)) {
+                    createButton.setDisable(false);
+                }
             }
         });
     }
@@ -489,6 +521,8 @@ public class CreateCreationController implements Initializable {
             }
             listForCreation.getItems().clear();
             listForCreation.setItems(audioCreationList);
+            previewCreationButton.setDisable(true);
+            createButton.setDisable(true);
         }
     }
 
@@ -500,8 +534,13 @@ public class CreateCreationController implements Initializable {
             File file = new File("audioCreation/" + word + ".wav");
             file.delete();
         }
-        audioCreationList.remove(listForCreation.getSelectionModel().getSelectedItems());
+        audioCreationList.remove(listForCreation.getSelectionModel().getSelectedItem());
         initialiseTable();
+
+        if (audioCreationList.isEmpty()) {
+            previewCreationButton.setDisable(true);
+            createButton.setDisable(true);
+        }
     }
 
     @FXML
@@ -547,6 +586,12 @@ public class CreateCreationController implements Initializable {
                     || (newValue.contains(")"))
                     || (newValue.contains("*"))) {
                 textCreationName.setText(oldValue);
+            }
+            if (textCreationName.getText().equals("")) {
+                createButton.setDisable(true);
+            }
+            if (!listForCreation.getItems().isEmpty() && musicDropdown != null) {
+                createButton.setDisable(false);
             }
         });
 
@@ -621,4 +666,17 @@ public class CreateCreationController implements Initializable {
     }
 
 
+    public void handleComboBox(ActionEvent actionEvent) {
+        previewButton.setDisable(false);
+        saveAudioButton.setDisable(false);
+    }
+
+    public void handleMusicComboBox(ActionEvent actionEvent) {
+        if (!textCreationName.getText().isEmpty() && !listForCreation.getItems().isEmpty()) {
+            createButton.setDisable(false);
+        }
+        if (!listForCreation.getItems().isEmpty()) {
+            previewCreationButton.setDisable(false);
+        }
+    }
 }

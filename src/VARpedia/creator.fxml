@@ -31,7 +31,7 @@
             <VBox prefHeight="50.0" prefWidth="184.0">
                <children>
                   <Label text="Music:" textFill="WHITE" />
-                  <ComboBox fx:id="musicDropdown" prefHeight="26.0" prefWidth="249.0" />
+                  <ComboBox fx:id="musicDropdown" onAction="#handleMusicComboBox" prefHeight="26.0" prefWidth="249.0" />
                </children>
             </VBox>
             <Button fx:id="selectImagesButton" onAction="#handleSelectImagesButton" prefHeight="26.0" prefWidth="243.0" style="-fx-background-color: #90B8C8; -fx-text-fill: #FFFAF0;" text="Select Images" />
@@ -60,7 +60,7 @@
       <HBox alignment="CENTER_RIGHT" layoutX="19.0" layoutY="415.0" prefHeight="34.0" prefWidth="594.0" spacing="10.0">
          <children>
             <Label text="Voice:" textFill="WHITE" />
-            <ComboBox fx:id="comboBox" prefHeight="26.0" prefWidth="148.0" />
+            <ComboBox fx:id="comboBox" onAction="#handleComboBox" prefHeight="26.0" prefWidth="148.0" />
             <Button fx:id="previewButton" mnemonicParsing="false" onAction="#handlePreviewButton" prefHeight="26.0" prefWidth="89.0" style="-fx-background-color: #90B8C8; -fx-text-fill: #FFFAF0;" text="Preview" />
             <Button fx:id="saveAudioButton" mnemonicParsing="false" onAction="#handleSaveAudioButton" prefHeight="26.0" prefWidth="89.0" style="-fx-background-color: #90B8C8; -fx-text-fill: #FFFAF0;" text="Save" />
          </children>
