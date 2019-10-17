@@ -11,12 +11,12 @@ To be run on Linux (Ubuntu)
 
 User must have Java 13
 1. User must install the following command line tools:
-*wikit
-*ffmpeg
-*ffplay
-*soxi
-*festival
-*espeak
+* wikit
+* ffmpeg
+* ffplay
+* soxi
+* festival
+* espeak
 2. Clone repository and set up a project.
 3. Import the user lib included in the repo.
 4. Run the code.
