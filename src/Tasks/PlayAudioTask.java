@@ -1,12 +1,12 @@
-package VARpedia;
+package Tasks;
 
 import java.io.IOException;
 
-public class PlayAudio extends Thread{
+public class PlayAudioTask extends Thread{
 
     private String file;
 
-    public PlayAudio(String file) {
+    public PlayAudioTask(String file) {
         this.file = file;
     }
 

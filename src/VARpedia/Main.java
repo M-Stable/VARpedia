@@ -19,7 +19,7 @@ public class Main extends Application {
         /*
           Setup the initial application window
          */
-        Parent root = FXMLLoader.load(getClass().getResource("main.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("mainMenu.fxml"));
         primaryStage.setResizable(false);
         primaryStage.setTitle("VARpedia");
         primaryStage.setScene(new Scene(root, 640, 400));

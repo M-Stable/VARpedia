@@ -1,13 +1,13 @@
-package VARpedia;
+package Tasks;
 
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 
-public class MergeAudio extends Task<Integer> {
+public class MergeAudioTask extends Task<Integer> {
 
     private ObservableList<String> audioCreationList;
 
-    public MergeAudio(ObservableList<String>  audioCreationList) {
+    public MergeAudioTask(ObservableList<String>  audioCreationList) {
         this.audioCreationList = audioCreationList;
     }
 

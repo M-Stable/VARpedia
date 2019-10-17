@@ -23,7 +23,7 @@ public class ReviewController {
     }
 
     public void handleBackButton(ActionEvent actionEvent) throws IOException {
-        Parent mainParent = FXMLLoader.load(getClass().getResource("main.fxml"));
+        Parent mainParent = FXMLLoader.load(getClass().getResource("mainMenu.fxml"));
         Scene mainMenu = new Scene(mainParent);
 
         Stage window = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
@@ -32,11 +32,11 @@ public class ReviewController {
     }
 
     public void handleClick1(MouseEvent mouseEvent) {
-        star1.setImage(new Image("icons8-star-filled-48.png"));
-        star2.setImage(new Image("icons8-star-48.png"));
-        star3.setImage(new Image("icons8-star-48.png"));
-        star4.setImage(new Image("icons8-star-48.png"));
-        star5.setImage(new Image("icons8-star-48.png"));
+        star1.setImage(new Image("Images/icons8-star-filled-48.png"));
+        star2.setImage(new Image("Images/icons8-star-48.png"));
+        star3.setImage(new Image("Images/icons8-star-48.png"));
+        star4.setImage(new Image("Images/icons8-star-48.png"));
+        star5.setImage(new Image("Images/icons8-star-48.png"));
     }
 
     public void handleEnter1(MouseEvent mouseEvent) {
@@ -46,11 +46,11 @@ public class ReviewController {
     }
 
     public void handleClick2(MouseEvent mouseEvent) {
-        star1.setImage(new Image("icons8-star-filled-48.png"));
-        star2.setImage(new Image("icons8-star-filled-48.png"));
-        star3.setImage(new Image("icons8-star-48.png"));
-        star4.setImage(new Image("icons8-star-48.png"));
-        star5.setImage(new Image("icons8-star-48.png"));
+        star1.setImage(new Image("Images/icons8-star-filled-48.png"));
+        star2.setImage(new Image("Images/icons8-star-filled-48.png"));
+        star3.setImage(new Image("Images/icons8-star-48.png"));
+        star4.setImage(new Image("Images/icons8-star-48.png"));
+        star5.setImage(new Image("Images/icons8-star-48.png"));
     }
 
     public void handleEnter2(MouseEvent mouseEvent) {
@@ -60,11 +60,11 @@ public class ReviewController {
     }
 
     public void handleClick3(MouseEvent mouseEvent) {
-        star1.setImage(new Image("icons8-star-filled-48.png"));
-        star2.setImage(new Image("icons8-star-filled-48.png"));
-        star3.setImage(new Image("icons8-star-filled-48.png"));
-        star4.setImage(new Image("icons8-star-48.png"));
-        star5.setImage(new Image("icons8-star-48.png"));
+        star1.setImage(new Image("Images/icons8-star-filled-48.png"));
+        star2.setImage(new Image("Images/icons8-star-filled-48.png"));
+        star3.setImage(new Image("Images/icons8-star-filled-48.png"));
+        star4.setImage(new Image("Images/icons8-star-48.png"));
+        star5.setImage(new Image("Images/icons8-star-48.png"));
     }
 
     public void handleEnter3(MouseEvent mouseEvent) {
@@ -74,11 +74,11 @@ public class ReviewController {
     }
 
     public void handleClick4(MouseEvent mouseEvent) {
-        star1.setImage(new Image("icons8-star-filled-48.png"));
-        star2.setImage(new Image("icons8-star-filled-48.png"));
-        star3.setImage(new Image("icons8-star-filled-48.png"));
-        star4.setImage(new Image("icons8-star-filled-48.png"));
-        star5.setImage(new Image("icons8-star-48.png"));
+        star1.setImage(new Image("Images/icons8-star-filled-48.png"));
+        star2.setImage(new Image("Images/icons8-star-filled-48.png"));
+        star3.setImage(new Image("Images/icons8-star-filled-48.png"));
+        star4.setImage(new Image("Images/icons8-star-filled-48.png"));
+        star5.setImage(new Image("Images/icons8-star-48.png"));
     }
 
     public void handleEnter4(MouseEvent mouseEvent) {
@@ -88,11 +88,11 @@ public class ReviewController {
     }
 
     public void handleClick5(MouseEvent mouseEvent) {
-        star1.setImage(new Image("icons8-star-filled-48.png"));
-        star2.setImage(new Image("icons8-star-filled-48.png"));
-        star3.setImage(new Image("icons8-star-filled-48.png"));
-        star4.setImage(new Image("icons8-star-filled-48.png"));
-        star5.setImage(new Image("icons8-star-filled-48.png"));
+        star1.setImage(new Image("Images/icons8-star-filled-48.png"));
+        star2.setImage(new Image("Images/icons8-star-filled-48.png"));
+        star3.setImage(new Image("Images/icons8-star-filled-48.png"));
+        star4.setImage(new Image("Images/icons8-star-filled-48.png"));
+        star5.setImage(new Image("Images/icons8-star-filled-48.png"));
     }
 
     public void handleEnter5(MouseEvent mouseEvent) {

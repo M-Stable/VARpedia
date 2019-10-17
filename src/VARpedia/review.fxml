@@ -55,27 +55,27 @@
                <children>
                   <ImageView fx:id="star1" fitHeight="30.0" fitWidth="30.0" onMouseClicked="#handleClick1" onMouseEntered="#handleEnter1" onMouseExited="#handleExit1" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../icons8-star-48.png" />
+                        <Image url="@../Images/icons8-star-48.png" />
                      </image>
                   </ImageView>
                   <ImageView fx:id="star2" fitHeight="30.0" fitWidth="30.0" onMouseClicked="#handleClick2" onMouseEntered="#handleEnter2" onMouseExited="#handleExit2" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../icons8-star-48.png" />
+                        <Image url="@../Images/icons8-star-48.png" />
                      </image>
                   </ImageView>
                   <ImageView fx:id="star3" fitHeight="30.0" fitWidth="30.0" onMouseClicked="#handleClick3" onMouseEntered="#handleEnter3" onMouseExited="#handleExit3"  pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../icons8-star-48.png" />
+                        <Image url="@../Images/icons8-star-48.png" />
                      </image>
                   </ImageView>
                   <ImageView fx:id="star4" fitHeight="30.0" fitWidth="30.0" onMouseClicked="#handleClick4" onMouseEntered="#handleEnter4" onMouseExited="#handleExit4"  pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../icons8-star-48.png" />
+                        <Image url="@../Images/icons8-star-48.png" />
                      </image>
                   </ImageView>
                   <ImageView fx:id="star5" fitHeight="30.0" fitWidth="30.0" onMouseClicked="#handleClick5" onMouseEntered="#handleEnter5" onMouseExited="#handleExit5"  pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../icons8-star-48.png" />
+                        <Image url="@../Images/icons8-star-48.png" />
                      </image>
                   </ImageView>
                </children>

@@ -16,12 +16,12 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 
-public class Credits implements Initializable {
+public class CreditsController implements Initializable {
 
     public TextArea textArea;
 
     public void handleBackButton(ActionEvent actionEvent) throws IOException {
-        Parent mainParent = FXMLLoader.load(getClass().getResource("main.fxml"));
+        Parent mainParent = FXMLLoader.load(getClass().getResource("mainMenu.fxml"));
         Scene mainMenu = new Scene(mainParent);
 
         Stage window = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
@@ -32,7 +32,6 @@ public class Credits implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         textArea.setWrapText(true);
-
         try {
             Scanner s = new Scanner(new File("credits.txt")).useDelimiter("\\s+");
             while (s.hasNext()) {

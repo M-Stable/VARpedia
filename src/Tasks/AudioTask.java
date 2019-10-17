@@ -1,4 +1,4 @@
-package VARpedia;
+package Tasks;
 
 import javafx.concurrent.Task;
 import javafx.scene.control.Alert;

@@ -79,17 +79,17 @@
          <children>
             <ImageView fx:id="playAudio" accessibleRole="BUTTON" fitHeight="36.0" fitWidth="38.0" onMouseClicked="#handlePlayAudio" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../play.png" />
+                  <Image url="@../Images/play.png" />
                </image>
             </ImageView>
             <ImageView fx:id="deleteAudioButton" accessibleRole="BUTTON" fitHeight="36.0" fitWidth="38.0" onMouseClicked="#handleDeleteAudioButton" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../delete.png" />
+                  <Image url="@../Images/delete.png" />
                </image>
             </ImageView>
             <ImageView fx:id="deleteAllAudioButton" accessibleRole="BUTTON" fitHeight="36.0" fitWidth="38.0" onMouseClicked="#handleDeleteAllAudioButton" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../deleteAll.png" />
+                  <Image url="@../Images/deleteAll.png" />
                </image>
             </ImageView>
          </children>

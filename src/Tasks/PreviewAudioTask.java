@@ -1,13 +1,13 @@
-package VARpedia;
+package Tasks;
 
 import javafx.concurrent.Task;
 
-public class PreviewAudio extends Task<String> {
+public class PreviewAudioTask extends Task<String> {
 
     private String comboBoxValue;
     private String highlightedText;
 
-    public PreviewAudio(String comboBoxValue, String highlightedText) {
+    public PreviewAudioTask(String comboBoxValue, String highlightedText) {
         this.comboBoxValue = comboBoxValue;
         this.highlightedText = highlightedText;
     }

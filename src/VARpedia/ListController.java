@@ -25,7 +25,7 @@ import java.util.Comparator;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-public class ListScene implements Initializable {
+public class ListController implements Initializable {
 
     @FXML
     private ListView creationsList;
@@ -174,7 +174,7 @@ the toggleButton
     }
 
     public void handleBackButton(ActionEvent actionEvent) throws IOException {
-        Parent mainParent = FXMLLoader.load(getClass().getResource("main.fxml"));
+        Parent mainParent = FXMLLoader.load(getClass().getResource("mainMenu.fxml"));
         Scene mainMenu = new Scene(mainParent);
 
         Stage window = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();

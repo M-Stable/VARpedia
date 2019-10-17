@@ -7,31 +7,16 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ListView;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-import javafx.scene.media.MediaView;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontPosture;
-import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Optional;
 import java.util.ResourceBundle;
 
 
-public class WikiSpeakController implements Initializable {
+public class MainMenuController implements Initializable {
 
     @FXML
     public Button newCreationButton;
@@ -48,7 +33,7 @@ public class WikiSpeakController implements Initializable {
         /*
         Switch scene to the new creation scene
          */
-        Parent creationParent = FXMLLoader.load(getClass().getResource("creator.fxml"));
+        Parent creationParent = FXMLLoader.load(getClass().getResource("createCreation.fxml"));
         Scene newCreationScene = new Scene(creationParent);
 
         Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();

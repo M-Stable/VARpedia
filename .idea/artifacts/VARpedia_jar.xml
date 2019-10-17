@@ -1,0 +1,21 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="VARpedia:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/VARpedia_jar</output-path>
+    <root id="archive" name="VARpedia.jar">
+      <element id="module-output" name="VARpedia" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/flickr4java/flickr4java/3.0.0/flickr4java-3.0.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/github/scribejava/scribejava-apis/6.2.0/scribejava-apis-6.2.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/github/scribejava/scribejava-core/6.2.0/scribejava-core-6.2.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/slf4j/slf4j-api/1.7.25/slf4j-api-1.7.25.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/openjfx-13-rc+2_linux-x64_bin-sdk/javafx-sdk-13/lib/src.zip" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/openjfx-13-rc+2_linux-x64_bin-sdk/javafx-sdk-13/lib/javafx-swt.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/openjfx-13-rc+2_linux-x64_bin-sdk/javafx-sdk-13/lib/javafx.web.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/openjfx-13-rc+2_linux-x64_bin-sdk/javafx-sdk-13/lib/javafx.base.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/openjfx-13-rc+2_linux-x64_bin-sdk/javafx-sdk-13/lib/javafx.fxml.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/openjfx-13-rc+2_linux-x64_bin-sdk/javafx-sdk-13/lib/javafx.media.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/openjfx-13-rc+2_linux-x64_bin-sdk/javafx-sdk-13/lib/javafx.swing.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/openjfx-13-rc+2_linux-x64_bin-sdk/javafx-sdk-13/lib/javafx.controls.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/openjfx-13-rc+2_linux-x64_bin-sdk/javafx-sdk-13/lib/javafx.graphics.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

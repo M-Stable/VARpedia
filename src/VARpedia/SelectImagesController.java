@@ -1,5 +1,6 @@
 package VARpedia;
 
+import Tasks.FlickrTask;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
