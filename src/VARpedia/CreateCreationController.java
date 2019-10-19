@@ -73,9 +73,10 @@ public class CreateCreationController implements Initializable {
         Scene mainMenu = new Scene(mainParent);
 
         Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        window.setHeight(429);
         window.setScene(mainMenu);
         window.show();
+        window.setHeight(429);
+        window.setWidth(640);
     }
 
     @FXML

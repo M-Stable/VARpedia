@@ -27,6 +27,8 @@ public class CreditsController implements Initializable {
         Stage window = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
         window.setScene(mainMenu);
         window.show();
+        window.setHeight(429);
+        window.setWidth(640);
     }
 
     @Override

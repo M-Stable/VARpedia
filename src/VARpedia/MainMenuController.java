@@ -37,7 +37,8 @@ public class MainMenuController implements Initializable {
         window.setResizable(false);
         window.setScene(newCreationScene);
         window.show();
-
+        window.setHeight(506);
+        window.setWidth(647);
     }
 
 
@@ -68,6 +69,8 @@ public class MainMenuController implements Initializable {
         window.setResizable(false);
         window.setScene(newCreationScene);
         window.show();
+        window.setHeight(429);
+        window.setWidth(640);
     }
 
     public void handleListButton(ActionEvent event) throws IOException {
@@ -80,6 +83,8 @@ public class MainMenuController implements Initializable {
         window.setResizable(false);
         window.setScene(newCreationScene);
         window.show();
+        window.setHeight(429);
+        window.setWidth(640);
     }
 
     public void handleCreditsButton(ActionEvent event) throws IOException {
@@ -91,5 +96,7 @@ public class MainMenuController implements Initializable {
         window.setResizable(false);
         window.setScene(newCreationScene);
         window.show();
+        window.setHeight(429);
+        window.setWidth(640);
     }
 }

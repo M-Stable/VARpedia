@@ -178,6 +178,8 @@ the toggleButton
         Scene mainMenu = new Scene(mainParent);
 
         Stage window = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+        window.setHeight(429);
+        window.setWidth(640);
         window.setScene(mainMenu);
         window.show();
     }

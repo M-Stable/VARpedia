@@ -29,6 +29,8 @@ public class ReviewController {
         Stage window = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
         window.setScene(mainMenu);
         window.show();
+        window.setHeight(429);
+        window.setWidth(640);
     }
 
     public void handleClick1(MouseEvent mouseEvent) {
