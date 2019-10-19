@@ -17,13 +17,13 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.*;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 
 import javax.sound.sampled.*;
 import java.io.File;
@@ -37,6 +37,9 @@ import java.util.concurrent.Executors;
 public class CreateCreationController implements Initializable {
     @FXML
     public ImageView deleteAllAudioButton;
+    public VBox creationVbox;
+    public HBox audioHbox;
+    public Pane pane;
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     @FXML
@@ -70,6 +73,7 @@ public class CreateCreationController implements Initializable {
         Scene mainMenu = new Scene(mainParent);
 
         Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        window.setHeight(429);
         window.setScene(mainMenu);
         window.show();
     }
@@ -431,6 +435,10 @@ public class CreateCreationController implements Initializable {
                 //Remove the progress bar and re-enable UI elements
                 progressBar.setVisible(false);
                 disableNodes(false);
+                Window window = saveAudioButton.getScene().getWindow();
+                window.setHeight(800);
+                audioHbox.setVisible(true);
+                creationVbox.setVisible(true);
                 if ((musicDropdown.getValue() != null)) {
                     previewCreationButton.setDisable(false);
                 }
