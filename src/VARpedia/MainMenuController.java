@@ -21,11 +21,8 @@ public class MainMenuController implements Initializable {
     @FXML
     public Button newCreationButton;
 
-
     private File creationsDir;
-
     private File imagesDir;
-
     private File audioCreationsDir;
 
     @FXML

@@ -109,59 +109,53 @@ public class CreateCreationController implements Initializable {
 
         //Check if search field is not empty
         String searchText = searchField.getText();
-        if ((searchText != null && !searchText.isEmpty())) {
-            try {
-                //Use wikit to return text from wikipedia based on search term
-                WikitTask wikit = new WikitTask(searchField, textArea);
-                executorService.submit(wikit);
-                progressBar.setVisible(true);
-                wikit.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-                    @Override
-                    public void handle(WorkerStateEvent workerStateEvent) {
+        try {
+            //Use wikit to return text from wikipedia based on search term
+            WikitTask wikit = new WikitTask(searchField, textArea);
+            executorService.submit(wikit);
+            progressBar.setVisible(true);
+            wikit.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+                @Override
+                public void handle(WorkerStateEvent workerStateEvent) {
 
-                        //Check if the wikit search result was valid
+                    //Check if the wikit search result was valid
 
-                        if (wikit.getValue().equals(searchField.getText() + " not found :^(")) {
+                    if (wikit.getValue().equals(searchField.getText() + " not found :^(")) {
 
+                        //Display alert to user before deleting unnecessary file, clearing the text field and
+                        //disabling UI elements if no text is already present from a previous search
 
-                            //Display alert to user before deleting unnecessary file, clearing the text field and
-                            //disabling UI elements if no text is already present from a previous search
-
-                            Alert alert = new Alert(Alert.AlertType.ERROR, "Result not found");
-                            alert.show();
-                            File file = new File("./" + searchField.getText() + ".txt");
-                            file.delete();
-                            searchField.clear();
-                            progressBar.setVisible(false);
-                            String isEmpty = textArea.getText();
-                            if (isEmpty.equals("")) {
-                                disableNodes(true);
-                                textArea.setDisable(true);
-                            } else {
-                                disableNodes(false);
-                            }
+                        Alert alert = new Alert(Alert.AlertType.ERROR, "Result not found");
+                        alert.show();
+                        File file = new File("./" + searchField.getText() + ".txt");
+                        file.delete();
+                        searchField.clear();
+                        progressBar.setVisible(false);
+                        String isEmpty = textArea.getText();
+                        if (isEmpty.equals("")) {
+                            disableNodes(true);
+                            textArea.setDisable(true);
                         } else {
-
-                            searchTextFinal = searchText;
-                            //Enable UI elements again, remove progress bar and display wikit result text
-                            if (comboBox.getValue() != null) {
-                                disableNodes(false);
-                            } else {
-                                disableNodes(true);
-                            }
-                            selectImagesButton.setDisable(false);
-                            textArea.setDisable(false);
-                            textArea.setText(wikit.getValue());
-                            progressBar.setVisible(false);
+                            disableNodes(false);
                         }
+                    } else {
+
+                        searchTextFinal = searchText;
+                        //Enable UI elements again, remove progress bar and display wikit result text
+                        if (comboBox.getValue() != null) {
+                            disableNodes(false);
+                        } else {
+                            disableNodes(true);
+                        }
+                        selectImagesButton.setDisable(false);
+                        textArea.setDisable(false);
+                        textArea.setText(wikit.getValue());
+                        progressBar.setVisible(false);
                     }
-                });
-            } catch (Exception e1) {
-                e1.printStackTrace();
-            }
-        } else {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Please enter a search term");
-            alert.show();
+                }
+            });
+        } catch (Exception e1) {
+            e1.printStackTrace();
         }
     }
 
@@ -545,6 +539,7 @@ public class CreateCreationController implements Initializable {
         comboBox.getItems().setAll("Deep Voice", "Light Voice");
         textArea.setWrapText(true);
         textArea.setDisable(true);
+        searchButton.setDisable(true);
         previewCreationButton.setDisable(true);
         selectImagesButton.setDisable(true);
         createButton.setDisable(true);
@@ -569,11 +564,18 @@ public class CreateCreationController implements Initializable {
                     || (newValue.contains("*"))) {
                 textCreationName.setText(oldValue);
             }
-            if (textCreationName.getText().equals("")) {
+            if (textCreationName.getText().trim().isEmpty()) {
                 createButton.setDisable(true);
             }
             if (!listForCreation.getItems().isEmpty() && musicDropdown.getValue() != null) {
                 createButton.setDisable(false);
+            }
+        });
+
+        searchField.textProperty().addListener(observable -> {
+            searchButton.setDisable(false);
+            if (searchField.getText().trim().isEmpty()) {
+                searchButton.setDisable(true);
             }
         });
 
