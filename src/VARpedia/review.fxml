@@ -19,11 +19,11 @@
             <Font name="Arial Black" size="30.0" />
          </font>
       </Text>
-      <TableView layoutX="14.0" layoutY="78.0" prefHeight="308.0" prefWidth="264.0">
+      <TableView fx:id="table" layoutX="14.0" layoutY="78.0" prefHeight="308.0" prefWidth="264.0">
         <columns>
-          <TableColumn prefWidth="120.79998779296875" text="Name" />
-          <TableColumn prefWidth="63.20001220703125" text="Rating" />
-            <TableColumn minWidth="0.0" prefWidth="78.4000244140625" text="Viewed" />
+          <TableColumn fx:id="tableName" prefWidth="120.79998779296875" text="Name" />
+          <TableColumn fx:id="tableRating" prefWidth="63.20001220703125" text="Rating" />
+            <TableColumn fx:id="tableViewed" minWidth="0.0" prefWidth="78.4000244140625" text="Viewed" />
         </columns>
       </TableView>
       <Button fx:id="playButton" layoutX="483.0" layoutY="78.0" mnemonicParsing="false" onAction="#handlePlayButton" prefHeight="44.0" prefWidth="119.0" style="-fx-background-color: #90B8C8; -fx-text-fill: #FFFAF0;" text="Play">
@@ -39,13 +39,13 @@
                   <Font name="Arial" size="19.0" />
                </font>
             </Text>
-            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
+            <Text fx:id="creationName" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
             <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Last Viewed:">
                <font>
                   <Font name="Arial" size="19.0" />
                </font>
             </Text>
-            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
+            <Text fx:id="lastViewed" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
             <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Confidence Rating:">
                <font>
                   <Font name="Arial" size="19.0" />
@@ -53,27 +53,27 @@
             </Text>
             <HBox prefHeight="30.0" prefWidth="174.0" spacing="6.0">
                <children>
-                  <ImageView fx:id="star1" fitHeight="30.0" fitWidth="30.0" onMouseClicked="#handleClick1" onMouseEntered="#handleEnter1" onMouseExited="#handleExit1" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="star1" fitHeight="30.0" fitWidth="30.0" onMouseClicked="#handleClick1" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../Images/icons8-star-48.png" />
                      </image>
                   </ImageView>
-                  <ImageView fx:id="star2" fitHeight="30.0" fitWidth="30.0" onMouseClicked="#handleClick2" onMouseEntered="#handleEnter2" onMouseExited="#handleExit2" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="star2" fitHeight="30.0" fitWidth="30.0" onMouseClicked="#handleClick2" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../Images/icons8-star-48.png" />
                      </image>
                   </ImageView>
-                  <ImageView fx:id="star3" fitHeight="30.0" fitWidth="30.0" onMouseClicked="#handleClick3" onMouseEntered="#handleEnter3" onMouseExited="#handleExit3"  pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="star3" fitHeight="30.0" fitWidth="30.0" onMouseClicked="#handleClick3" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../Images/icons8-star-48.png" />
                      </image>
                   </ImageView>
-                  <ImageView fx:id="star4" fitHeight="30.0" fitWidth="30.0" onMouseClicked="#handleClick4" onMouseEntered="#handleEnter4" onMouseExited="#handleExit4"  pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="star4" fitHeight="30.0" fitWidth="30.0" onMouseClicked="#handleClick4" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../Images/icons8-star-48.png" />
                      </image>
                   </ImageView>
-                  <ImageView fx:id="star5" fitHeight="30.0" fitWidth="30.0" onMouseClicked="#handleClick5" onMouseEntered="#handleEnter5" onMouseExited="#handleExit5"  pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="star5" fitHeight="30.0" fitWidth="30.0" onMouseClicked="#handleClick5" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../Images/icons8-star-48.png" />
                      </image>

@@ -66,12 +66,23 @@ public class CreateCreationController implements Initializable {
 
     public List<File> images = new ArrayList<File>();
     private ObservableList<String> audioCreationList = FXCollections.observableArrayList();
+    ObservableList<Creation> creationObservableList = FXCollections.observableArrayList();
+
+    public void initData(ObservableList<Creation> creationObservableList){
+        this.creationObservableList = creationObservableList;
+    }
 
     @FXML
     public void handleBackButton(ActionEvent event) throws IOException {
         //Switch scene back to the main menu
-        Parent mainParent = FXMLLoader.load(getClass().getResource("mainMenu.fxml"));
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("mainMenu.fxml"));
+        Parent mainParent = loader.load();
+
         Scene mainMenu = new Scene(mainParent);
+
+        MainMenuController mainMenuController = loader.getController();
+        mainMenuController.initData(creationObservableList);
 
         Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
         window.setScene(mainMenu);
@@ -320,6 +331,8 @@ public class CreateCreationController implements Initializable {
 
                     @Override
                     public void handle(WorkerStateEvent workerStateEvent) {
+                        Creation creation = new Creation(creationName, 0, 0);
+                        creationObservableList.add(creation);
                         progressBar.setVisible(false);
                         disableNodes(true);
                         cleanUp();

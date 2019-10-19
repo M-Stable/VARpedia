@@ -5,10 +5,10 @@ public class Creation {
     private int confidenceRating;
     private int viewCount;
 
-    public Creation(String _name, int _confidenceRating, int _viewCount) {
-        this.name = _name;
-        this.confidenceRating = _confidenceRating;
-        this.viewCount = _viewCount;
+    public Creation(String name, int confidenceRating, int viewCount) {
+        this.name = name;
+        this.confidenceRating = confidenceRating;
+        this.viewCount = viewCount;
     }
 
     public String getName() {

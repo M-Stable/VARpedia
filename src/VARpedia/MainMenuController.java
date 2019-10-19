@@ -1,5 +1,7 @@
 package VARpedia;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -24,14 +26,25 @@ public class MainMenuController implements Initializable {
     private File creationsDir;
     private File imagesDir;
     private File audioCreationsDir;
+    ObservableList<Creation> creationObservableList = FXCollections.observableArrayList();
+
+    public void initData(ObservableList<Creation> creationObservableList){
+        this.creationObservableList = creationObservableList;
+    }
 
     @FXML
     public void handleNewCreationButton(ActionEvent event) throws IOException {
         /*
         Switch scene to the new creation scene
          */
-        Parent creationParent = FXMLLoader.load(getClass().getResource("createCreation.fxml"));
-        Scene newCreationScene = new Scene(creationParent);
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("createCreation.fxml"));
+        Parent mainParent = loader.load();
+
+        Scene newCreationScene = new Scene(mainParent);
+
+        CreateCreationController createCreationController = loader.getController();
+        createCreationController.initData(creationObservableList);
 
         Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
         window.setResizable(false);
@@ -56,14 +69,24 @@ public class MainMenuController implements Initializable {
         imagesDir.mkdir();
         audioCreationsDir.mkdir();
 
+        File[] creations = creationsDir.listFiles();
+        for (File creation : creations) {
+            if (creation.getName().contains(".mp4")) {
+                creationObservableList.add(new Creation(creation.getName().replace(".mp4", ""), 0 ,0));
+            }
+        }
     }
-
-
 
     public void handleReviewButton(ActionEvent event) throws IOException {
         //Switch to review scene
-        Parent creationParent = FXMLLoader.load(getClass().getResource("review.fxml"));
-        Scene newCreationScene = new Scene(creationParent);
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("review.fxml"));
+        Parent mainParent = loader.load();
+
+        Scene newCreationScene = new Scene(mainParent);
+
+        ReviewController reviewController = loader.getController();
+        reviewController.initData(creationObservableList);
 
         Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
         window.setResizable(false);
