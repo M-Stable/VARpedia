@@ -40,6 +40,7 @@ public class CreateCreationController implements Initializable {
     public VBox creationVbox;
     public HBox audioHbox;
     public Pane pane;
+    public Button backButton;
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     @FXML
@@ -199,13 +200,7 @@ public class CreateCreationController implements Initializable {
         listForCreation.setItems(audioCreationList);
 
         //Check if no audio files were selected for creation
-        if (audioCreationList.isEmpty()) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Please transfer at least 1 audio file for creation");
-            alert.show();
-            return;
-        } else if (images.size() == 0) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Please select at least 1 image for creation");
-            alert.show();
+        if (!checkValidCreation()) {
             return;
         }
 
@@ -222,18 +217,7 @@ public class CreateCreationController implements Initializable {
             @Override
             public void handle(WorkerStateEvent workerStateEvent) {
 
-                File audioFile = new File("creations/merged.wav");
-                double audioDuration = 0;
-                try {
-                    AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(audioFile);
-                    AudioFormat audioFormat = audioInputStream.getFormat();
-                    long frames = audioInputStream.getFrameLength();
-                    audioDuration = frames / audioFormat.getFrameRate();
-                } catch (UnsupportedAudioFileException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                double audioDuration = getAudioDuration();
 
                 String music = (String) musicDropdown.getSelectionModel().getSelectedItem();
                 VideoCreationTask videoCreationTask = new VideoCreationTask(images, audioDuration, "tempfile1", searchTextFinal, music);
@@ -291,104 +275,74 @@ public class CreateCreationController implements Initializable {
 
         //Check if no audio files have been selected, if no creation name has been given and if a creation with the same
         //name already exists
-        if (audioCreationList.isEmpty()) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Please transfer at least 1 audio file for creation");
-            alert.show();
+        if (!checkValidCreation()) {
             return;
         }
-        if (!creationName.isEmpty()) {
-            File tmpDir = new File("creations/" + creationName + ".mp4");
-            boolean exists = tmpDir.exists();
-            if (exists) {
-                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                alert.setHeaderText("File name already exists");
-                alert.setContentText("Would you like to overwrite?");
 
-                Optional<ButtonType> result = alert.showAndWait();
+        File tmpDir = new File("creations/" + creationName + ".mp4");
+        boolean exists = tmpDir.exists();
+        if (exists) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setHeaderText("File name already exists");
+            alert.setContentText("Would you like to overwrite?");
 
-                if (result.get() == ButtonType.OK) {
-                    tmpDir.delete();
-                } else {
-                    return;
-                }
+            Optional<ButtonType> result = alert.showAndWait();
+
+            if (result.get() == ButtonType.OK) {
+                tmpDir.delete();
+            } else {
+                return;
             }
-
-            //Show progress and disable other UI elements while the preview creation process is occurring
-            progressBar.setVisible(true);
-            disableNodes(true);
-            createButton.setDisable(true);
-            previewCreationButton.setDisable(true);
-            searchButton.setDisable(true);
-
-            //Create users creation. Merge selected audio files, then get Flickr images and then combine these into the
-            //final creation before prompting the user to return to the main menu
-            MergeAudioTask merge = new MergeAudioTask(audioCreationList);
-            executorService.submit(merge);
-            merge.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-
-                @Override
-                public void handle(WorkerStateEvent workerStateEvent) {
-
-                    File audioFile = new File("creations/merged.wav");
-                    double audioDuration = 0;
-                    try {
-                                    /*
-                                    Get the length of the merged audio for the video creation
-                                     */
-                        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(audioFile);
-                        AudioFormat audioFormat = audioInputStream.getFormat();
-                        long frames = audioInputStream.getFrameLength();
-                        audioDuration = frames / audioFormat.getFrameRate();
-                    } catch (UnsupportedAudioFileException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
-                    String music = (String) musicDropdown.getSelectionModel().getSelectedItem();
-                    VideoCreationTask videoCreationTask = new VideoCreationTask(images, audioDuration, creationName, searchTextFinal, music);
-                    executorService.submit(videoCreationTask);
-                    videoCreationTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-
-                        @Override
-                        public void handle(WorkerStateEvent workerStateEvent) {
-                            progressBar.setVisible(false);
-                            disableNodes(true);
-                            cleanUp();
-                            clearText();
-                            listForCreation.getItems().clear();
-                            searchButton.setDisable(false);
-                            previewCreationButton.setDisable(true);
-                            createButton.setDisable(true);
-                            textArea.setDisable(true);
-                            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                            alert.setHeaderText("Successfully created");
-                            alert.setContentText("Would you like to return to the menu?");
-                            searchTextFinal = "";
-
-                            Optional<ButtonType> result = alert.showAndWait();
-
-                            if (result.get() == ButtonType.OK) {
-                                Parent mainParent = null;
-                                try {
-                                    mainParent = FXMLLoader.load(getClass().getResource("mainMenu.fxml"));
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                                Scene mainMenu = new Scene(mainParent);
-
-                                Stage window = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-                                window.setScene(mainMenu);
-                                window.show();
-                            }
-                        }
-                    });
-                }
-            });
-        } else {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Please type in creation name");
-            alert.show();
         }
+
+        //Show progress and disable other UI elements while the preview creation process is occurring
+        progressBar.setVisible(true);
+        disableNodes(true);
+        createButton.setDisable(true);
+        previewCreationButton.setDisable(true);
+        searchButton.setDisable(true);
+
+        //Create users creation. Merge selected audio files, then get Flickr images and then combine these into the
+        //final creation before prompting the user to return to the main menu
+        MergeAudioTask merge = new MergeAudioTask(audioCreationList);
+        executorService.submit(merge);
+        merge.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+
+            @Override
+            public void handle(WorkerStateEvent workerStateEvent) {
+
+                double audioDuration = getAudioDuration();
+
+                String music = (String) musicDropdown.getSelectionModel().getSelectedItem();
+                VideoCreationTask videoCreationTask = new VideoCreationTask(images, audioDuration, creationName, searchTextFinal, music);
+                executorService.submit(videoCreationTask);
+                videoCreationTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+
+                    @Override
+                    public void handle(WorkerStateEvent workerStateEvent) {
+                        progressBar.setVisible(false);
+                        disableNodes(true);
+                        cleanUp();
+                        clearText();
+                        listForCreation.getItems().clear();
+                        searchButton.setDisable(false);
+                        previewCreationButton.setDisable(true);
+                        createButton.setDisable(true);
+                        textArea.setDisable(true);
+                        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                        alert.setHeaderText("Successfully created");
+                        alert.setContentText("Would you like to return to the menu?");
+                        searchTextFinal = "";
+
+                        Optional<ButtonType> result = alert.showAndWait();
+
+                        if (result.get() == ButtonType.OK) {
+                            backButton.fire();
+                        }
+                    }
+                });
+            }
+        });
 
     }
 
@@ -399,7 +353,9 @@ public class CreateCreationController implements Initializable {
 
         //Check if the user has entered a valid amount of text and selected a speech synthesizer
         if (words.length > 40) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Highlighted text too large");
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setHeaderText("Highlighted text too large");
+            alert.setContentText("You exceeded by: " + (words.length - 40) + "words");
             alert.show();
             return;
         } else if (highlightedText.isEmpty()) {
@@ -430,6 +386,7 @@ public class CreateCreationController implements Initializable {
                 //Remove the progress bar and re-enable UI elements
                 progressBar.setVisible(false);
                 disableNodes(false);
+                //Expand window to show rest of creation step
                 Window window = saveAudioButton.getScene().getWindow();
                 window.setHeight(800);
                 audioHbox.setVisible(true);
@@ -664,5 +621,34 @@ public class CreateCreationController implements Initializable {
         if (!listForCreation.getItems().isEmpty()) {
             previewCreationButton.setDisable(false);
         }
+    }
+
+    public boolean checkValidCreation() {
+        if (audioCreationList.isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Please transfer at least 1 audio file for creation");
+            alert.show();
+            return false;
+        } else if (images.size() == 0) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Please select at least 1 image for creation");
+            alert.show();
+            return false;
+        }
+        return true;
+    }
+
+    public double getAudioDuration(){
+        File audioFile = new File("creations/merged.wav");
+        double audioDuration = 0;
+        try {
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(audioFile);
+            AudioFormat audioFormat = audioInputStream.getFormat();
+            long frames = audioInputStream.getFrameLength();
+            audioDuration = frames / audioFormat.getFrameRate();
+        } catch (UnsupportedAudioFileException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return audioDuration;
     }
 }
