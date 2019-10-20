@@ -4,6 +4,8 @@ import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -39,7 +41,11 @@ public class MediaController implements Initializable{
     public MediaController(MediaPlayer player) {
         this.player = player;
     }
+    ObservableList<Creation> creationObservableList = FXCollections.observableArrayList();
 
+    public void initData(ObservableList<Creation> creationObservableList){
+        this.creationObservableList = creationObservableList;
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -122,11 +128,19 @@ public class MediaController implements Initializable{
     public void handleBackButton(ActionEvent actionEvent) throws IOException {
         player.stop();
 
-        Parent mainParent = FXMLLoader.load(getClass().getResource("list.fxml"));
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("review.fxml"));
+        Parent mainParent = loader.load();
+
         Scene mainMenu = new Scene(mainParent);
+
+        ReviewController reviewController = loader.getController();
+        reviewController.initData(creationObservableList);
 
         Stage window = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
         window.setScene(mainMenu);
         window.show();
+        window.setHeight(437);
+        window.setWidth(640);
     }
 }

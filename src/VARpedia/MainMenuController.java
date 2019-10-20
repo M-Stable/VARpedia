@@ -72,7 +72,7 @@ public class MainMenuController implements Initializable {
         File[] creations = creationsDir.listFiles();
         for (File creation : creations) {
             if (creation.getName().contains(".mp4")) {
-                creationObservableList.add(new Creation(creation.getName().replace(".mp4", ""), 0 ,0));
+                creationObservableList.add(new Creation(creation.getName().replace(".mp4", ""), 0 ,"N/A"));
             }
         }
     }
@@ -93,20 +93,6 @@ public class MainMenuController implements Initializable {
         window.setScene(newCreationScene);
         window.show();
         window.setHeight(437);
-        window.setWidth(640);
-    }
-
-    public void handleListButton(ActionEvent event) throws IOException {
-
-        //Switch to list scene
-        Parent creationParent = FXMLLoader.load(getClass().getResource("list.fxml"));
-        Scene newCreationScene = new Scene(creationParent);
-
-        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        window.setResizable(false);
-        window.setScene(newCreationScene);
-        window.show();
-        window.setHeight(429);
         window.setWidth(640);
     }
 

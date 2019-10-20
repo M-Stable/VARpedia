@@ -331,7 +331,7 @@ public class CreateCreationController implements Initializable {
 
                     @Override
                     public void handle(WorkerStateEvent workerStateEvent) {
-                        Creation creation = new Creation(creationName, 0, 0);
+                        Creation creation = new Creation(creationName, 0, "N/A");
                         creationObservableList.add(creation);
                         progressBar.setVisible(false);
                         disableNodes(true);

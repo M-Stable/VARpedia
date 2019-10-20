@@ -27,6 +27,8 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -38,9 +40,10 @@ public class ReviewController implements Initializable{
     public ImageView star5;
     public TableColumn<Creation, String> tableName;
     public TableColumn<Creation, Integer> tableRating;
-    public TableColumn<Creation, Integer> tableViewed;
+    public TableColumn<Creation, String> tableViewed;
     public TableView table;
     public Text creationName;
+    public Text lastViewed;
     ObservableList<Creation> creationObservableList = FXCollections.observableArrayList();
 
     public void initData(ObservableList<Creation> creationObservableList){
@@ -59,22 +62,32 @@ public class ReviewController implements Initializable{
             Creation creation = (Creation) table.getSelectionModel().getSelectedItem();
             String fileName = creation.getName() + ".mp4";
             File videoFile = new File("creations/" + fileName);
+
+            //Get time of play back
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+            LocalDateTime now = LocalDateTime.now();
+            creation.setViewTime(dtf.format(now));
+
             Media video = new Media(videoFile.toURI().toString());
             MediaPlayer player = new MediaPlayer(video);
             player.setAutoPlay(true);
             player.setOnReady(new Runnable() {
                 @Override
                 public void run() {
+
                     MediaView mediaView = new MediaView(player);
 
                     mediaView.setFitHeight(360);
 
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("media.fxml"));
+                    FXMLLoader loader = new FXMLLoader();
+                    loader.setLocation(getClass().getResource("media.fxml"));
 
                     MediaController mediaController = new MediaController(player);
+                    mediaController.initData(creationObservableList);
                     loader.setController(mediaController);
                     BorderPane root = null;
                     try {
+
                         root = (BorderPane) loader.load();
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -85,6 +98,8 @@ public class ReviewController implements Initializable{
                     Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
                     window.setScene(new Scene(root));
                     window.show();
+                    window.setWidth(640);
+                    window.setHeight(477);
                 }
             });
 
@@ -172,8 +187,9 @@ public class ReviewController implements Initializable{
     public void setTable() {
         tableName.setCellValueFactory(new PropertyValueFactory<>("name"));
         tableRating.setCellValueFactory(new PropertyValueFactory<>("confidenceRating"));
-        tableViewed.setCellValueFactory(new PropertyValueFactory<>("viewCount"));
+        tableViewed.setCellValueFactory(new PropertyValueFactory<>("viewTime"));
         table.setItems(creationObservableList);
+        table.refresh();
     }
 
     @Override
@@ -199,6 +215,11 @@ public class ReviewController implements Initializable{
                 }
                 if (creation.getConfidenceRating() == 5) {
                     setStar5();
+                }
+                if (creation.getViewTime().equals("N/A")) {
+                    lastViewed.setText("Not Viewed");
+                } else {
+                    lastViewed.setText(creation.getViewTime());
                 }
             }
         });
