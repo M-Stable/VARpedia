@@ -25,10 +25,13 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -185,6 +188,14 @@ public class ReviewController implements Initializable{
     }
 
     public void setTable() {
+        try {
+            FileOutputStream fos = new FileOutputStream("t.tmp");
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(new ArrayList<Creation>(creationObservableList));
+            oos.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         tableName.setCellValueFactory(new PropertyValueFactory<>("name"));
         tableRating.setCellValueFactory(new PropertyValueFactory<>("confidenceRating"));
         tableViewed.setCellValueFactory(new PropertyValueFactory<>("viewTime"));

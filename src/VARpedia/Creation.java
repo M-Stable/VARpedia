@@ -1,8 +1,8 @@
 package VARpedia;
 
-import java.time.LocalDateTime;
+import java.io.Serializable;
 
-public class Creation {
+public class Creation implements Serializable {
     private String name;
     private int confidenceRating;
     private String viewTime;

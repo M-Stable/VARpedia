@@ -27,7 +27,9 @@ import javafx.stage.Window;
 
 import javax.sound.sampled.*;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.URL;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
@@ -333,6 +335,17 @@ public class CreateCreationController implements Initializable {
                     public void handle(WorkerStateEvent workerStateEvent) {
                         Creation creation = new Creation(creationName, 0, "N/A");
                         creationObservableList.add(creation);
+
+                        //Add updated list to stored data
+                        try {
+                            FileOutputStream fos = new FileOutputStream("t.tmp");
+                            ObjectOutputStream oos = new ObjectOutputStream(fos);
+                            oos.writeObject(new ArrayList<Creation>(creationObservableList));
+                            oos.close();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
                         progressBar.setVisible(false);
                         disableNodes(true);
                         cleanUp();
