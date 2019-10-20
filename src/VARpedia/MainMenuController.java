@@ -92,7 +92,7 @@ public class MainMenuController implements Initializable {
         window.setResizable(false);
         window.setScene(newCreationScene);
         window.show();
-        window.setHeight(429);
+        window.setHeight(437);
         window.setWidth(640);
     }
 

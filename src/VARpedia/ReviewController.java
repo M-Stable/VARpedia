@@ -3,12 +3,14 @@ package VARpedia;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -25,6 +27,7 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class ReviewController implements Initializable{
@@ -88,7 +91,32 @@ public class ReviewController implements Initializable{
         }
     }
 
-    public void handleBackButton(ActionEvent actionEvent) throws IOException {
+    @FXML
+    public void handleDeleteButton(ActionEvent event) {
+        if (table.getSelectionModel().getSelectedItem() == null) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "No Creation selected");
+            alert.show();
+        } else {
+            Creation creation = (Creation) table.getSelectionModel().getSelectedItem();
+            String fileName = creation.getName() + ".mp4";
+            String filePath = "creations/" + fileName;
+            File selectedCreation = new File(filePath);
+
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Confirm Deletion");
+            alert.setHeaderText("Confirm Deletion");
+            alert.setContentText("Are you sure you want to delete " + selectedCreation.getName() + "?");
+
+            Optional<ButtonType> result = alert.showAndWait();
+
+            if (result.get() == ButtonType.OK) {
+                selectedCreation.delete();
+                setTable();
+            }
+        }
+    }
+
+    public void handleBackButton(MouseEvent actionEvent) throws IOException {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("mainMenu.fxml"));
         Parent mainParent = loader.load();
@@ -101,7 +129,7 @@ public class ReviewController implements Initializable{
         Stage window = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
         window.setScene(mainMenu);
         window.show();
-        window.setHeight(429);
+        window.setHeight(437);
         window.setWidth(640);
     }
 

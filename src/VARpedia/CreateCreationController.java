@@ -40,7 +40,7 @@ public class CreateCreationController implements Initializable {
     public VBox creationVbox;
     public HBox audioHbox;
     public Pane pane;
-    public Button backButton;
+    public ImageView backButton;
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     @FXML
@@ -73,7 +73,7 @@ public class CreateCreationController implements Initializable {
     }
 
     @FXML
-    public void handleBackButton(ActionEvent event) throws IOException {
+    public void handleBackButton(MouseEvent event) throws IOException {
         //Switch scene back to the main menu
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("mainMenu.fxml"));
@@ -87,7 +87,7 @@ public class CreateCreationController implements Initializable {
         Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
         window.setScene(mainMenu);
         window.show();
-        window.setHeight(429);
+        window.setHeight(437);
         window.setWidth(640);
     }
 
@@ -350,7 +350,11 @@ public class CreateCreationController implements Initializable {
                         Optional<ButtonType> result = alert.showAndWait();
 
                         if (result.get() == ButtonType.OK) {
-                            backButton.fire();
+                            try {
+                                goHome(actionEvent);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
                 });
@@ -663,5 +667,22 @@ public class CreateCreationController implements Initializable {
             e.printStackTrace();
         }
         return audioDuration;
+    }
+
+    public void goHome(ActionEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("mainMenu.fxml"));
+        Parent mainParent = loader.load();
+
+        Scene mainMenu = new Scene(mainParent);
+
+        MainMenuController mainMenuController = loader.getController();
+        mainMenuController.initData(creationObservableList);
+
+        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        window.setScene(mainMenu);
+        window.show();
+        window.setHeight(437);
+        window.setWidth(640);
     }
 }
