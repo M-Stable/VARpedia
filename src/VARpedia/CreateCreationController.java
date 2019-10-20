@@ -355,6 +355,7 @@ public class CreateCreationController implements Initializable {
                         previewCreationButton.setDisable(true);
                         createButton.setDisable(true);
                         textArea.setDisable(true);
+
                         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                         alert.setHeaderText("Successfully created");
                         alert.setContentText("Would you like to return to the menu?");
@@ -368,6 +369,10 @@ public class CreateCreationController implements Initializable {
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
+                        } else {
+                            Window window = createButton.getScene().getWindow();
+                            window.setHeight(506);
+                            window.setWidth(647);
                         }
                     }
                 });

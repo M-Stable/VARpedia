@@ -18,6 +18,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
@@ -47,6 +48,7 @@ public class ReviewController implements Initializable{
     public TableView table;
     public Text creationName;
     public Text lastViewed;
+    public HBox starsHbox;
     ObservableList<Creation> creationObservableList = FXCollections.observableArrayList();
 
     public void initData(ObservableList<Creation> creationObservableList){
@@ -128,6 +130,7 @@ public class ReviewController implements Initializable{
             Optional<ButtonType> result = alert.showAndWait();
 
             if (result.get() == ButtonType.OK) {
+                creationObservableList.remove(creation);
                 selectedCreation.delete();
                 setTable();
             }
@@ -205,8 +208,12 @@ public class ReviewController implements Initializable{
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        starsHbox.setVisible(false);
+        starsHbox.setDisable(true);
         table.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
+                starsHbox.setVisible(true);
+                starsHbox.setDisable(false);
                 Creation creation = (Creation) table.getSelectionModel().getSelectedItem();
                 creationName.setText(creation.getName());
                 if (creation.getConfidenceRating() == 0) {
