@@ -39,7 +39,7 @@
             <Button fx:id="saveAudioButton" mnemonicParsing="false" onAction="#handleSaveAudioButton" prefHeight="26.0" prefWidth="89.0" style="-fx-background-color: #90B8C8; -fx-text-fill: #FFFAF0;" text="Save" />
          </children>
       </HBox>
-      <VBox fx:id="creationVbox" layoutX="378.0" layoutY="479.0" prefHeight="254.0" prefWidth="250.0" spacing="30.0" style="-fx-background-color: #424D59;" visible="false">
+      <VBox fx:id="creationVbox" layoutX="378.0" layoutY="479.0" prefHeight="254.0" prefWidth="250.0" spacing="29.0" style="-fx-background-color: #424D59;" visible="false">
          <padding>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
          </padding>
@@ -50,7 +50,17 @@
                   <ComboBox fx:id="musicDropdown" onAction="#handleMusicComboBox" prefHeight="26.0" prefWidth="249.0" />
                </children>
             </VBox>
-            <Button fx:id="selectImagesButton" onAction="#handleSelectImagesButton" prefHeight="26.0" prefWidth="243.0" style="-fx-background-color: #90B8C8; -fx-text-fill: #FFFAF0;" text="Select Images" />
+            <VBox prefHeight="0.0" prefWidth="230.0" spacing="3.0">
+               <children>
+                  <Button fx:id="selectImagesButton" onAction="#handleSelectImagesButton" prefHeight="26.0" prefWidth="243.0" style="-fx-background-color: #90B8C8; -fx-text-fill: #FFFAF0;" text="Select Images" />
+                  <HBox prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <Label text="Number of images selected: " textFill="WHITE" />
+                        <Text fx:id="numberOfImages" fill="#ffc74f" strokeType="OUTSIDE" strokeWidth="0.0" text="0" />
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
             <VBox prefHeight="54.0" prefWidth="184.0">
                <children>
                   <Label text="Creation Name: " textFill="WHITE" />
