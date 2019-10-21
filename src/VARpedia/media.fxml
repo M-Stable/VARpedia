@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane prefHeight="440.0" prefWidth="640.0" style="-fx-background-color: #46555B;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="VARpedia.MediaController">
+<BorderPane prefHeight="440.0" prefWidth="640.0" style="-fx-background-color: #46555B;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
        <AnchorPane>
            <children>
@@ -25,14 +25,14 @@
                   <Image url="@../Images/back.png" />
                </image>
             </ImageView>
-            <Button layoutX="566.0" layoutY="5.0" mnemonicParsing="false" onAction="#handleBackButton" prefHeight="33.0" prefWidth="39.0" text="Button" visible="false" />
-            <Button layoutX="537.0" layoutY="405.0" mnemonicParsing="false" onAction="#handlePauseButton" prefHeight="32.0" prefWidth="36.0" text="Button" visible="false" />
+            <Button layoutX="566.0" layoutY="5.0" mnemonicParsing="false" onAction="#handleBackButton" prefHeight="33.0" prefWidth="39.0" text="Button" opacity="-Infinity" />
+            <Button layoutX="537.0" layoutY="405.0" mnemonicParsing="false" onAction="#handlePauseButton" prefHeight="32.0" prefWidth="36.0" text="Button" opacity="-Infinity" />
             <ImageView disable="true" fitHeight="38.0" fitWidth="37.0" layoutX="580.0" layoutY="403.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../Images/play.png" />
                </image>
             </ImageView>
-            <Button layoutX="580.0" layoutY="405.0" mnemonicParsing="false" onAction="#handlePlayButton" prefHeight="32.0" prefWidth="38.0" text="Button" visible="false" />
+            <Button layoutX="580.0" layoutY="405.0" mnemonicParsing="false" onAction="#handlePlayButton" prefHeight="32.0" prefWidth="38.0" text="Button" opacity="-Infinity" />
            </children>
        </AnchorPane>
    </children>

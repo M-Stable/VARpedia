@@ -16,10 +16,6 @@ public class MediaPreviewController implements Initializable{
 
     @FXML
     private Slider volumeSlider;
-
-    @FXML
-    private AnchorPane parentPane;
-
     private MediaPlayer player;
 
     @Override
@@ -46,15 +42,18 @@ public class MediaPreviewController implements Initializable{
     Play/pause the video when the plau/pause button is pressed
      */
     public void handlePlayButton(ActionEvent actionEvent) {
-        if(player.getStatus() == MediaPlayer.Status.PLAYING) {
-            player.pause();
-        } else {
+        if(player.getStatus() == MediaPlayer.Status.PAUSED) {
             player.play();
         }
-
     }
 
     public void setPlayer(MediaPlayer mediaPlayer) {
         player = mediaPlayer;
+    }
+
+    public void handlePauseButton(ActionEvent actionEvent) {
+        if(player.getStatus() == MediaPlayer.Status.PLAYING) {
+            player.pause();
+        }
     }
 }

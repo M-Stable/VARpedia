@@ -24,8 +24,8 @@
                   <Image url="@../Images/play.png" />
                </image>
             </ImageView>
-            <Button layoutX="535.0" layoutY="405.0" mnemonicParsing="false" onAction="#handlePauseButton" prefHeight="29.0" prefWidth="30.0" text="Button" visible="false" />
-            <Button layoutX="570.0" layoutY="405.0" mnemonicParsing="false" onAction="#handlePlayButton" prefHeight="29.0" prefWidth="30.0" text="Button" visible="false" />
+            <Button layoutX="535.0" layoutY="405.0" mnemonicParsing="false" onAction="#handlePauseButton" prefHeight="29.0" prefWidth="30.0" text="Button" opacity="-Infinity" />
+            <Button layoutX="570.0" layoutY="405.0" mnemonicParsing="false" onAction="#handlePlayButton" prefHeight="29.0" prefWidth="30.0" text="Button" opacity="-Infinity" />
             </children>
         </AnchorPane>
     </children>

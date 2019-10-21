@@ -117,7 +117,13 @@ public class MediaController implements Initializable{
             atEndOfMedia = false;
         } else if(status == MediaPlayer.Status.PAUSED || status == MediaPlayer.Status.READY || status == MediaPlayer.Status.STOPPED) {
             player.play();
-        } else {
+        }
+    }
+
+    public void handlePauseButton(ActionEvent actionEvent) {
+        MediaPlayer.Status status = player.getStatus();
+
+        if(status == MediaPlayer.Status.PLAYING) {
             player.pause();
         }
     }
