@@ -1,6 +1,8 @@
 package VARpedia;
 
 import Tasks.*;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.WorkerStateEvent;
@@ -256,27 +258,38 @@ public class CreateCreationController implements Initializable {
                         Media video = new Media(videoFile.toURI().toString());
                         MediaPlayer player = new MediaPlayer(video);
                         player.setAutoPlay(true);
-                        MediaView mediaView = new MediaView(player);
-
-                        mediaView.setFitHeight(360);
-
-                        FXMLLoader loader = new FXMLLoader(getClass().getResource("mediaPreview.fxml"));
-                        BorderPane root = null;
-                        try {
-                            root = (BorderPane) loader.load();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        root.setCenter(mediaView);
-                        MediaPreviewController mediaPreviewController = loader.getController();
-                        mediaPreviewController.setPlayer(player);
-                        Stage stage = new Stage();
-                        stage.setTitle("Preview");
-                        stage.setScene(new Scene(root));
-                        stage.show();
-                        stage.setOnCloseRequest(e -> {
-                            new File("creations/tempfile1.mp4").delete();
+                        player.setOnReady(new Runnable() {
+                            @Override
+                            public void run() {
+                                MediaView mediaView = new MediaView(player);
+                                mediaView.setFitHeight(360);
+                                //FXMLLoader loader = new FXMLLoader(getClass().getResource("mediaPreview.fxml"));
+                                FXMLLoader loader = new FXMLLoader(getClass().getResource("media.fxml"));
+                                MediaController mediaController = new MediaController(player, true);
+                                loader.setController(mediaController);
+                                BorderPane root = null;
+                                try {
+                                    root = (BorderPane) loader.load();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                root.setCenter(mediaView);
+                                //MediaPreviewController mediaPreviewController = loader.getController();
+                                //mediaPreviewController.setPlayer(player);
+                                Stage stage = new Stage();
+                                stage.setTitle("Preview");
+                                // root.getChildren().remove(root.lookup("#backButton"));
+                                // Scene scene = new Scene(root);
+                                // loader.
+                                //scene.rem
+                                stage.setScene(new Scene(root));
+                                stage.show();
+                                stage.setOnCloseRequest(e -> {
+                                    new File("creations/tempfile1.mp4").delete();
+                                });
+                            }
                         });
+
 
                     }
                 });
@@ -538,7 +551,9 @@ public class CreateCreationController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         musicDropdown.getItems().setAll("None", "Transmutation");
+        musicDropdown.getSelectionModel().selectFirst();
         comboBox.getItems().setAll("Deep Voice", "Light Voice");
+        comboBox.getSelectionModel().selectFirst();
         textArea.setWrapText(true);
         textArea.setDisable(true);
         searchButton.setDisable(true);

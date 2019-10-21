@@ -7,16 +7,21 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 
 import java.io.IOException;
@@ -24,6 +29,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class MediaController implements Initializable{
+
 
     @FXML
     private Slider volumeSlider;
@@ -34,12 +40,21 @@ public class MediaController implements Initializable{
     @FXML
     private Slider timeSlider;
 
+    @FXML
+    private Button backButton;
+
+    @FXML
+    private ImageView backImage;
+
     private MediaPlayer player;
+
+    private boolean preview;
 
     private boolean atEndOfMedia = false;
 
-    public MediaController(MediaPlayer player) {
+    public MediaController(MediaPlayer player, boolean preview) {
         this.player = player;
+        this.preview = preview;
     }
     ObservableList<Creation> creationObservableList = FXCollections.observableArrayList();
 
@@ -104,6 +119,17 @@ public class MediaController implements Initializable{
             }
         });
 
+        if(preview) {
+            parentPane.getChildren().remove(backButton);
+            parentPane.getChildren().remove(backImage);
+        }
+
+        /*parentPane.getScene().getWindow().setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent windowEvent) {
+                player.stop();
+            }
+        });*/
     }
 
     /*
@@ -148,5 +174,9 @@ public class MediaController implements Initializable{
         window.show();
         window.setHeight(437);
         window.setWidth(640);
+    }
+
+    public void setPreview() {
+
     }
 }
