@@ -312,6 +312,12 @@ public class CreateCreationController implements Initializable {
             Optional<ButtonType> result = alert.showAndWait();
 
             if (result.get() == ButtonType.OK) {
+                for (Creation creations : creationObservableList) {
+                    if (creations.getName().equals(creationName)) {
+                        creationObservableList.remove(creations);
+                        return;
+                    }
+                }
                 tmpDir.delete();
             } else {
                 return;
@@ -365,6 +371,7 @@ public class CreateCreationController implements Initializable {
                         previewCreationButton.setDisable(true);
                         createButton.setDisable(true);
                         textArea.setDisable(true);
+                        numberOfImages.setText("0");
 
                         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                         alert.setHeaderText("Successfully created");
