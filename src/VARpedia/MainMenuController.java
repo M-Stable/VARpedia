@@ -70,28 +70,33 @@ public class MainMenuController implements Initializable {
         imagesDir.mkdir();
         audioCreationsDir.mkdir();
 
-//        File[] creations = creationsDir.listFiles();
-//        for (File creation : creations) {
-//            if (creation.getName().contains(".mp4")) {
-//                creationObservableList.add(new Creation(creation.getName().replace(".mp4", ""), 0 ,"N/A"));
-//            }
-//        }
-//        try {
-//        FileOutputStream fos = new FileOutputStream("t.tmp");
-//        ObjectOutputStream oos = new ObjectOutputStream(fos);
-//        oos.writeObject(new ArrayList<Creation>(creationObservableList));
-//        oos.close();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-        try {
-            FileInputStream fis = new FileInputStream("t.tmp");
-            ObjectInputStream ois = new ObjectInputStream(fis);
-            List<Creation> list = (List<Creation>) ois.readObject();
-            creationObservableList = FXCollections.observableList(list);
-            ois.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+        //if this is the first time user opening this program, creating a file to store creation data else read from data file to set up list
+        File file = new File("data.tmp");
+        if (!file.exists()) {
+            File[] creations = creationsDir.listFiles();
+            for (File creation : creations) {
+                if (creation.getName().contains(".mp4")) {
+                    creationObservableList.add(new Creation(creation.getName().replace(".mp4", ""), 0 ,"N/A"));
+                }
+            }
+            try {
+                FileOutputStream fos = new FileOutputStream("data.tmp");
+                ObjectOutputStream oos = new ObjectOutputStream(fos);
+                oos.writeObject(new ArrayList<Creation>(creationObservableList));
+                oos.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            try {
+                FileInputStream fis = new FileInputStream("data.tmp");
+                ObjectInputStream ois = new ObjectInputStream(fis);
+                List<Creation> list = (List<Creation>) ois.readObject();
+                creationObservableList = FXCollections.observableList(list);
+                ois.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 

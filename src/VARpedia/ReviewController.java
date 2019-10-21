@@ -192,7 +192,7 @@ public class ReviewController implements Initializable{
 
     public void setTable() {
         try {
-            FileOutputStream fos = new FileOutputStream("t.tmp");
+            FileOutputStream fos = new FileOutputStream("data.tmp");
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             oos.writeObject(new ArrayList<Creation>(creationObservableList));
             oos.close();
