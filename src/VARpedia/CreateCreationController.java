@@ -217,8 +217,8 @@ public class CreateCreationController implements Initializable {
             });
             executorService.submit(previewAudio);
         } else {
-            previewButton.setText("Preview");
             previewAudio.stopAudio();
+            previewButton.setText("Preview");
         }
     }
 
