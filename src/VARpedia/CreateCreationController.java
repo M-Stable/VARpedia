@@ -13,6 +13,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -43,6 +44,7 @@ public class CreateCreationController implements Initializable {
     public HBox audioHbox;
     public Pane pane;
     public ImageView backButton;
+    public ImageView playAudio;
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     @FXML
@@ -51,8 +53,6 @@ public class CreateCreationController implements Initializable {
     private TextArea textArea;
     @FXML
     private ComboBox comboBox, musicDropdown;
-    @FXML
-    private Spinner spinner;
     @FXML
     private ListView<String> listForCreation = new ListView<>();
     @FXML
@@ -378,7 +378,6 @@ public class CreateCreationController implements Initializable {
                 });
             }
         });
-
     }
 
     @FXML
@@ -522,7 +521,11 @@ public class CreateCreationController implements Initializable {
         String filePath = "audioCreation/" + listForCreation.getSelectionModel().getSelectedItem() + ".wav";
         PlayAudioTask play = new PlayAudioTask(filePath);
         play.start();
-
+        if (playAudio.getImage().getUrl().contains("play.png")) {
+            playAudio.setImage(new Image("Images/stop.png"));
+        } else {
+            playAudio.setImage(new Image("Images/play.png"));
+        }
     }
 
     //Set initial settings for UI elements and enable the user of the enter key instead of some buttons
@@ -537,8 +540,16 @@ public class CreateCreationController implements Initializable {
         selectImagesButton.setDisable(true);
         createButton.setDisable(true);
         progressBar.setVisible(false);
+        playAudio.setDisable(true);
         cleanUp();
         disableNodes(true);
+
+        //enable play button once user clicks on an audio file
+        listForCreation.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                playAudio.setDisable(false);
+            }
+        });
 
         //Check if a change to the creation name text field contains invalid characters, and if it does remove them
         textCreationName.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -565,6 +576,7 @@ public class CreateCreationController implements Initializable {
             }
         });
 
+        //enable search button only once user types something in search
         searchField.textProperty().addListener(observable -> {
             searchButton.setDisable(false);
             if (searchField.getText().trim().isEmpty()) {
