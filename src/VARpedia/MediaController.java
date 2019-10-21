@@ -124,12 +124,6 @@ public class MediaController implements Initializable{
             parentPane.getChildren().remove(backImage);
         }
 
-        /*parentPane.getScene().getWindow().setOnCloseRequest(new EventHandler<WindowEvent>() {
-            @Override
-            public void handle(WindowEvent windowEvent) {
-                player.stop();
-            }
-        });*/
     }
 
     /*
@@ -176,7 +170,4 @@ public class MediaController implements Initializable{
         window.setWidth(640);
     }
 
-    public void setPreview() {
-
-    }
 }

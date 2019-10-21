@@ -28,6 +28,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+import javafx.stage.WindowEvent;
 
 import javax.sound.sampled.*;
 import java.io.File;
@@ -286,14 +287,11 @@ public class CreateCreationController implements Initializable {
                                 //mediaPreviewController.setPlayer(player);
                                 Stage stage = new Stage();
                                 stage.setTitle("Preview");
-                                // root.getChildren().remove(root.lookup("#backButton"));
-                                // Scene scene = new Scene(root);
-                                // loader.
-                                //scene.rem
                                 stage.setScene(new Scene(root));
                                 stage.show();
                                 stage.setOnCloseRequest(e -> {
                                     new File("creations/tempfile1.mp4").delete();
+                                    player.stop();
                                 });
                             }
                         });
