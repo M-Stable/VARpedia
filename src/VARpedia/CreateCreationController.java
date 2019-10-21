@@ -68,6 +68,7 @@ public class CreateCreationController implements Initializable {
     private String highlightedText = "";
     private String searchTextFinal = "";
 
+    private PlayAudioTask playAudioTask;
     public List<File> images = new ArrayList<File>();
     private ObservableList<String> audioCreationList = FXCollections.observableArrayList();
     ObservableList<Creation> creationObservableList = FXCollections.observableArrayList();
@@ -524,12 +525,21 @@ public class CreateCreationController implements Initializable {
 
     @FXML
     public void handlePlayAudio(MouseEvent mouseEvent){
-        String filePath = "audioCreation/" + listForCreation.getSelectionModel().getSelectedItem() + ".wav";
-        PlayAudioTask play = new PlayAudioTask(filePath);
-        play.start();
         if (playAudio.getImage().getUrl().contains("play.png")) {
+            String filePath = "audioCreation/" + listForCreation.getSelectionModel().getSelectedItem() + ".wav";
+            playAudioTask = new PlayAudioTask(filePath);
+            executorService.submit(playAudioTask);
+            playAudioTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+                @Override
+                public void handle(WorkerStateEvent workerStateEvent) {
+                    if (playAudioTask.getValue() == "done") {
+                        playAudio.setImage(new Image("Images/play.png"));
+                    }
+                }
+            });
             playAudio.setImage(new Image("Images/stop.png"));
         } else {
+            playAudioTask.stopAudio();
             playAudio.setImage(new Image("Images/play.png"));
         }
     }

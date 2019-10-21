@@ -1,23 +1,36 @@
 package Tasks;
 
+import javafx.concurrent.Task;
+
 import java.io.IOException;
 
-public class PlayAudioTask extends Thread{
+public class PlayAudioTask extends Task<String> {
 
     private String file;
+    Process process;
 
     public PlayAudioTask(String file) {
         this.file = file;
     }
 
-    public void run(){
+    @Override
+    protected String call() throws Exception {
         String command = "ffplay -nodisp " + file ;
         ProcessBuilder pb = new ProcessBuilder("bash", "-c", command);
         try {
-            pb.start();
+            process = pb.start();
+            if (process.waitFor() == 0) {
+                return "done";
+            } else {
+                return null;
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return command;
+    }
 
+    public void stopAudio() {
+        process.destroy();
     }
 }
