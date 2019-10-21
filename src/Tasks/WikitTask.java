@@ -37,7 +37,7 @@ public class WikitTask extends Task<String> {
          */
         int exitStatus = process.waitFor();
         if (exitStatus == 0) {
-            output = stdout.readLine();
+            output = stdout.readLine().trim();
         } else {
             String line;
             while ((line = stderr.readLine()) != null) {

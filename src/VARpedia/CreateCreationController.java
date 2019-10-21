@@ -13,6 +13,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -27,7 +28,9 @@ import javafx.stage.Window;
 
 import javax.sound.sampled.*;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.URL;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
@@ -40,7 +43,8 @@ public class CreateCreationController implements Initializable {
     public VBox creationVbox;
     public HBox audioHbox;
     public Pane pane;
-    public Button backButton;
+    public ImageView backButton;
+    public ImageView playAudio;
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     @FXML
@@ -49,8 +53,6 @@ public class CreateCreationController implements Initializable {
     private TextArea textArea;
     @FXML
     private ComboBox comboBox, musicDropdown;
-    @FXML
-    private Spinner spinner;
     @FXML
     private ListView<String> listForCreation = new ListView<>();
     @FXML
@@ -73,7 +75,7 @@ public class CreateCreationController implements Initializable {
     }
 
     @FXML
-    public void handleBackButton(ActionEvent event) throws IOException {
+    public void handleBackButton(MouseEvent event) throws IOException {
         //Switch scene back to the main menu
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("mainMenu.fxml"));
@@ -87,7 +89,7 @@ public class CreateCreationController implements Initializable {
         Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
         window.setScene(mainMenu);
         window.show();
-        window.setHeight(429);
+        window.setHeight(437);
         window.setWidth(640);
     }
 
@@ -331,8 +333,19 @@ public class CreateCreationController implements Initializable {
 
                     @Override
                     public void handle(WorkerStateEvent workerStateEvent) {
-                        Creation creation = new Creation(creationName, 0, 0);
+                        Creation creation = new Creation(creationName, 0, "N/A");
                         creationObservableList.add(creation);
+
+                        //Add updated list to stored data
+                        try {
+                            FileOutputStream fos = new FileOutputStream("data.tmp");
+                            ObjectOutputStream oos = new ObjectOutputStream(fos);
+                            oos.writeObject(new ArrayList<Creation>(creationObservableList));
+                            oos.close();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
                         progressBar.setVisible(false);
                         disableNodes(true);
                         cleanUp();
@@ -342,6 +355,7 @@ public class CreateCreationController implements Initializable {
                         previewCreationButton.setDisable(true);
                         createButton.setDisable(true);
                         textArea.setDisable(true);
+
                         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                         alert.setHeaderText("Successfully created");
                         alert.setContentText("Would you like to return to the menu?");
@@ -350,13 +364,20 @@ public class CreateCreationController implements Initializable {
                         Optional<ButtonType> result = alert.showAndWait();
 
                         if (result.get() == ButtonType.OK) {
-                            backButton.fire();
+                            try {
+                                goHome(actionEvent);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        } else {
+                            Window window = createButton.getScene().getWindow();
+                            window.setHeight(506);
+                            window.setWidth(647);
                         }
                     }
                 });
             }
         });
-
     }
 
     @FXML
@@ -500,7 +521,11 @@ public class CreateCreationController implements Initializable {
         String filePath = "audioCreation/" + listForCreation.getSelectionModel().getSelectedItem() + ".wav";
         PlayAudioTask play = new PlayAudioTask(filePath);
         play.start();
-
+        if (playAudio.getImage().getUrl().contains("play.png")) {
+            playAudio.setImage(new Image("Images/stop.png"));
+        } else {
+            playAudio.setImage(new Image("Images/play.png"));
+        }
     }
 
     //Set initial settings for UI elements and enable the user of the enter key instead of some buttons
@@ -515,8 +540,16 @@ public class CreateCreationController implements Initializable {
         selectImagesButton.setDisable(true);
         createButton.setDisable(true);
         progressBar.setVisible(false);
+        playAudio.setDisable(true);
         cleanUp();
         disableNodes(true);
+
+        //enable play button once user clicks on an audio file
+        listForCreation.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                playAudio.setDisable(false);
+            }
+        });
 
         //Check if a change to the creation name text field contains invalid characters, and if it does remove them
         textCreationName.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -543,6 +576,7 @@ public class CreateCreationController implements Initializable {
             }
         });
 
+        //enable search button only once user types something in search
         searchField.textProperty().addListener(observable -> {
             searchButton.setDisable(false);
             if (searchField.getText().trim().isEmpty()) {
@@ -663,5 +697,22 @@ public class CreateCreationController implements Initializable {
             e.printStackTrace();
         }
         return audioDuration;
+    }
+
+    public void goHome(ActionEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("mainMenu.fxml"));
+        Parent mainParent = loader.load();
+
+        Scene mainMenu = new Scene(mainParent);
+
+        MainMenuController mainMenuController = loader.getController();
+        mainMenuController.initData(creationObservableList);
+
+        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        window.setScene(mainMenu);
+        window.show();
+        window.setHeight(437);
+        window.setWidth(640);
     }
 }

@@ -3,12 +3,14 @@ package VARpedia;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -16,6 +18,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
@@ -23,8 +26,14 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.URL;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class ReviewController implements Initializable{
@@ -35,9 +44,11 @@ public class ReviewController implements Initializable{
     public ImageView star5;
     public TableColumn<Creation, String> tableName;
     public TableColumn<Creation, Integer> tableRating;
-    public TableColumn<Creation, Integer> tableViewed;
+    public TableColumn<Creation, String> tableViewed;
     public TableView table;
     public Text creationName;
+    public Text lastViewed;
+    public HBox starsHbox;
     ObservableList<Creation> creationObservableList = FXCollections.observableArrayList();
 
     public void initData(ObservableList<Creation> creationObservableList){
@@ -56,22 +67,32 @@ public class ReviewController implements Initializable{
             Creation creation = (Creation) table.getSelectionModel().getSelectedItem();
             String fileName = creation.getName() + ".mp4";
             File videoFile = new File("creations/" + fileName);
+
+            //Get time of play back
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+            LocalDateTime now = LocalDateTime.now();
+            creation.setViewTime(dtf.format(now));
+
             Media video = new Media(videoFile.toURI().toString());
             MediaPlayer player = new MediaPlayer(video);
             player.setAutoPlay(true);
             player.setOnReady(new Runnable() {
                 @Override
                 public void run() {
+
                     MediaView mediaView = new MediaView(player);
 
                     mediaView.setFitHeight(360);
 
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("media.fxml"));
+                    FXMLLoader loader = new FXMLLoader();
+                    loader.setLocation(getClass().getResource("media.fxml"));
 
                     MediaController mediaController = new MediaController(player);
+                    mediaController.initData(creationObservableList);
                     loader.setController(mediaController);
                     BorderPane root = null;
                     try {
+
                         root = (BorderPane) loader.load();
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -82,13 +103,41 @@ public class ReviewController implements Initializable{
                     Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
                     window.setScene(new Scene(root));
                     window.show();
+                    window.setWidth(640);
+                    window.setHeight(477);
                 }
             });
 
         }
     }
 
-    public void handleBackButton(ActionEvent actionEvent) throws IOException {
+    @FXML
+    public void handleDeleteButton(ActionEvent event) {
+        if (table.getSelectionModel().getSelectedItem() == null) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "No Creation selected");
+            alert.show();
+        } else {
+            Creation creation = (Creation) table.getSelectionModel().getSelectedItem();
+            String fileName = creation.getName() + ".mp4";
+            String filePath = "creations/" + fileName;
+            File selectedCreation = new File(filePath);
+
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Confirm Deletion");
+            alert.setHeaderText("Confirm Deletion");
+            alert.setContentText("Are you sure you want to delete " + selectedCreation.getName() + "?");
+
+            Optional<ButtonType> result = alert.showAndWait();
+
+            if (result.get() == ButtonType.OK) {
+                creationObservableList.remove(creation);
+                selectedCreation.delete();
+                setTable();
+            }
+        }
+    }
+
+    public void handleBackButton(MouseEvent actionEvent) throws IOException {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("mainMenu.fxml"));
         Parent mainParent = loader.load();
@@ -101,7 +150,7 @@ public class ReviewController implements Initializable{
         Stage window = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
         window.setScene(mainMenu);
         window.show();
-        window.setHeight(429);
+        window.setHeight(437);
         window.setWidth(640);
     }
 
@@ -142,16 +191,29 @@ public class ReviewController implements Initializable{
     }
 
     public void setTable() {
+        try {
+            FileOutputStream fos = new FileOutputStream("data.tmp");
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(new ArrayList<Creation>(creationObservableList));
+            oos.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         tableName.setCellValueFactory(new PropertyValueFactory<>("name"));
         tableRating.setCellValueFactory(new PropertyValueFactory<>("confidenceRating"));
-        tableViewed.setCellValueFactory(new PropertyValueFactory<>("viewCount"));
+        tableViewed.setCellValueFactory(new PropertyValueFactory<>("viewTime"));
         table.setItems(creationObservableList);
+        table.refresh();
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        starsHbox.setVisible(false);
+        starsHbox.setDisable(true);
         table.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
+                starsHbox.setVisible(true);
+                starsHbox.setDisable(false);
                 Creation creation = (Creation) table.getSelectionModel().getSelectedItem();
                 creationName.setText(creation.getName());
                 if (creation.getConfidenceRating() == 0) {
@@ -171,6 +233,11 @@ public class ReviewController implements Initializable{
                 }
                 if (creation.getConfidenceRating() == 5) {
                     setStar5();
+                }
+                if (creation.getViewTime().equals("N/A")) {
+                    lastViewed.setText("Not Viewed");
+                } else {
+                    lastViewed.setText(creation.getViewTime());
                 }
             }
         });

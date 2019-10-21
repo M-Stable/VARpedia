@@ -33,7 +33,7 @@
       </Button>
       <VBox layoutX="319.0" layoutY="96.0" prefHeight="208.0" prefWidth="250.0" spacing="10.0">
          <children>
-            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Creation:">
+            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Name:">
                <font>
                   <Font name="Arial" size="19.0" />
                </font>
@@ -50,7 +50,7 @@
                   <Font name="Arial" size="19.0" />
                </font>
             </Text>
-            <HBox prefHeight="35.0" prefWidth="250.0" spacing="6.0">
+            <HBox fx:id="starsHbox" prefHeight="35.0" prefWidth="250.0" spacing="6.0">
                <children>
                   <ImageView fx:id="star1" fitHeight="30.0" fitWidth="30.0" onMouseClicked="#handleClick1" pickOnBounds="true" preserveRatio="true">
                      <image>

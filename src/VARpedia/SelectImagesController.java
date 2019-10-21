@@ -115,18 +115,17 @@ public class SelectImagesController implements Initializable {
                         radioButton.setMaxSize(10, 10);
                         radioButton.setLayoutX(95);
                         radioButton.setLayoutY(207.5);
-                        radioButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
-                            private boolean set = false;
+                        pane.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
                             @Override
                             public void handle(MouseEvent mouseEvent) {
-                                set = !set;
+                               boolean set = radioButton.isSelected();
                                 String fileURL = imageView.getImage().getUrl();
 
                                 File selectedImage = new File(fileURL);
 
-                                if (set) {
+                                if (!set) {
                                     selectedImages.add(selectedImage);
                                     radioButton.setSelected(true);
                                 } else {
@@ -135,6 +134,7 @@ public class SelectImagesController implements Initializable {
                                 }
                             }
                         });
+                        
                         tilePane.getChildren().add(pane);
                     }
                 }

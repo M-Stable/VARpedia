@@ -1,14 +1,16 @@
 package VARpedia;
 
-public class Creation {
+import java.io.Serializable;
+
+public class Creation implements Serializable {
     private String name;
     private int confidenceRating;
-    private int viewCount;
+    private String viewTime;
 
-    public Creation(String name, int confidenceRating, int viewCount) {
+    public Creation(String name, int confidenceRating, String viewCount) {
         this.name = name;
         this.confidenceRating = confidenceRating;
-        this.viewCount = viewCount;
+        this.viewTime = viewCount;
     }
 
     public String getName() {
@@ -23,11 +25,11 @@ public class Creation {
         this.confidenceRating = confidenceRating;
     }
 
-    public int getViewCount() {
-        return viewCount;
+    public String getViewTime() {
+        return viewTime;
     }
 
-    public void setViewCount(int viewCount) {
-        this.viewCount = viewCount;
+    public void setViewTime(String viewCount) {
+        this.viewTime = viewCount;
     }
 }

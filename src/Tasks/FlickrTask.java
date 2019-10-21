@@ -81,7 +81,7 @@ public class FlickrTask extends Task<String> {
         for(Photo photo : results) {
             try {
                 BufferedImage image = photos.getImage(photo, Size.LARGE);
-                String filename = query.trim()+imageID+".jpg";
+                String filename = query.replaceAll("\\s", "")+imageID+".jpg";
                 File outputFile = new File("images/", filename);
                 images.add(outputFile);
                 ImageIO.write(image, "jpg", outputFile);
