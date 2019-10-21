@@ -19,7 +19,7 @@
       <Separator layoutX="57.0" layoutY="55.0" prefHeight="0.0" prefWidth="518.0" />
       <ImageView fx:id="backButton" accessibleRole="BUTTON" fitHeight="30.0" fitWidth="30.0" layoutX="545.0" layoutY="20.0" onMouseClicked="#handleBackButton" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../Images/return.png" />
+            <Image url="@../Images/back.png" />
          </image>
       </ImageView>
    </children>

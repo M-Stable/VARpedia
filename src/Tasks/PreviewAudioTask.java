@@ -6,6 +6,7 @@ public class PreviewAudioTask extends Task<String> {
 
     private String comboBoxValue;
     private String highlightedText;
+    private Process process;
 
     public PreviewAudioTask(String comboBoxValue, String highlightedText) {
         this.comboBoxValue = comboBoxValue;
@@ -29,10 +30,10 @@ public class PreviewAudioTask extends Task<String> {
          */
         ProcessBuilder pb = new ProcessBuilder("bash", "-c", command);
         try {
-            Process process = pb.start();
+            process = pb.start();
             int exitStatus = process.waitFor();
             if (exitStatus == 0) {
-                return null;
+                return "done";
             } else {
                 return null;
             }
@@ -40,5 +41,9 @@ public class PreviewAudioTask extends Task<String> {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public void stopAudio() {
+        process.destroy();
     }
 }

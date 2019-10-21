@@ -85,7 +85,7 @@
       </VBox>
       <ImageView fx:id="backButton" accessibleRole="BUTTON" fitHeight="30.0" fitWidth="30.0" layoutX="601.0" layoutY="17.0" onMouseClicked="#handleBackButton" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../Images/return.png" />
+            <Image url="@../Images/back.png" />
          </image>
       </ImageView>
       <Separator layoutX="319.0" layoutY="52.0" prefHeight="1.0" prefWidth="312.0" />
