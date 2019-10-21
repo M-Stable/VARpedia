@@ -69,6 +69,7 @@ public class CreateCreationController implements Initializable {
     private String searchTextFinal = "";
 
     private PlayAudioTask playAudioTask;
+    private PreviewAudioTask previewAudio;
     public List<File> images = new ArrayList<File>();
     private ObservableList<String> audioCreationList = FXCollections.observableArrayList();
     ObservableList<Creation> creationObservableList = FXCollections.observableArrayList();
@@ -179,37 +180,43 @@ public class CreateCreationController implements Initializable {
 
     @FXML
     public void handlePreviewButton(ActionEvent actionEvent) throws IOException {
-        highlightedText = textArea.getSelectedText();
-        String[] words = highlightedText.split("\\s+");
+        if (previewButton.getText().equals("Preview")) {
+            previewButton.setText("Stop");
+            highlightedText = textArea.getSelectedText();
+            String[] words = highlightedText.split("\\s+");
 
-        //Check if the user has entered a valid amount of text and selected a speech synthesizer
+            //Check if the user has entered a valid amount of text and selected a speech synthesizer
 
-        if (words.length > 40) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Highlighted text too large");
-            alert.show();
-            return;
-        } else if (highlightedText.isEmpty()) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Please select some text");
-            alert.show();
-            return;
-        }
-        String comboBoxValue = comboBox.getValue().toString();
-
-        //Disable some UI elements
-        previewButton.setDisable(true);
-        saveAudioButton.setDisable(true);
-
-        //Play the selected text using the selected speech synthesizer
-        PreviewAudioTask previewAudio = new PreviewAudioTask(comboBoxValue, highlightedText);
-        executorService.submit(previewAudio);
-        previewAudio.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-            @Override
-            public void handle(WorkerStateEvent workerStateEvent) {
-                //re-enable UI elements
-                previewButton.setDisable(false);
-                saveAudioButton.setDisable(false);
+            if (words.length > 40) {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Highlighted text too large");
+                alert.show();
+                return;
+            } else if (highlightedText.isEmpty()) {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Please select some text");
+                alert.show();
+                return;
             }
-        });
+            String comboBoxValue = comboBox.getValue().toString();
+
+            //Play the selected text using the selected speech synthesizer
+            previewAudio = new PreviewAudioTask(comboBoxValue, highlightedText);
+            previewAudio.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+                @Override
+                public void handle(WorkerStateEvent workerStateEvent) {
+                    try {
+                        if (previewAudio.getValue().equals("done")) {
+                            previewButton.setText("Preview");
+                        }
+                    } catch (Exception ignored) {
+                        //stop button was pressed
+                    }
+                }
+            });
+            executorService.submit(previewAudio);
+        } else {
+            previewButton.setText("Preview");
+            previewAudio.stopAudio();
+        }
     }
 
     public void handlePreviewCreationButton(ActionEvent actionEvent) {
@@ -526,18 +533,22 @@ public class CreateCreationController implements Initializable {
     @FXML
     public void handlePlayAudio(MouseEvent mouseEvent){
         if (playAudio.getImage().getUrl().contains("play.png")) {
+            playAudio.setImage(new Image("Images/stop.png"));
             String filePath = "audioCreation/" + listForCreation.getSelectionModel().getSelectedItem() + ".wav";
             playAudioTask = new PlayAudioTask(filePath);
-            executorService.submit(playAudioTask);
             playAudioTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
                 @Override
                 public void handle(WorkerStateEvent workerStateEvent) {
-                    if (playAudioTask.getValue() == "done") {
-                        playAudio.setImage(new Image("Images/play.png"));
+                    try {
+                        if (playAudioTask.getValue().equals("done")) {
+                            playAudio.setImage(new Image("Images/play.png"));
+                        }
+                    } catch (Exception ignored) {
+                        //stop button was pressed
                     }
                 }
             });
-            playAudio.setImage(new Image("Images/stop.png"));
+            executorService.submit(playAudioTask);
         } else {
             playAudioTask.stopAudio();
             playAudio.setImage(new Image("Images/play.png"));
