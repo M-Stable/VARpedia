@@ -103,7 +103,7 @@ public class CreateCreationController implements Initializable {
     public void handleSearchButton(ActionEvent actionEvent) {
 
         //If there is a previous search term, restart audio list to prevent mixing of audio clips.
-        if (!searchTextFinal.equals("")) {
+        if (!searchTextFinal.equals("") && !audioCreationList.isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setHeaderText("Delete audio files?");
             alert.setContentText("Searching another term results in deleting all saved audio files");
@@ -254,7 +254,6 @@ public class CreateCreationController implements Initializable {
                         //Remove progress bar and re-enable UI elements as well as deleting unnecessary files
 
                         progressBar.setVisible(false);
-                        createButton.setDisable(false);
                         previewCreationButton.setDisable(false);
 
                         new File("creations/out.mp3").delete();
