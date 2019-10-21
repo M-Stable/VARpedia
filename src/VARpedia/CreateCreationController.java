@@ -231,7 +231,6 @@ public class CreateCreationController implements Initializable {
 
         //Show progress and disable other UI elements while the preview creation process is occurring
         progressBar.setVisible(true);
-        createButton.setDisable(true);
         previewCreationButton.setDisable(true);
 
         //Create preview creation for the user. Merges audio files, then gets images from Flickr, and then combines
