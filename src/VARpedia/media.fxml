@@ -20,12 +20,12 @@
                   <Image url="@../Images/pause.png" />
                </image>
             </ImageView>
-            <ImageView disable="true" fitHeight="36.0" fitWidth="30.0" layoutX="570.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="backImage" disable="true" fitHeight="36.0" fitWidth="30.0" layoutX="570.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../Images/back.png" />
                </image>
             </ImageView>
-            <Button layoutX="566.0" layoutY="5.0" mnemonicParsing="false" onAction="#handleBackButton" prefHeight="33.0" prefWidth="39.0" text="Button" opacity="-Infinity" />
+            <Button fx:id="backButton" layoutX="566.0" layoutY="5.0" mnemonicParsing="false" onAction="#handleBackButton" prefHeight="33.0" prefWidth="39.0" text="Button" opacity="-Infinity" />
             <Button layoutX="537.0" layoutY="405.0" mnemonicParsing="false" onAction="#handlePauseButton" prefHeight="32.0" prefWidth="36.0" text="Button" opacity="-Infinity" />
             <ImageView disable="true" fitHeight="38.0" fitWidth="37.0" layoutX="580.0" layoutY="403.0" pickOnBounds="true" preserveRatio="true">
                <image>
