@@ -2,7 +2,6 @@ package VARpedia;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -56,7 +55,7 @@ public class ReviewController implements Initializable{
         setTable();
     }
 
-    public void handlePlayButton(ActionEvent event) {
+    public void handlePlayButton(MouseEvent event) {
         if (table.getSelectionModel().getSelectedItem() == null) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "No Creation selected");
             alert.show();
@@ -112,7 +111,7 @@ public class ReviewController implements Initializable{
     }
 
     @FXML
-    public void handleDeleteButton(ActionEvent event) {
+    public void handleDeleteButton(MouseEvent event) {
         if (table.getSelectionModel().getSelectedItem() == null) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "No Creation selected");
             alert.show();

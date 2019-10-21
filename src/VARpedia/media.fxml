@@ -7,14 +7,14 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane prefHeight="440.0" prefWidth="640.0" style="-fx-background-color: #46555B;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane prefHeight="440.0" prefWidth="640.0" style="-fx-background-color: #46555B;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="VARpedia.MediaController">
    <children>
        <AnchorPane>
            <children>
               <Label layoutX="35.0" layoutY="400.0" text="Volume" textFill="WHITE" />
               <Slider fx:id="volumeSlider" layoutX="14.0" layoutY="415.0" prefHeight="14.0" prefWidth="89.0" />
               <Slider fx:id="timeSlider" layoutX="133.0" layoutY="405.0" prefHeight="35.0" prefWidth="394.0" />
-            <ImageView accessibleRole="BUTTON" fitHeight="44.0" fitWidth="37.0" layoutX="567.0" layoutY="401.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="pauseButton" accessibleRole="BUTTON" fitHeight="44.0" fitWidth="37.0" layoutX="567.0" layoutY="401.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../Images/pause.png" />
                </image>

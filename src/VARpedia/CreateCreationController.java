@@ -22,6 +22,7 @@ import javafx.scene.layout.*;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
+import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -45,6 +46,7 @@ public class CreateCreationController implements Initializable {
     public Pane pane;
     public ImageView backButton;
     public ImageView playAudio;
+    public Text numberOfImages;
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     @FXML
@@ -514,6 +516,10 @@ public class CreateCreationController implements Initializable {
         secondaryStage.setTitle("Select Images");
         secondaryStage.setScene(new Scene(root, 1080, 510));
         secondaryStage.show();
+
+        secondaryStage.setOnHiding(e -> {
+            numberOfImages.setText(String.valueOf(images.size()));
+        });
     }
 
     @FXML
@@ -657,8 +663,10 @@ public class CreateCreationController implements Initializable {
 
 
     public void handleComboBox(ActionEvent actionEvent) {
-        previewButton.setDisable(false);
-        saveAudioButton.setDisable(false);
+        if (!searchField.getText().isEmpty()) {
+            saveAudioButton.setDisable(false);
+            previewButton.setDisable(false);
+        }
     }
 
     public void handleMusicComboBox(ActionEvent actionEvent) {

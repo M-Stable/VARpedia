@@ -101,11 +101,6 @@
                   <Image url="@../Images/delete.png" />
                </image>
             </ImageView>
-            <ImageView fitHeight="44.0" fitWidth="44.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../Images/deleteAll.png" />
-               </image>
-            </ImageView>
          </children>
       </HBox>
    </children>

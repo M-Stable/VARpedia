@@ -131,4 +131,7 @@ public class MainMenuController implements Initializable {
         window.setHeight(429);
         window.setWidth(640);
     }
+
+    public void handleHelpButton(ActionEvent actionEvent) {
+    }
 }
