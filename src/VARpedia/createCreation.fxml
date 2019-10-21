@@ -116,7 +116,7 @@
       <ProgressBar fx:id="progressBar" layoutX="29.0" layoutY="392.0" prefHeight="26.0" prefWidth="594.0" />
       <ImageView fx:id="backButton" accessibleRole="BUTTON" fitHeight="30.0" fitWidth="30.0" layoutX="593.0" layoutY="26.0" onMouseClicked="#handleBackButton" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../Images/return.png" />
+            <Image url="@../Images/back.png" />
          </image>
       </ImageView>
       <Separator layoutX="29.0" layoutY="61.0" prefHeight="0.0" prefWidth="594.0" />
