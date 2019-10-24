@@ -1,8 +1,13 @@
 package VARpedia;
 
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -10,11 +15,15 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Slider;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -23,6 +32,10 @@ public class MainMenuController implements Initializable {
 
     @FXML
     public Button newCreationButton;
+    @FXML
+    public Slider sliderSelector;
+    @FXML
+    public Text creationText;
 
     private File creationsDir;
     private File imagesDir;
@@ -98,6 +111,15 @@ public class MainMenuController implements Initializable {
                 e.printStackTrace();
             }
         }
+
+        creationText.setText(getPriorityCreation());
+
+        sliderSelector.valueProperty().addListener(new InvalidationListener() {
+            @Override
+            public void invalidated(Observable observable) {
+                creationText.setText(getPriorityCreation());
+            }
+        });
     }
 
     public void handleReviewButton(ActionEvent event) throws IOException {
@@ -117,6 +139,19 @@ public class MainMenuController implements Initializable {
         window.show();
         window.setHeight(437);
         window.setWidth(640);
+    }
+
+    public String getPriorityCreation() {
+        Creation creation = null;
+        if(Math.round(sliderSelector.getValue())  == 0) {
+            creation = creationObservableList.sorted(Comparator.comparing(Creation::getConfidenceRating)).get(0);
+        } else if(Math.round(sliderSelector.getValue()) == 1){
+            creation = creationObservableList.sorted(Comparator.comparing(Creation::getViewTime)).get(0);
+        } else {
+            return null;
+        }
+
+        return creation.getName();
     }
 
     public void handleCreditsButton(ActionEvent event) throws IOException {
