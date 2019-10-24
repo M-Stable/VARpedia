@@ -36,6 +36,9 @@ public class WikitTask extends Task<String> {
         int exitStatus = process.waitFor();
         if (exitStatus == 0) {
             output = stdout.readLine().trim();
+            if (output.equals(textSearch.getText() + " not found :^(")) {
+                return "ERROR";
+            }
         } else {
             String line;
             while ((line = stderr.readLine()) != null) {

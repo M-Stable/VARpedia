@@ -103,33 +103,11 @@ public class CreateCreationController implements Initializable {
 
     @FXML
     public void handleSearchButton(ActionEvent actionEvent) {
-
         //If there is a previous search term, restart audio list to prevent mixing of audio clips.
-        if (!searchTextFinal.equals("") && !audioCreationList.isEmpty()) {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setHeaderText("Delete audio files?");
-            alert.setContentText("Searching another term results in deleting all saved audio files");
-
-            Optional<ButtonType> result = alert.showAndWait();
-
-            if (result.get() == ButtonType.OK) {
-                for (File file : audioCreationDir.listFiles()) {
-                    if (!file.isDirectory()) {
-                        file.delete();
-                    }
-                }
-                listForCreation.getItems().clear();
-                listForCreation.setItems(audioCreationList);
-                previewCreationButton.setDisable(true);
-                createButton.setDisable(true);
-            } else {
-                return;
-            }
+        if (!checkReSearch()) {
+            return;
         }
-
-        //Disable some UI elements
         disableNodes(true);
-
         //Check if search field is not empty
         String searchText = searchField.getText();
         try {
@@ -140,47 +118,18 @@ public class CreateCreationController implements Initializable {
             wikit.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
                 @Override
                 public void handle(WorkerStateEvent workerStateEvent) {
-
                     //Check if the wikit search result was valid
-
                     if (wikit.getValue().equals("ERROR")) {
-
                         //Display alert to user before deleting unnecessary file, clearing the text field and
                         //disabling UI elements if no text is already present from a previous search
-
-                        Alert alert = new Alert(Alert.AlertType.ERROR, "Result not found");
-                        alert.show();
-                        File file = new File("./" + searchField.getText() + ".txt");
-                        file.delete();
-                        searchField.clear();
-                        progressBar.setVisible(false);
-                        String isEmpty = textArea.getText();
-                        if (isEmpty.equals("")) {
-                            disableNodes(true);
-                            textArea.setDisable(true);
-                        } else {
-                            disableNodes(false);
-                        }
+                        errorSearch();
                     } else {
-                        BreakIterator iterator = BreakIterator.getSentenceInstance(Locale.US);
-                        iterator.setText(wikit.getValue());
-                        int start = 0;
-                        while (iterator.next() != BreakIterator.DONE) {
-                            String sentence = wikit.getValue().substring(start, iterator.current());
-                            textArea.appendText(sentence + "\n");
-                            start = iterator.current();
-                        }
-
+                        setTextArea(wikit.getValue());
                         searchTextFinal = searchText;
                         //Enable UI elements again, remove progress bar and display wikit result text
-                        if (comboBox.getValue() != null) {
-                            disableNodes(false);
-                        } else {
-                            disableNodes(true);
-                        }
+                        disableNodes(false);
                         selectImagesButton.setDisable(false);
                         textArea.setDisable(false);
-//                        textArea.setText(wikit.getValue());
                         progressBar.setVisible(false);
                     }
                 }
@@ -600,7 +549,7 @@ public class CreateCreationController implements Initializable {
                     || (newValue.contains("*"))) {
                 textCreationName.setText(oldValue);
             }
-            if (textCreationName.getText().trim().equals("")) {
+            if (textCreationName.getText().trim().isEmpty()) {
                 createButton.setDisable(true);
             }
             if (!listForCreation.getItems().isEmpty() && !images.isEmpty()) {
@@ -717,6 +666,59 @@ public class CreateCreationController implements Initializable {
             return false;
         }
         return true;
+    }
+
+    public boolean checkReSearch() {
+        if (!searchTextFinal.equals("") && !audioCreationList.isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setHeaderText("Delete audio files?");
+            alert.setContentText("Searching another term results in deleting all saved audio files");
+
+            Optional<ButtonType> result = alert.showAndWait();
+
+            if (result.get() == ButtonType.OK) {
+                for (File file : audioCreationDir.listFiles()) {
+                    if (!file.isDirectory()) {
+                        file.delete();
+                    }
+                }
+                listForCreation.getItems().clear();
+                listForCreation.setItems(audioCreationList);
+                previewCreationButton.setDisable(true);
+                createButton.setDisable(true);
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void errorSearch() {
+        Alert alert = new Alert(Alert.AlertType.ERROR, "Result not found");
+        alert.show();
+        File file = new File("./" + searchField.getText() + ".txt");
+        file.delete();
+        searchField.clear();
+        progressBar.setVisible(false);
+        String isEmpty = textArea.getText();
+        if (isEmpty.equals("")) {
+            disableNodes(true);
+            textArea.setDisable(true);
+        } else {
+            disableNodes(false);
+        }
+    }
+
+    public void setTextArea(String wikitValue) {
+        textArea.clear();
+        BreakIterator iterator = BreakIterator.getSentenceInstance(Locale.US);
+        iterator.setText(wikitValue);
+        int start = 0;
+        while (iterator.next() != BreakIterator.DONE) {
+            String sentence = wikitValue.substring(start, iterator.current());
+            textArea.appendText(sentence + "\n");
+            start = iterator.current();
+        }
     }
 
     public double getAudioDuration(){
