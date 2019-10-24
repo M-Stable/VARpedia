@@ -10,12 +10,10 @@ import java.io.InputStreamReader;
 
 public class WikitTask extends Task<String> {
 
-    private TextArea result;
     private TextField textSearch;
 
-    public WikitTask (TextField textSearch, TextArea result) {
+    public WikitTask (TextField textSearch) {
         this.textSearch = textSearch;
-        this.result = result;
     }
 
     @Override

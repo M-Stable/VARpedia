@@ -36,6 +36,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.URL;
+import java.text.BreakIterator;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -133,7 +134,7 @@ public class CreateCreationController implements Initializable {
         String searchText = searchField.getText();
         try {
             //Use wikit to return text from wikipedia based on search term
-            WikitTask wikit = new WikitTask(searchField, textArea);
+            WikitTask wikit = new WikitTask(searchField);
             executorService.submit(wikit);
             progressBar.setVisible(true);
             wikit.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
@@ -142,7 +143,7 @@ public class CreateCreationController implements Initializable {
 
                     //Check if the wikit search result was valid
 
-                    if (wikit.getValue().equals(searchField.getText() + " not found :^(")) {
+                    if (wikit.getValue().equals("ERROR")) {
 
                         //Display alert to user before deleting unnecessary file, clearing the text field and
                         //disabling UI elements if no text is already present from a previous search
@@ -161,6 +162,14 @@ public class CreateCreationController implements Initializable {
                             disableNodes(false);
                         }
                     } else {
+                        BreakIterator iterator = BreakIterator.getSentenceInstance(Locale.US);
+                        iterator.setText(wikit.getValue());
+                        int start = 0;
+                        while (iterator.next() != BreakIterator.DONE) {
+                            String sentence = wikit.getValue().substring(start, iterator.current());
+                            textArea.appendText(sentence + "\n");
+                            start = iterator.current();
+                        }
 
                         searchTextFinal = searchText;
                         //Enable UI elements again, remove progress bar and display wikit result text
@@ -171,7 +180,7 @@ public class CreateCreationController implements Initializable {
                         }
                         selectImagesButton.setDisable(false);
                         textArea.setDisable(false);
-                        textArea.setText(wikit.getValue());
+//                        textArea.setText(wikit.getValue());
                         progressBar.setVisible(false);
                     }
                 }
