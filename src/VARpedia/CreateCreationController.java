@@ -518,6 +518,9 @@ public class CreateCreationController implements Initializable {
 
         secondaryStage.setOnHiding(e -> {
             numberOfImages.setText(String.valueOf(images.size()));
+            if (!images.isEmpty()) {
+                previewCreationButton.setDisable(false);
+            }
         });
     }
 
@@ -588,10 +591,10 @@ public class CreateCreationController implements Initializable {
                     || (newValue.contains("*"))) {
                 textCreationName.setText(oldValue);
             }
-            if (textCreationName.getText().trim().isEmpty()) {
+            if (textCreationName.getText().trim().equals("")) {
                 createButton.setDisable(true);
             }
-            if (!listForCreation.getItems().isEmpty() && musicDropdown.getValue() != null) {
+            if (!listForCreation.getItems().isEmpty() && !images.isEmpty()) {
                 createButton.setDisable(false);
             }
         });
@@ -675,23 +678,6 @@ public class CreateCreationController implements Initializable {
         listForCreation.setItems(audioCreationList);
     }
 
-
-    public void handleComboBox(ActionEvent actionEvent) {
-        if (!searchField.getText().isEmpty()) {
-            saveAudioButton.setDisable(false);
-            previewButton.setDisable(false);
-        }
-    }
-
-    public void handleMusicComboBox(ActionEvent actionEvent) {
-        if (!textCreationName.getText().isEmpty() && !listForCreation.getItems().isEmpty()) {
-            createButton.setDisable(false);
-        }
-        if (!listForCreation.getItems().isEmpty()) {
-            previewCreationButton.setDisable(false);
-        }
-    }
-
     public boolean checkValidCreation() {
         if (audioCreationList.isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Please transfer at least 1 audio file for creation");
@@ -699,6 +685,10 @@ public class CreateCreationController implements Initializable {
             return false;
         } else if (images.size() == 0) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Please select at least 1 image for creation");
+            alert.show();
+            return false;
+        } else if (textCreationName.getText().trim().isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Please type in a creation name");
             alert.show();
             return false;
         }

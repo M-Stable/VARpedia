@@ -22,7 +22,7 @@
       <HBox alignment="CENTER" layoutX="25.0" layoutY="421.0" prefHeight="36.0" prefWidth="270.0" spacing="5.0" style="-fx-background-color: #90B8C8;">
          <children>
             <Label prefHeight="16.0" prefWidth="54.0" text="Voice |" textFill="WHITE" />
-            <ComboBox fx:id="comboBox" onAction="#handleComboBox" prefHeight="34.0" prefWidth="193.0" style="-fx-background-radius: 0; -fx-background-color: #90B8C8; -fx-border-width: 0.5; -fx-text-fill: WHITE;" />
+            <ComboBox fx:id="comboBox" prefHeight="34.0" prefWidth="193.0" style="-fx-background-radius: 0; -fx-background-color: #90B8C8; -fx-border-width: 0.5; -fx-text-fill: WHITE;" />
             <Separator orientation="VERTICAL" prefHeight="36.0" prefWidth="0.0" />
          </children>
          <padding>
@@ -50,7 +50,7 @@
             <HBox alignment="CENTER_LEFT" prefHeight="37.0" prefWidth="326.0" style="-fx-background-color: #90B8C8;">
                <children>
                   <Label prefHeight="16.0" prefWidth="54.0" text="Music |" textFill="WHITE" />
-                  <ComboBox fx:id="musicDropdown" onAction="#handleMusicComboBox" prefHeight="35.0" prefWidth="239.0" style="-fx-background-radius: 0; -fx-background-color: #90B8C8;" />
+                  <ComboBox fx:id="musicDropdown" prefHeight="35.0" prefWidth="239.0" style="-fx-background-radius: 0; -fx-background-color: #90B8C8;" />
                </children>
                <VBox.margin>
                   <Insets />
