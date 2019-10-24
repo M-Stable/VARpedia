@@ -184,26 +184,18 @@ public class CreateCreationController implements Initializable {
     @FXML
     public void handlePreviewButton(ActionEvent actionEvent) throws IOException {
         if (previewButton.getText().equals("Preview")) {
-            previewButton.setText("Stop");
             highlightedText = textArea.getSelectedText();
-            //replaces quotation marks with \
             highlightedText = highlightedText.replace("\"", "\\\"");
-            String[] words = highlightedText.split("\\s+");
 
             //Check if the user has entered a valid amount of text and selected a speech synthesizer
-
-            if (words.length > 40) {
-                Alert alert = new Alert(Alert.AlertType.ERROR, "Highlighted text too large");
-                alert.show();
-                return;
-            } else if (highlightedText.isEmpty()) {
-                Alert alert = new Alert(Alert.AlertType.ERROR, "Please select some text");
-                alert.show();
+            if (!checkValidAudio(highlightedText.split("\\s+"), highlightedText)) {
                 return;
             }
-            String comboBoxValue = comboBox.getValue().toString();
+
+            previewButton.setText("Stop");
 
             //Play the selected text using the selected speech synthesizer
+            String comboBoxValue = comboBox.getValue().toString();
             previewAudio = new PreviewAudioTask(comboBoxValue, highlightedText);
             previewAudio.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
                 @Override
@@ -222,6 +214,51 @@ public class CreateCreationController implements Initializable {
             previewAudio.stopAudio();
             previewButton.setText("Preview");
         }
+    }
+
+    @FXML
+    public void handleSaveAudioButton(ActionEvent actionEvent) {
+        //get the highlighted text and replace quotation marks with \
+        highlightedText = textArea.getSelectedText();
+        highlightedText = highlightedText.replace("\"", "\\\"");
+
+        //Check if the user has entered a valid amount of text and selected a speech synthesizer
+        if (!checkValidAudio(highlightedText.split("\\s+"), highlightedText)) {
+            return;
+        }
+        //Disable some UI elements and show the progress bar
+        progressBar.setVisible(true);
+        disableNodes(true);
+
+        //Create the specified text-to-speech audio file and update audio file list
+        String comboValue = comboBox.getValue().toString();
+        comboValue = comboValue.replaceAll("\\s+", "");
+
+        //Save audio task
+        AudioTask audioTask = new AudioTask(textArea.getSelectedText(), comboValue , searchTextFinal);
+        executorService.submit(audioTask);
+        audioTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+            @Override
+            public void handle(WorkerStateEvent workerStateEvent) {
+                audioCreationList.add(audioTask.getValue());
+                initialiseTable();
+                //Remove the progress bar and re-enable UI elements
+                progressBar.setVisible(false);
+                disableNodes(false);
+                //Expand window to show rest of creation step
+                Window window = saveAudioButton.getScene().getWindow();
+                window.setHeight(800);
+                audioHbox.setVisible(true);
+                creationVbox.setVisible(true);
+
+                if ((musicDropdown.getValue() != null) && !images.isEmpty()) {
+                    previewCreationButton.setDisable(false);
+                }
+                if (!textCreationName.getText().isEmpty() && (musicDropdown.getValue() != null)) {
+                    createButton.setDisable(false);
+                }
+            }
+        });
     }
 
     public void handlePreviewCreationButton(ActionEvent actionEvent) {
@@ -395,63 +432,6 @@ public class CreateCreationController implements Initializable {
                         }
                     }
                 });
-            }
-        });
-    }
-
-    @FXML
-    public void handleSaveAudioButton(ActionEvent actionEvent) {
-        highlightedText = textArea.getSelectedText();
-        //replaces quotation marks with \
-        highlightedText = highlightedText.replace("\"", "\\\"");
-        String[] words = highlightedText.split("\\s+");
-
-        //Check if the user has entered a valid amount of text and selected a speech synthesizer
-        if (words.length > 40) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setHeaderText("Highlighted text too large");
-            alert.setContentText("You exceeded by: " + (words.length - 40) + "words");
-            alert.show();
-            return;
-        } else if (highlightedText.isEmpty()) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Please select some text");
-            alert.show();
-            return;
-        }
-        //Disable some UI elements and show the progress bar
-        progressBar.setVisible(true);
-        disableNodes(true);
-
-        //Create the specified text-to-speech audio file and update audio file list
-        String comboValue = comboBox.getValue().toString();
-        if (comboValue.equals("Deep Voice")) {
-            comboValue = "DeepVoice";
-        } else {
-            comboValue = "LightVoice";
-        }
-
-        //Save audio task
-        AudioTask audioTask = new AudioTask(textArea.getSelectedText(), comboValue , searchTextFinal);
-        executorService.submit(audioTask);
-        audioTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-            @Override
-            public void handle(WorkerStateEvent workerStateEvent) {
-                audioCreationList.add(audioTask.getValue());
-                initialiseTable();
-                //Remove the progress bar and re-enable UI elements
-                progressBar.setVisible(false);
-                disableNodes(false);
-                //Expand window to show rest of creation step
-                Window window = saveAudioButton.getScene().getWindow();
-                window.setHeight(800);
-                audioHbox.setVisible(true);
-                creationVbox.setVisible(true);
-                if ((musicDropdown.getValue() != null)) {
-                    previewCreationButton.setDisable(false);
-                }
-                if (!textCreationName.getText().isEmpty() && (musicDropdown.getValue() != null)) {
-                    createButton.setDisable(false);
-                }
             }
         });
     }
@@ -719,6 +699,21 @@ public class CreateCreationController implements Initializable {
             return false;
         } else if (images.size() == 0) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Please select at least 1 image for creation");
+            alert.show();
+            return false;
+        }
+        return true;
+    }
+
+    public boolean checkValidAudio(String[] words, String highlightedText) {
+        if (words.length > 40) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setHeaderText("Highlighted text too large");
+            alert.setContentText("You exceeded by: " + (words.length - 40) + "words");
+            alert.show();
+            return false;
+        } else if (highlightedText.isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Please select some text");
             alert.show();
             return false;
         }
