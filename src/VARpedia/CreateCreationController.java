@@ -636,7 +636,7 @@ public class CreateCreationController implements Initializable {
         listForCreation.setItems(audioCreationList);
     }
 
-    public boolean checkValidCreation() {
+    private boolean checkValidCreation() {
         if (audioCreationList.isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Please transfer at least 1 audio file for creation");
             alert.show();
@@ -653,7 +653,7 @@ public class CreateCreationController implements Initializable {
         return true;
     }
 
-    public boolean checkValidAudio(String[] words, String highlightedText) {
+    private boolean checkValidAudio(String[] words, String highlightedText) {
         if (words.length > 40) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setHeaderText("Highlighted text too large");
@@ -668,7 +668,7 @@ public class CreateCreationController implements Initializable {
         return true;
     }
 
-    public boolean checkReSearch() {
+    private boolean checkReSearch() {
         if (!searchTextFinal.equals("") && !audioCreationList.isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setHeaderText("Delete audio files?");
@@ -693,7 +693,7 @@ public class CreateCreationController implements Initializable {
         return true;
     }
 
-    public void errorSearch() {
+    private void errorSearch() {
         Alert alert = new Alert(Alert.AlertType.ERROR, "Result not found");
         alert.show();
         File file = new File("./" + searchField.getText() + ".txt");
@@ -709,7 +709,7 @@ public class CreateCreationController implements Initializable {
         }
     }
 
-    public void setTextArea(String wikitValue) {
+    private void setTextArea(String wikitValue) {
         textArea.clear();
         BreakIterator iterator = BreakIterator.getSentenceInstance(Locale.US);
         iterator.setText(wikitValue);
@@ -721,7 +721,7 @@ public class CreateCreationController implements Initializable {
         }
     }
 
-    public double getAudioDuration(){
+    private double getAudioDuration(){
         File audioFile = new File("creations/merged.wav");
         double audioDuration = 0;
         try {
@@ -729,15 +729,13 @@ public class CreateCreationController implements Initializable {
             AudioFormat audioFormat = audioInputStream.getFormat();
             long frames = audioInputStream.getFrameLength();
             audioDuration = frames / audioFormat.getFrameRate();
-        } catch (UnsupportedAudioFileException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (UnsupportedAudioFileException | IOException e) {
             e.printStackTrace();
         }
         return audioDuration;
     }
 
-    public void goHome(ActionEvent event) throws IOException {
+    private void goHome(ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("mainMenu.fxml"));
         Parent mainParent = loader.load();
