@@ -165,7 +165,7 @@ public class MediaController implements Initializable{
         try {
             ReviewController reviewController = loader.getController();
             reviewController.initData(creationObservableList);
-        } catch (ClassCastException e) {
+        } catch (ClassCastException ignored) {
 
         }
 
