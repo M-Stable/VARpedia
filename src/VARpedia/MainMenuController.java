@@ -169,4 +169,7 @@ public class MainMenuController implements Initializable {
 
     public void handleHelpButton(ActionEvent actionEvent) {
     }
+
+    public void handlePlayButton(ActionEvent actionEvent) {
+    }
 }

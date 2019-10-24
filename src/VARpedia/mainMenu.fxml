@@ -4,6 +4,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Slider?>
+<?import javafx.scene.effect.ColorAdjust?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -60,20 +61,35 @@
             </Text>
          </children>
       </VBox>
-      <Pane layoutX="14.0" layoutY="287.0" prefHeight="99.0" prefWidth="237.0" style="-fx-background-color: gray; -fx-background-radius: 15;">
+      <Pane layoutX="14.0" layoutY="287.0" prefHeight="99.0" prefWidth="237.0" style="-fx-background-color: #424D59;">
          <children>
-            <Separator layoutX="19.0" layoutY="28.0" prefWidth="200.0" />
-            <Label layoutX="41.0" layoutY="6.0" text="Current Recommendation" />
+            <Separator layoutX="8.0" layoutY="28.0" opacity="0.61" prefHeight="3.0" prefWidth="224.0" />
+            <Label layoutX="41.0" layoutY="6.0" text="Current Recommendation" textFill="#e1e0e0" />
             <Slider fx:id="sliderSelector" blockIncrement="1.0" layoutX="87.0" layoutY="72.0" majorTickUnit="2.0" max="1.0" minorTickCount="1" prefHeight="15.0" prefWidth="48.0" snapToTicks="true" />
-            <Label layoutX="20.0" layoutY="72.0" text="Rating" />
-            <Label layoutX="143.0" layoutY="72.0" text="Least Viewed" />
-            <Separator layoutX="19.0" layoutY="65.0" prefWidth="200.0" />
+            <Label layoutX="20.0" layoutY="72.0" text="Rating" textFill="#e1e0e0" />
+            <Label layoutX="143.0" layoutY="72.0" text="Least Viewed" textFill="#e1e0e0" />
+            <Separator layoutX="8.0" layoutY="65.0" opacity="0.61" prefHeight="3.0" prefWidth="224.0" />
             <StackPane layoutX="19.0" layoutY="38.0" prefHeight="24.0" prefWidth="200.0">
                <children>
-                  <Text fx:id="creationText" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-text-alignment: center;" text="creationName" />
+                  <Text fx:id="creationText" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-text-alignment: center;" text="creationName" />
                </children>
             </StackPane>
          </children>
       </Pane>
+      <Button fx:id="play" layoutX="251.0" layoutY="287.0" mnemonicParsing="false" onAction="#handlePlayButton" prefHeight="99.0" prefWidth="48.0" style="-fx-background-color: #90B8C8; -fx-text-fill: #FFFAF0; -fx-background-radius: 0;">
+         <font>
+            <Font size="14.0" />
+         </font>
+         <graphic>
+            <ImageView fitHeight="40.0" fitWidth="35.0" layoutX="258.0" layoutY="317.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../Images/play.png" />
+               </image>
+               <effect>
+                  <ColorAdjust brightness="1.0" />
+               </effect>
+            </ImageView>
+         </graphic>
+      </Button>
    </children>
 </AnchorPane>
