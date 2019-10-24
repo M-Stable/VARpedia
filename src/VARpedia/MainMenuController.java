@@ -17,11 +17,17 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.*;
 import java.net.URL;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -112,12 +118,12 @@ public class MainMenuController implements Initializable {
             }
         }
 
-        creationText.setText(getPriorityCreation());
+        creationText.setText(getPriorityCreation().getName());
 
         sliderSelector.valueProperty().addListener(new InvalidationListener() {
             @Override
             public void invalidated(Observable observable) {
-                creationText.setText(getPriorityCreation());
+                creationText.setText(getPriorityCreation().getName());
             }
         });
     }
@@ -141,17 +147,15 @@ public class MainMenuController implements Initializable {
         window.setWidth(640);
     }
 
-    public String getPriorityCreation() {
+    public Creation getPriorityCreation() {
         Creation creation = null;
         if(Math.round(sliderSelector.getValue())  == 0) {
             creation = creationObservableList.sorted(Comparator.comparing(Creation::getConfidenceRating)).get(0);
         } else if(Math.round(sliderSelector.getValue()) == 1){
             creation = creationObservableList.sorted(Comparator.comparing(Creation::getViewTime)).get(0);
-        } else {
-            return null;
         }
 
-        return creation.getName();
+        return creation;
     }
 
     public void handleCreditsButton(ActionEvent event) throws IOException {
@@ -171,5 +175,53 @@ public class MainMenuController implements Initializable {
     }
 
     public void handlePlayButton(ActionEvent actionEvent) {
+/*
+              Create and setup Media, MediaPlayer and MediaView before switching scene
+             */
+        Creation creation = getPriorityCreation();
+        String fileName = creation.getName() + ".mp4";
+        File videoFile = new File("creations/" + fileName);
+
+        //Get time of play back
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        LocalDateTime now = LocalDateTime.now();
+        creation.setViewTime(dtf.format(now));
+
+        Media video = new Media(videoFile.toURI().toString());
+        MediaPlayer player = new MediaPlayer(video);
+        player.setAutoPlay(true);
+        player.setOnReady(new Runnable() {
+            @Override
+            public void run() {
+
+                MediaView mediaView = new MediaView(player);
+
+                mediaView.setFitHeight(360);
+
+                FXMLLoader loader = new FXMLLoader();
+                loader.setLocation(getClass().getResource("media.fxml"));
+
+                MediaController mediaController = new MediaController(player, false, "mainMenu.fxml");
+                mediaController.initData(creationObservableList);
+                loader.setController(mediaController);
+                BorderPane root = null;
+                try {
+
+                    root = (BorderPane) loader.load();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                root.setCenter(mediaView);
+
+                Stage window = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+                window.setScene(new Scene(root));
+                window.show();
+                window.setWidth(640);
+                window.setHeight(477);
+            }
+        });
+
+
     }
 }

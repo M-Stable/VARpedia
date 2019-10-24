@@ -31,6 +31,7 @@ import java.util.ResourceBundle;
 public class MediaController implements Initializable{
 
 
+    private  String source;
     @FXML
     private Slider volumeSlider;
 
@@ -52,9 +53,10 @@ public class MediaController implements Initializable{
 
     private boolean atEndOfMedia = false;
 
-    public MediaController(MediaPlayer player, boolean preview) {
+    public MediaController(MediaPlayer player, boolean preview, String source) {
         this.player = player;
         this.preview = preview;
+        this.source = source;
     }
     ObservableList<Creation> creationObservableList = FXCollections.observableArrayList();
 
@@ -155,19 +157,24 @@ public class MediaController implements Initializable{
         player.stop();
 
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("review.fxml"));
+        loader.setLocation(getClass().getResource(source));
         Parent mainParent = loader.load();
 
         Scene mainMenu = new Scene(mainParent);
 
-        ReviewController reviewController = loader.getController();
-        reviewController.initData(creationObservableList);
+        try {
+            ReviewController reviewController = loader.getController();
+            reviewController.initData(creationObservableList);
+        } catch (ClassCastException e) {
+
+        }
 
         Stage window = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
         window.setScene(mainMenu);
         window.show();
         window.setHeight(437);
         window.setWidth(640);
+
     }
 
 }

@@ -86,7 +86,7 @@ public class ReviewController implements Initializable{
                     FXMLLoader loader = new FXMLLoader();
                     loader.setLocation(getClass().getResource("media.fxml"));
 
-                    MediaController mediaController = new MediaController(player, false);
+                    MediaController mediaController = new MediaController(player, false, "review.fxml");
                     mediaController.initData(creationObservableList);
                     loader.setController(mediaController);
                     BorderPane root = null;
