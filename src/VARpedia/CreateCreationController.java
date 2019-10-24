@@ -186,6 +186,8 @@ public class CreateCreationController implements Initializable {
         if (previewButton.getText().equals("Preview")) {
             previewButton.setText("Stop");
             highlightedText = textArea.getSelectedText();
+            //replaces quotation marks with \
+            highlightedText = highlightedText.replace("\"", "\\\"");
             String[] words = highlightedText.split("\\s+");
 
             //Check if the user has entered a valid amount of text and selected a speech synthesizer
@@ -400,6 +402,8 @@ public class CreateCreationController implements Initializable {
     @FXML
     public void handleSaveAudioButton(ActionEvent actionEvent) {
         highlightedText = textArea.getSelectedText();
+        //replaces quotation marks with \
+        highlightedText = highlightedText.replace("\"", "\\\"");
         String[] words = highlightedText.split("\\s+");
 
         //Check if the user has entered a valid amount of text and selected a speech synthesizer
