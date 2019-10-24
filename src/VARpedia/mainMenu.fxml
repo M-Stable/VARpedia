@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Slider?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
@@ -56,5 +60,20 @@
             </Text>
          </children>
       </VBox>
+      <Pane layoutX="14.0" layoutY="287.0" prefHeight="99.0" prefWidth="237.0" style="-fx-background-color: gray; -fx-background-radius: 15;">
+         <children>
+            <Separator layoutX="19.0" layoutY="28.0" prefWidth="200.0" />
+            <Label layoutX="41.0" layoutY="6.0" text="Current Recommendation" />
+            <Slider fx:id="sliderSelector" blockIncrement="1.0" layoutX="87.0" layoutY="72.0" majorTickUnit="2.0" max="1.0" minorTickCount="1" prefHeight="15.0" prefWidth="48.0" snapToTicks="true" />
+            <Label layoutX="20.0" layoutY="72.0" text="Rating" />
+            <Label layoutX="143.0" layoutY="72.0" text="Least Viewed" />
+            <Separator layoutX="19.0" layoutY="65.0" prefWidth="200.0" />
+            <StackPane layoutX="19.0" layoutY="38.0" prefHeight="24.0" prefWidth="200.0">
+               <children>
+                  <Text fx:id="creationText" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-text-alignment: center;" text="creationName" />
+               </children>
+            </StackPane>
+         </children>
+      </Pane>
    </children>
 </AnchorPane>
