@@ -18,11 +18,11 @@
             <Font name="Arial Black" size="30.0" />
          </font>
       </Text>
-      <TableView fx:id="table" layoutX="14.0" layoutY="14.0" prefHeight="373.0" prefWidth="265.0" style="-fx-background-color: #424D59;">
+      <TableView fx:id="table" layoutX="14.0" layoutY="14.0" prefHeight="373.0" prefWidth="298.0" style="-fx-background-color: #424D59;">
         <columns>
           <TableColumn fx:id="tableName" prefWidth="120.79998779296875" text="Name" />
-          <TableColumn fx:id="tableRating" prefWidth="63.20001220703125" text="Rating" />
-            <TableColumn fx:id="tableViewed" minWidth="0.0" prefWidth="78.4000244140625" text="Viewed" />
+            <TableColumn fx:id="tableViewed" minWidth="0.0" prefWidth="105.0" text="Viewed" />
+          <TableColumn fx:id="tableRating" prefWidth="71.0" text="Rating" />
         </columns>
       </TableView>
       <VBox layoutX="319.0" layoutY="82.0" prefHeight="212.0" prefWidth="312.0" spacing="10.0">

@@ -7,11 +7,13 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.shape.Rectangle?>
 
 <BorderPane prefHeight="440.0" prefWidth="640.0" style="-fx-background-color: #46555B;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
        <AnchorPane fx:id="parentPane">
            <children>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#424d59" height="53.0" layoutY="392.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="640.0" />
               <Label layoutX="35.0" layoutY="400.0" text="Volume" textFill="WHITE" />
               <Slider fx:id="volumeSlider" layoutX="14.0" layoutY="415.0" prefHeight="14.0" prefWidth="89.0" />
               <Slider fx:id="timeSlider" layoutX="133.0" layoutY="405.0" prefHeight="35.0" prefWidth="394.0" />
@@ -20,19 +22,19 @@
                   <Image url="@../Images/pause.png" />
                </image>
             </ImageView>
-            <ImageView fx:id="backImage" disable="true" fitHeight="36.0" fitWidth="30.0" layoutX="570.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="backImage" disable="true" fitHeight="36.0" fitWidth="30.0" layoutX="586.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../Images/back.png" />
                </image>
             </ImageView>
-            <Button fx:id="backButton" layoutX="566.0" layoutY="5.0" mnemonicParsing="false" onAction="#handleBackButton" prefHeight="33.0" prefWidth="39.0" text="Button" opacity="-Infinity" />
-            <Button layoutX="537.0" layoutY="405.0" mnemonicParsing="false" onAction="#handlePauseButton" prefHeight="32.0" prefWidth="36.0" text="Button" opacity="-Infinity" />
+            <Button fx:id="backButton" layoutX="583.0" layoutY="5.0" mnemonicParsing="false" onAction="#handleBackButton" opacity="-Infinity" prefHeight="33.0" prefWidth="39.0" text="Button" />
+            <Button layoutX="537.0" layoutY="405.0" mnemonicParsing="false" onAction="#handlePauseButton" opacity="-Infinity" prefHeight="32.0" prefWidth="36.0" text="Button" />
             <ImageView disable="true" fitHeight="38.0" fitWidth="37.0" layoutX="580.0" layoutY="403.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../Images/play.png" />
                </image>
             </ImageView>
-            <Button layoutX="580.0" layoutY="405.0" mnemonicParsing="false" onAction="#handlePlayButton" prefHeight="32.0" prefWidth="38.0" text="Button" opacity="-Infinity" />
+            <Button layoutX="580.0" layoutY="405.0" mnemonicParsing="false" onAction="#handlePlayButton" opacity="-Infinity" prefHeight="32.0" prefWidth="38.0" text="Button" />
            </children>
        </AnchorPane>
    </children>

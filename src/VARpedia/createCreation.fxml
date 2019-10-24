@@ -19,78 +19,92 @@
 
 <Pane fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="469.0" prefWidth="647.0" style="-fx-background-color: #46555B;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="VARpedia.CreateCreationController">
    <children>
-      <TextField id="search" fx:id="searchField" layoutX="29.0" layoutY="84.0" prefHeight="26.0" prefWidth="496.0" promptText="Search Term" />
-      <TextArea fx:id="textArea" layoutX="29.0" layoutY="119.0" prefHeight="298.0" prefWidth="594.0">
-         <font>
-            <Font name="Consolas" size="16.0" />
-         </font>
-      </TextArea>
-      <Button fx:id="searchButton" layoutX="535.0" layoutY="84.0" mnemonicParsing="false" onAction="#handleSearchButton" prefHeight="26.0" prefWidth="89.0" style="-fx-background-color: #90B8C8; -fx-text-fill: #FFFAF0;" text="Search" />
+      <HBox alignment="CENTER" layoutX="25.0" layoutY="421.0" prefHeight="36.0" prefWidth="270.0" spacing="5.0" style="-fx-background-color: #90B8C8;">
+         <children>
+            <Label prefHeight="16.0" prefWidth="54.0" text="Voice |" textFill="WHITE" />
+            <ComboBox fx:id="comboBox" onAction="#handleComboBox" prefHeight="34.0" prefWidth="193.0" style="-fx-background-radius: 0; -fx-background-color: #90B8C8; -fx-border-width: 0.5; -fx-text-fill: WHITE;" />
+            <Separator orientation="VERTICAL" prefHeight="36.0" prefWidth="0.0" />
+         </children>
+         <padding>
+            <Insets left="10.0" />
+         </padding>
+      </HBox>
+      <TextField id="search" fx:id="searchField" layoutX="25.0" layoutY="84.0" prefHeight="36.0" prefWidth="494.0" promptText="Search Term" style="-fx-background-radius: 0;" />
+      <HBox alignment="CENTER_RIGHT" layoutX="295.0" layoutY="420.0" prefHeight="36.0" prefWidth="324.0">
+         <children>
+            <Button fx:id="previewButton" mnemonicParsing="false" onAction="#handlePreviewButton" prefHeight="36.0" prefWidth="170.0" style="-fx-background-color: #90B8C8; -fx-text-fill: #FFFAF0; -fx-background-radius: 0;" text="Preview" />
+            <Button fx:id="saveAudioButton" mnemonicParsing="false" onAction="#handleSaveAudioButton" prefHeight="36.0" prefWidth="170.0" style="-fx-background-color: #4192E3; -fx-text-fill: #FFFAF0; -fx-background-radius: 0;" text="Save" />
+         </children>
+      </HBox>
+      <Button fx:id="searchButton" layoutX="519.0" layoutY="84.0" mnemonicParsing="false" onAction="#handleSearchButton" prefHeight="36.0" prefWidth="100.0" style="-fx-background-color: #90B8C8; -fx-text-fill: #FFFAF0; -fx-background-radius: 0;" text="Search" />
       <Text fx:id="welcomeText" fill="WHITE" layoutX="29.0" layoutY="53.0" text="CREATE">
          <font>
             <Font name="Arial Black" size="30.0" />
          </font>
       </Text>
-      <HBox alignment="CENTER_RIGHT" layoutX="29.0" layoutY="425.0" prefHeight="34.0" prefWidth="594.0" spacing="10.0">
-         <children>
-            <Label text="Voice:" textFill="WHITE" />
-            <ComboBox fx:id="comboBox" onAction="#handleComboBox" prefHeight="26.0" prefWidth="148.0" />
-            <Button fx:id="previewButton" mnemonicParsing="false" onAction="#handlePreviewButton" prefHeight="26.0" prefWidth="89.0" style="-fx-background-color: #90B8C8; -fx-text-fill: #FFFAF0;" text="Preview" />
-            <Button fx:id="saveAudioButton" mnemonicParsing="false" onAction="#handleSaveAudioButton" prefHeight="26.0" prefWidth="89.0" style="-fx-background-color: #90B8C8; -fx-text-fill: #FFFAF0;" text="Save" />
-         </children>
-      </HBox>
-      <VBox fx:id="creationVbox" layoutX="378.0" layoutY="479.0" prefHeight="254.0" prefWidth="250.0" spacing="29.0" style="-fx-background-color: #424D59;" visible="false">
+      <VBox fx:id="creationVbox" alignment="CENTER" layoutX="275.0" layoutY="479.0" prefHeight="264.0" prefWidth="344.0" spacing="35.0" style="-fx-background-color: #424D59;" visible="false">
          <padding>
-            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+            <Insets bottom="10.0" left="20.0" top="10.0" />
          </padding>
          <children>
-            <VBox prefHeight="50.0" prefWidth="184.0">
+            <HBox alignment="CENTER_LEFT" prefHeight="37.0" prefWidth="326.0" style="-fx-background-color: #90B8C8;">
                <children>
-                  <Label text="Music:" textFill="WHITE" />
-                  <ComboBox fx:id="musicDropdown" onAction="#handleMusicComboBox" prefHeight="26.0" prefWidth="249.0" />
+                  <Label prefHeight="16.0" prefWidth="54.0" text="Music |" textFill="WHITE" />
+                  <ComboBox fx:id="musicDropdown" onAction="#handleMusicComboBox" prefHeight="35.0" prefWidth="239.0" style="-fx-background-radius: 0; -fx-background-color: #90B8C8;" />
                </children>
-            </VBox>
-            <VBox prefHeight="0.0" prefWidth="230.0" spacing="3.0">
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+               <padding>
+                  <Insets left="10.0" />
+               </padding>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" prefHeight="39.0" prefWidth="332.0" spacing="10.0" style="-fx-background-color: #90B8C8;">
                <children>
-                  <Button fx:id="selectImagesButton" onAction="#handleSelectImagesButton" prefHeight="26.0" prefWidth="243.0" style="-fx-background-color: #90B8C8; -fx-text-fill: #FFFAF0;" text="Select Images" />
-                  <HBox prefHeight="100.0" prefWidth="200.0">
+                  <Button fx:id="selectImagesButton" onAction="#handleSelectImagesButton" prefHeight="32.0" prefWidth="291.0" style="-fx-background-color: #90B8C8; -fx-text-fill: #FFFAF0; -fx-background-radius: 0;" text="Select Images" />
+                  <Text fx:id="numberOfImages" fill="#ffc74f" strokeType="OUTSIDE" strokeWidth="0.0" text="0">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </Text>
+               </children>
+               <padding>
+                  <Insets right="10.0" />
+               </padding>
+            </HBox>
+            <VBox>
+               <children>
+                  <TextField fx:id="textCreationName" prefHeight="36.0" prefWidth="332.0" promptText="Creation Name" style="-fx-background-radius: 0;" />
+                  <HBox alignment="CENTER_LEFT">
                      <children>
-                        <Label text="Number of images selected: " textFill="WHITE" />
-                        <Text fx:id="numberOfImages" fill="#ffc74f" strokeType="OUTSIDE" strokeWidth="0.0" text="0" />
+                        <Button fx:id="previewCreationButton" mnemonicParsing="false" onAction="#handlePreviewCreationButton" prefHeight="36.0" prefWidth="170.0" style="-fx-background-color: #90B8C8; -fx-text-fill: #FFFAF0; -fx-background-radius: 0;" text="Preview" />
+                        <Button fx:id="createButton" mnemonicParsing="false" onAction="#handleCreateButton" prefHeight="36.0" prefWidth="170.0" style="-fx-background-color: #4192E3; -fx-text-fill: #FFFAF0; -fx-background-radius: 0;" text="Save" />
                      </children>
                   </HBox>
                </children>
             </VBox>
-            <VBox prefHeight="54.0" prefWidth="184.0">
-               <children>
-                  <Label text="Creation Name: " textFill="WHITE" />
-                  <TextField fx:id="textCreationName" prefHeight="26.0" prefWidth="170.0" />
-               </children>
-            </VBox>
-            <HBox prefHeight="32.0" prefWidth="205.0" spacing="30.0">
-               <children>
-                  <Button fx:id="previewCreationButton" mnemonicParsing="false" onAction="#handlePreviewCreationButton" prefHeight="26.0" prefWidth="100.0" style="-fx-background-color: #90B8C8; -fx-text-fill: #FFFAF0;" text="Preview" />
-                  <Button fx:id="createButton" mnemonicParsing="false" onAction="#handleCreateButton" prefHeight="26.0" prefWidth="100.0" style="-fx-background-color: #4192E3; -fx-text-fill: #FFFAF0;" text="Save" />
-               </children>
-            </HBox>
          </children>
       </VBox>
-      <HBox fx:id="audioHbox" layoutX="29.0" layoutY="479.0" prefHeight="254.0" prefWidth="250.0" spacing="10.0" visible="false">
+      <HBox fx:id="audioHbox" layoutX="25.0" layoutY="479.0" prefHeight="264.0" prefWidth="250.0" visible="false">
          <children>
-            <ListView fx:id="listForCreation" prefHeight="254.0" prefWidth="200.0" />
-            <VBox prefHeight="254.0" prefWidth="32.0" spacing="15.0">
+            <ListView fx:id="listForCreation" prefHeight="264.0" prefWidth="206.0" />
+            <VBox prefHeight="270.0" prefWidth="45.0">
                <children>
-                  <Button mnemonicParsing="false" onAction="#handleMoveUp" prefHeight="44.0" prefWidth="38.0" style="-fx-background-color: #90B8C8; -fx-text-fill: #FFFAF0;" text="↑">
-                     <font>
-                        <Font size="20.0" />
-                     </font>
-                  </Button>
-                  <Button mnemonicParsing="false" onAction="#handleMoveDown" prefHeight="44.0" prefWidth="36.0" style="-fx-background-color: #90B8C8; -fx-text-fill: #FFFAF0;" text="↓">
-                     <font>
-                        <Font size="20.0" />
-                     </font>
-                  </Button>
-                  <VBox prefHeight="125.0" prefWidth="17.0" spacing="10.0">
+                  <VBox>
+                     <children>
+                        <Button mnemonicParsing="false" onAction="#handleMoveUp" prefHeight="44.0" prefWidth="38.0" style="-fx-background-color: #90B8C8; -fx-text-fill: #FFFAF0; -fx-background-radius: 0;" text="↑">
+                           <font>
+                              <Font size="20.0" />
+                           </font>
+                        </Button>
+                        <Button mnemonicParsing="false" onAction="#handleMoveDown" prefHeight="44.0" prefWidth="36.0" style="-fx-background-color: #90B8C8; -fx-text-fill: #FFFAF0; -fx-background-radius: 0;" text="↓">
+                           <font>
+                              <Font size="20.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </VBox>
+                  <VBox alignment="CENTER" prefHeight="178.0" prefWidth="45.0" spacing="10.0" style="-fx-background-color: #90B8C8;">
                      <children>
                         <ImageView fx:id="playAudio" accessibleRole="BUTTON" fitHeight="36.0" fitWidth="38.0" onMouseClicked="#handlePlayAudio" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -113,13 +127,18 @@
             </VBox>
          </children>
       </HBox>
-      <ProgressBar fx:id="progressBar" layoutX="29.0" layoutY="392.0" prefHeight="26.0" prefWidth="594.0" />
       <ImageView fx:id="backButton" accessibleRole="BUTTON" fitHeight="30.0" fitWidth="30.0" layoutX="593.0" layoutY="26.0" onMouseClicked="#handleBackButton" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../Images/back.png" />
          </image>
       </ImageView>
-      <Separator layoutX="29.0" layoutY="61.0" prefHeight="0.0" prefWidth="594.0" />
+      <Separator layoutX="29.0" layoutY="61.0" prefHeight="2.0" prefWidth="594.0" />
+      <TextArea fx:id="textArea" layoutX="25.0" layoutY="120.0" prefHeight="301.0" prefWidth="594.0" style="-fx-background-radius: 0;">
+         <font>
+            <Font name="Consolas" size="16.0" />
+         </font>
+      </TextArea>
+      <ProgressBar fx:id="progressBar" layoutX="25.0" layoutY="395.0" prefHeight="26.0" prefWidth="594.0" style="-fx-background-radius: 0; -fx-border-radius: 0;" />
    </children>
    <padding>
       <Insets left="10.0" right="10.0" />

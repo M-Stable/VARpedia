@@ -19,22 +19,22 @@
       <VBox alignment="CENTER" layoutX="416.0" prefHeight="400.0" prefWidth="224.0" spacing="30.0" style="-fx-background-color: #424D59;">
          <children>
             <Separator opacity="0.14" prefWidth="200.0" />
-            <Button fx:id="newCreationButton" mnemonicParsing="false" onAction="#handleNewCreationButton" prefHeight="40.0" prefWidth="183.0" style="-fx-background-color: #90B8C8; -fx-text-fill: #FFFAF0;" text="New Creation">
+            <Button fx:id="newCreationButton" mnemonicParsing="false" onAction="#handleNewCreationButton" prefHeight="40.0" prefWidth="183.0" style="-fx-background-color: #90B8C8; -fx-text-fill: #FFFAF0; -fx-background-radius: 0;" text="New Creation">
                <font>
                   <Font size="14.0" />
                </font>
             </Button>
-            <Button fx:id="reviewButton" mnemonicParsing="false" onAction="#handleReviewButton" prefHeight="40.0" prefWidth="183.0" style="-fx-background-color: #90B8C8; -fx-text-fill: #FFFAF0;" text="Review">
+            <Button fx:id="reviewButton" mnemonicParsing="false" onAction="#handleReviewButton" prefHeight="40.0" prefWidth="183.0" style="-fx-background-color: #90B8C8; -fx-text-fill: #FFFAF0; -fx-background-radius: 0;" text="Review">
                <font>
                   <Font size="14.0" />
                </font>
             </Button>
-            <Button fx:id="helpButton" mnemonicParsing="false" onAction="#handleHelpButton" prefHeight="40.0" prefWidth="183.0" style="-fx-background-color: #90B8C8; -fx-text-fill: #FFFAF0;" text="Help">
+            <Button fx:id="helpButton" mnemonicParsing="false" onAction="#handleHelpButton" prefHeight="40.0" prefWidth="183.0" style="-fx-background-color: #90B8C8; -fx-text-fill: #FFFAF0; -fx-background-radius: 0;" text="Help">
                <font>
                   <Font size="14.0" />
                </font>
             </Button>
-            <Button fx:id="creditsButton" mnemonicParsing="false" onAction="#handleCreditsButton" prefHeight="40.0" prefWidth="183.0" style="-fx-background-color: #90B8C8; -fx-text-fill: #FFFAF0;" text="Credits">
+            <Button fx:id="creditsButton" mnemonicParsing="false" onAction="#handleCreditsButton" prefHeight="40.0" prefWidth="183.0" style="-fx-background-color: #90B8C8; -fx-text-fill: #FFFAF0; -fx-background-radius: 0;" text="Credits">
                <font>
                   <Font size="14.0" />
                </font>
@@ -46,7 +46,7 @@
          <children>
             <Text fx:id="welcomeText" fill="#67a6ff" text="VARpedia">
                <font>
-                  <Font name="Arial Black" size="30.0" />
+                  <Font name="KacstNaskh" size="30.0" />
                </font>
             </Text>
             <Text fill="WHITE" text=" Learning Tool">
