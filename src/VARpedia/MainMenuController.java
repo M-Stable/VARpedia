@@ -2,12 +2,9 @@ package VARpedia;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -16,7 +13,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -58,7 +54,7 @@ public class MainMenuController implements Initializable {
         Switch scene to the new creation scene
          */
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("createCreation.fxml"));
+        loader.setLocation(getClass().getResource("../FXML/createCreation.fxml"));
         Parent mainParent = loader.load();
 
         Scene newCreationScene = new Scene(mainParent);
@@ -139,7 +135,7 @@ public class MainMenuController implements Initializable {
     public void handleReviewButton(ActionEvent event) throws IOException {
         //Switch to review scene
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("review.fxml"));
+        loader.setLocation(getClass().getResource("../FXML/review.fxml"));
         Parent mainParent = loader.load();
 
         Scene newCreationScene = new Scene(mainParent);
@@ -173,7 +169,7 @@ public class MainMenuController implements Initializable {
 
     public void handleCreditsButton(ActionEvent event) throws IOException {
         //Switch to credits scene
-        Parent creationParent = FXMLLoader.load(getClass().getResource("credits.fxml"));
+        Parent creationParent = FXMLLoader.load(getClass().getResource("../FXML/credits.fxml"));
         Scene newCreationScene = new Scene(creationParent);
 
         Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -214,9 +210,9 @@ public class MainMenuController implements Initializable {
                     mediaView.setFitHeight(360);
 
                     FXMLLoader loader = new FXMLLoader();
-                    loader.setLocation(getClass().getResource("media.fxml"));
+                    loader.setLocation(getClass().getResource("../FXML/media.fxml"));
 
-                    MediaController mediaController = new MediaController(player, false, "mainMenu.fxml");
+                    MediaController mediaController = new MediaController(player, false, "../FXML/mainMenu.fxml");
                     mediaController.initData(creationObservableList);
                     loader.setController(mediaController);
                     BorderPane root = null;

@@ -1,8 +1,6 @@
 package VARpedia;
 
 import Tasks.*;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.WorkerStateEvent;
@@ -28,7 +26,6 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-import javafx.stage.WindowEvent;
 
 import javax.sound.sampled.*;
 import java.io.File;
@@ -86,7 +83,7 @@ public class CreateCreationController implements Initializable {
     public void handleBackButton(MouseEvent event) throws IOException {
         //Switch scene back to the main menu
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("mainMenu.fxml"));
+        loader.setLocation(getClass().getResource("../FXML/mainMenu.fxml"));
         Parent mainParent = loader.load();
 
         Scene mainMenu = new Scene(mainParent);
@@ -264,7 +261,7 @@ public class CreateCreationController implements Initializable {
                         player.setAutoPlay(true);
                         MediaView mediaView = new MediaView(player);
                         mediaView.setFitHeight(360);
-                        FXMLLoader loader = new FXMLLoader(getClass().getResource("media.fxml"));
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("../FXML/media.fxml"));
                         MediaController mediaController = new MediaController(player, true, "");
                         loader.setController(mediaController);
                         BorderPane root = null;
@@ -454,7 +451,7 @@ public class CreateCreationController implements Initializable {
     @FXML
     public void handleSelectImagesButton(ActionEvent actionEvent) {
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("selectImages.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("../FXML/selectImages.fxml"));
 
         SelectImagesController selectImagesController = new SelectImagesController(this, searchTextFinal);
         loader.setController(selectImagesController);
@@ -737,7 +734,7 @@ public class CreateCreationController implements Initializable {
 
     private void goHome(ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("mainMenu.fxml"));
+        loader.setLocation(getClass().getResource("../FXML/mainMenu.fxml"));
         Parent mainParent = loader.load();
 
         Scene mainMenu = new Scene(mainParent);

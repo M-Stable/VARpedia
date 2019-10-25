@@ -84,9 +84,9 @@ public class ReviewController implements Initializable{
                     mediaView.setFitHeight(360);
 
                     FXMLLoader loader = new FXMLLoader();
-                    loader.setLocation(getClass().getResource("media.fxml"));
+                    loader.setLocation(getClass().getResource("../FXML/media.fxml"));
 
-                    MediaController mediaController = new MediaController(player, false, "review.fxml");
+                    MediaController mediaController = new MediaController(player, false, "../FXML/review.fxml");
                     mediaController.initData(creationObservableList);
                     loader.setController(mediaController);
                     BorderPane root = null;
@@ -138,7 +138,7 @@ public class ReviewController implements Initializable{
 
     public void handleBackButton(MouseEvent actionEvent) throws IOException {
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("mainMenu.fxml"));
+        loader.setLocation(getClass().getResource("../FXML/mainMenu.fxml"));
         Parent mainParent = loader.load();
 
         Scene mainMenu = new Scene(mainParent);
