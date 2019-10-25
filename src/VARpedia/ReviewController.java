@@ -48,6 +48,7 @@ public class ReviewController implements Initializable{
     public Text creationName;
     public Text lastViewed;
     public HBox starsHbox;
+    public Text ratingText;
     ObservableList<Creation> creationObservableList = FXCollections.observableArrayList();
 
     public void initData(ObservableList<Creation> creationObservableList){
@@ -243,6 +244,7 @@ public class ReviewController implements Initializable{
     }
 
     public void setStar0() {
+        ratingText.setText("Rate Me!");
         star1.setImage(new Image("Images/icons8-star-48.png"));
         star2.setImage(new Image("Images/icons8-star-48.png"));
         star3.setImage(new Image("Images/icons8-star-48.png"));
@@ -251,6 +253,7 @@ public class ReviewController implements Initializable{
     }
 
     public void setStar1() {
+        ratingText.setText("Need Reviewing");
         star1.setImage(new Image("Images/icons8-star-filled-48.png"));
         star2.setImage(new Image("Images/icons8-star-48.png"));
         star3.setImage(new Image("Images/icons8-star-48.png"));
@@ -258,6 +261,7 @@ public class ReviewController implements Initializable{
         star5.setImage(new Image("Images/icons8-star-48.png"));
     }
     public void setStar2() {
+        ratingText.setText("Getting there");
         star1.setImage(new Image("Images/icons8-star-filled-48.png"));
         star2.setImage(new Image("Images/icons8-star-filled-48.png"));
         star3.setImage(new Image("Images/icons8-star-48.png"));
@@ -265,6 +269,7 @@ public class ReviewController implements Initializable{
         star5.setImage(new Image("Images/icons8-star-48.png"));
     }
     public void setStar3() {
+        ratingText.setText("Pretty Confident");
         star1.setImage(new Image("Images/icons8-star-filled-48.png"));
         star2.setImage(new Image("Images/icons8-star-filled-48.png"));
         star3.setImage(new Image("Images/icons8-star-filled-48.png"));
@@ -272,6 +277,7 @@ public class ReviewController implements Initializable{
         star5.setImage(new Image("Images/icons8-star-48.png"));
     }
     public void setStar4() {
+        ratingText.setText("Confident");
         star1.setImage(new Image("Images/icons8-star-filled-48.png"));
         star2.setImage(new Image("Images/icons8-star-filled-48.png"));
         star3.setImage(new Image("Images/icons8-star-filled-48.png"));
@@ -279,6 +285,7 @@ public class ReviewController implements Initializable{
         star5.setImage(new Image("Images/icons8-star-48.png"));
     }
     public void setStar5() {
+        ratingText.setText("Very Confident!");
         star1.setImage(new Image("Images/icons8-star-filled-48.png"));
         star2.setImage(new Image("Images/icons8-star-filled-48.png"));
         star3.setImage(new Image("Images/icons8-star-filled-48.png"));
