@@ -118,12 +118,20 @@ public class MainMenuController implements Initializable {
             }
         }
 
-        creationText.setText(getPriorityCreation().getName());
+        if(!(creationObservableList.isEmpty())) {
+            creationText.setText(getPriorityCreation().getName());
+        } else {
+            creationText.setText("No creations");
+        }
 
         sliderSelector.valueProperty().addListener(new InvalidationListener() {
             @Override
             public void invalidated(Observable observable) {
-                creationText.setText(getPriorityCreation().getName());
+                if(!(creationObservableList.isEmpty())) {
+                    creationText.setText(getPriorityCreation().getName());
+                } else {
+                    creationText.setText("No creations");
+                }
             }
         });
     }
@@ -149,6 +157,11 @@ public class MainMenuController implements Initializable {
 
     public Creation getPriorityCreation() {
         Creation creation = null;
+
+        if(creationObservableList.isEmpty()) {
+            return null;
+        }
+
         if(Math.round(sliderSelector.getValue())  == 0) {
             creation = creationObservableList.sorted(Comparator.comparing(Creation::getConfidenceRating)).get(0);
         } else if(Math.round(sliderSelector.getValue()) == 1){
@@ -175,53 +188,54 @@ public class MainMenuController implements Initializable {
     }
 
     public void handlePlayButton(ActionEvent actionEvent) {
-/*
-              Create and setup Media, MediaPlayer and MediaView before switching scene
-             */
+        /*
+         Create and setup Media, MediaPlayer and MediaView before switching scene
+        */
         Creation creation = getPriorityCreation();
-        String fileName = creation.getName() + ".mp4";
-        File videoFile = new File("creations/" + fileName);
 
-        //Get time of play back
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-        LocalDateTime now = LocalDateTime.now();
-        creation.setViewTime(dtf.format(now));
+        if(creation != null) {
+            String fileName = creation.getName() + ".mp4";
+            File videoFile = new File("creations/" + fileName);
 
-        Media video = new Media(videoFile.toURI().toString());
-        MediaPlayer player = new MediaPlayer(video);
-        player.setAutoPlay(true);
-        player.setOnReady(new Runnable() {
-            @Override
-            public void run() {
+            //Get time of play back
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+            LocalDateTime now = LocalDateTime.now();
+            creation.setViewTime(dtf.format(now));
 
-                MediaView mediaView = new MediaView(player);
+            Media video = new Media(videoFile.toURI().toString());
+            MediaPlayer player = new MediaPlayer(video);
+            player.setAutoPlay(true);
+            player.setOnReady(new Runnable() {
+                @Override
+                public void run() {
 
-                mediaView.setFitHeight(360);
+                    MediaView mediaView = new MediaView(player);
 
-                FXMLLoader loader = new FXMLLoader();
-                loader.setLocation(getClass().getResource("media.fxml"));
+                    mediaView.setFitHeight(360);
 
-                MediaController mediaController = new MediaController(player, false, "mainMenu.fxml");
-                mediaController.initData(creationObservableList);
-                loader.setController(mediaController);
-                BorderPane root = null;
-                try {
+                    FXMLLoader loader = new FXMLLoader();
+                    loader.setLocation(getClass().getResource("media.fxml"));
 
-                    root = (BorderPane) loader.load();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    MediaController mediaController = new MediaController(player, false, "mainMenu.fxml");
+                    mediaController.initData(creationObservableList);
+                    loader.setController(mediaController);
+                    BorderPane root = null;
+                    try {
+
+                        root = (BorderPane) loader.load();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    root.setCenter(mediaView);
+
+                    Stage window = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+                    window.setScene(new Scene(root));
+                    window.show();
+                    window.setWidth(640);
+                    window.setHeight(477);
                 }
-
-                root.setCenter(mediaView);
-
-                Stage window = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-                window.setScene(new Scene(root));
-                window.show();
-                window.setWidth(640);
-                window.setHeight(477);
-            }
-        });
-
-
+            });
+        }
     }
 }
