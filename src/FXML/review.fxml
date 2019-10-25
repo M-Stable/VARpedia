@@ -52,7 +52,7 @@
                   <Font name="Arial" size="19.0" />
                </font>
             </Text>
-            <HBox fx:id="starsHbox" prefHeight="35.0" prefWidth="250.0" spacing="6.0">
+            <HBox fx:id="starsHbox" alignment="CENTER_LEFT" prefHeight="35.0" prefWidth="250.0" spacing="6.0">
                <children>
                   <ImageView fx:id="star1" fitHeight="30.0" fitWidth="30.0" onMouseClicked="#handleClick1" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -79,6 +79,11 @@
                         <Image url="@../Images/icons8-star-48.png" />
                      </image>
                   </ImageView>
+                  <Text fx:id="ratingText" fill="#ffd57a" strokeType="OUTSIDE" strokeWidth="0.0">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Text>
                </children>
             </HBox>
          </children>
