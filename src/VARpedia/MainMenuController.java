@@ -1,13 +1,10 @@
 package VARpedia;
 
-import Tasks.PdfOpen;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -188,13 +185,16 @@ public class MainMenuController implements Initializable {
     }
 
     public void handleHelpButton(ActionEvent actionEvent) {
-        PdfOpen pdfOpen = new PdfOpen();
-        try {
-            executorService.submit(pdfOpen);
-        } catch (Exception ignored) {
-
+        if (Desktop.isDesktopSupported()) {
+            new Thread(() -> {
+                try {
+                    File myFile = new File("UserManual.pdf");
+                    Desktop.getDesktop().open(myFile);
+                } catch (Exception ignored) {
+                    // no application registered for PDFs
+                }
+            }).start();
         }
-
     }
 
     public void handlePlayButton(ActionEvent actionEvent) {
