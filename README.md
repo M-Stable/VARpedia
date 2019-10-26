@@ -24,5 +24,6 @@ User must have Java 13
 ### Screenshots
 
 ![alt text](MainMenu.png)
-![alt text](CreateCreation.png)
-![alt text](Creation.png)
+![alt text](FilledCreationUpdated.png)
+![alt text](ReviewUpdated.png)
+![alt text](Media.png)
