@@ -105,14 +105,14 @@ public class CreateCreationController implements Initializable {
         if (!checkReSearch()) {
             return;
         }
-        disableNodes(true);
+        setUI("searchStart");
         //Check if search field is not empty
         String searchText = searchField.getText();
         try {
             //Use wikit to return text from wikipedia based on search term
             WikitTask wikit = new WikitTask(searchField);
             executorService.submit(wikit);
-            progressBar.setVisible(true);
+
             wikit.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
                 @Override
                 public void handle(WorkerStateEvent workerStateEvent) {
@@ -122,13 +122,11 @@ public class CreateCreationController implements Initializable {
                         //disabling UI elements if no text is already present from a previous search
                         errorSearch();
                     } else {
+
                         setTextArea(wikit.getValue());
                         searchTextFinal = searchText;
                         //Enable UI elements again, remove progress bar and display wikit result text
-                        disableNodes(false);
-                        selectImagesButton.setDisable(false);
-                        textArea.setDisable(false);
-                        progressBar.setVisible(false);
+                        setUI("searchEnd");
                     }
                 }
             });
@@ -194,8 +192,7 @@ public class CreateCreationController implements Initializable {
             return;
         }
         //Disable some UI elements and show the progress bar
-        progressBar.setVisible(true);
-        disableNodes(true);
+        setUI("saveAudioStart");
 
         //Create the specified text-to-speech audio file and update audio file list
         String comboValue = comboBox.getValue().toString();
@@ -210,8 +207,7 @@ public class CreateCreationController implements Initializable {
                 audioCreationList.add(audioTask.getValue());
                 initialiseTable();
                 //Remove the progress bar and re-enable UI elements
-                progressBar.setVisible(false);
-                disableNodes(false);
+                setUI("saveAudioEnd");
                 //Expand window to show rest of creation step
                 Window window = saveAudioButton.getScene().getWindow();
                 window.setHeight(800);
@@ -232,68 +228,33 @@ public class CreateCreationController implements Initializable {
         listForCreation.setItems(audioCreationList);
 
         //Check if no audio files were selected for creation
-        if (!checkValidCreation()) {
+        if (!checkValidCreation(true)) {
             return;
         }
 
         //Show progress and disable other UI elements while the preview creation process is occurring
-        progressBar.setVisible(true);
-        previewCreationButton.setDisable(true);
+        setUI("previewCreationStart");
 
         //Create preview creation for the user. Merges audio files, then gets images from Flickr, and then combines
         //these into the final creation before playing the preview for the user.
-        MergeAudioTask merge = new MergeAudioTask(audioCreationList);
-        executorService.submit(merge);
-        merge.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+        String music = (String) musicDropdown.getSelectionModel().getSelectedItem();
+        CreateCreationTask create = new CreateCreationTask(audioCreationList, images, "tempfile1", searchTextFinal, music);
+        executorService.submit(create);
+        create.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
             @Override
             public void handle(WorkerStateEvent workerStateEvent) {
 
-                double audioDuration = getAudioDuration();
+                //Remove progress bar and re-enable UI elements as well as deleting unnecessary files
+                setUI("previewCreationEnd");
 
-                String music = (String) musicDropdown.getSelectionModel().getSelectedItem();
-                VideoCreationTask videoCreationTask = new VideoCreationTask(images, audioDuration, "tempfile1", searchTextFinal, music);
-                executorService.submit(videoCreationTask);
-                videoCreationTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-                    @Override
-                    public void handle(WorkerStateEvent workerStateEvent) {
+                new File("creations/out.mp3").delete();
+                new File("creations/out.mp4").delete();
+                new File("creations/merged.wav").delete();
 
-                        //Remove progress bar and re-enable UI elements as well as deleting unnecessary files
-
-                        progressBar.setVisible(false);
-                        previewCreationButton.setDisable(false);
-
-                        new File("creations/out.mp3").delete();
-                        new File("creations/out.mp4").delete();
-                        new File("creations/merged.wav").delete();
-
-                        //Create and setup Media, MediaPlayer and MediaView before creating preview popup window
-                        File videoFile = new File("creations/tempfile1.mp4");
-                        Media video = new Media(videoFile.toURI().toString());
-                        MediaPlayer player = new MediaPlayer(video);
-                        player.setAutoPlay(true);
-                        MediaView mediaView = new MediaView(player);
-                        mediaView.setFitHeight(360);
-                        FXMLLoader loader = new FXMLLoader(getClass().getResource("../FXML/media.fxml"));
-                        MediaController mediaController = new MediaController(player, true, "");
-                        loader.setController(mediaController);
-                        BorderPane root = null;
-                        try {
-                            root = (BorderPane) loader.load();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        root.setCenter(mediaView);
-                        Stage stage = new Stage();
-                        stage.setTitle("Preview");
-                        stage.setScene(new Scene(root));
-                        stage.show();
-                        stage.setOnCloseRequest(e -> {
-                            new File("creations/tempfile1.mp4").delete();
-                            player.stop();
-                        });
-
-                    }
-                });
+                //Create and setup Media, MediaPlayer and MediaView before creating preview popup window
+                File videoFile = new File("creations/tempfile1.mp4");
+                Media video = new Media(videoFile.toURI().toString());
+                playVideo(video);
             }
         });
     }
@@ -304,7 +265,7 @@ public class CreateCreationController implements Initializable {
 
         //Check if no audio files have been selected, if no creation name has been given and if a creation with the same
         //name already exists
-        if (!checkValidCreation()) {
+        if (!checkValidCreation(false)) {
             return;
         }
 
@@ -331,74 +292,17 @@ public class CreateCreationController implements Initializable {
         }
 
         //Show progress and disable other UI elements while the preview creation process is occurring
-        progressBar.setVisible(true);
-        disableNodes(true);
-        createButton.setDisable(true);
-        previewCreationButton.setDisable(true);
-        searchButton.setDisable(true);
+        setUI("saveCreationStart");
 
-        //Create users creation. Merge selected audio files, then get Flickr images and then combine these into the
-        //final creation before prompting the user to return to the main menu
-        MergeAudioTask merge = new MergeAudioTask(audioCreationList);
-        executorService.submit(merge);
-        merge.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-
+        String music = (String) musicDropdown.getSelectionModel().getSelectedItem();
+        CreateCreationTask create = new CreateCreationTask(audioCreationList, images, creationName, searchTextFinal, music);
+        executorService.submit(create);
+        create.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
             @Override
             public void handle(WorkerStateEvent workerStateEvent) {
-
-                double audioDuration = getAudioDuration();
-
-                String music = (String) musicDropdown.getSelectionModel().getSelectedItem();
-                VideoCreationTask videoCreationTask = new VideoCreationTask(images, audioDuration, creationName, searchTextFinal, music);
-                executorService.submit(videoCreationTask);
-                videoCreationTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-
-                    @Override
-                    public void handle(WorkerStateEvent workerStateEvent) {
-                        Creation creation = new Creation(creationName, 0, "N/A");
-                        creationObservableList.add(creation);
-
-                        //Add updated list to stored data
-                        try {
-                            FileOutputStream fos = new FileOutputStream("data.tmp");
-                            ObjectOutputStream oos = new ObjectOutputStream(fos);
-                            oos.writeObject(new ArrayList<Creation>(creationObservableList));
-                            oos.close();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-
-                        progressBar.setVisible(false);
-                        disableNodes(true);
-                        cleanUp();
-                        clearText();
-                        listForCreation.getItems().clear();
-                        searchButton.setDisable(false);
-                        previewCreationButton.setDisable(true);
-                        createButton.setDisable(true);
-                        textArea.setDisable(true);
-                        numberOfImages.setText("0");
-
-                        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                        alert.setHeaderText("Successfully created");
-                        alert.setContentText("Would you like to return to the menu?");
-                        searchTextFinal = "";
-
-                        Optional<ButtonType> result = alert.showAndWait();
-
-                        if (result.get() == ButtonType.OK) {
-                            try {
-                                goHome(actionEvent);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        } else {
-                            Window window = createButton.getScene().getWindow();
-                            window.setHeight(506);
-                            window.setWidth(647);
-                        }
-                    }
-                });
+                Creation creation = new Creation(creationName, 0, "N/A");
+                creationObservableList.add(creation);
+                reset(actionEvent);
             }
         });
     }
@@ -438,8 +342,7 @@ public class CreateCreationController implements Initializable {
             }
             listForCreation.getItems().clear();
             listForCreation.setItems(audioCreationList);
-            previewCreationButton.setDisable(true);
-            createButton.setDisable(true);
+            setUI("audioDelete");
         }
     }
 
@@ -455,8 +358,7 @@ public class CreateCreationController implements Initializable {
         initialiseTable();
 
         if (audioCreationList.isEmpty()) {
-            previewCreationButton.setDisable(true);
-            createButton.setDisable(true);
+            setUI("audioDelete");
         }
     }
 
@@ -527,15 +429,8 @@ public class CreateCreationController implements Initializable {
         comboBox.getItems().setAll("Deep Voice", "Light Voice");
         comboBox.getSelectionModel().selectFirst();
         textArea.setWrapText(true);
-        textArea.setDisable(true);
-        searchButton.setDisable(true);
-        previewCreationButton.setDisable(true);
-        selectImagesButton.setDisable(true);
-        createButton.setDisable(true);
-        progressBar.setVisible(false);
-        playAudio.setDisable(true);
+        setUI("initial");
         cleanUp();
-        disableNodes(true);
 
         //enable play button once user clicks on an audio file
         listForCreation.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
@@ -603,40 +498,24 @@ public class CreateCreationController implements Initializable {
     }
 
     /*
-    Helper method to disable some UI elements
-     */
-    private void disableNodes(boolean b) {
-        previewButton.setDisable(b);
-        saveAudioButton.setDisable(b);
-    }
-
-    /*
-    Helper method to remove text from UI elements
-     */
-    private void clearText() {
-        searchField.clear();
-        textArea.clear();
-        textCreationName.clear();
-    }
-
-    /*
     Helper method to delete all unnecessary files
      */
     private void cleanUp() {
         audioCreationList.clear();
+
         for (File file : imagesDir.listFiles()) {
             if (!file.isDirectory()) {
                 file.delete();
             }
         }
 
-        new File("creations/out.mp3").delete();
         for (File file : audioCreationDir.listFiles()) {
             if (!file.isDirectory()) {
                 file.delete();
             }
         }
 
+        new File("creations/out.mp3").delete();
         new File("creations/out.mp4").delete();
         new File("creations/merged.wav").delete();
     }
@@ -648,7 +527,7 @@ public class CreateCreationController implements Initializable {
         listForCreation.setItems(audioCreationList);
     }
 
-    private boolean checkValidCreation() {
+    private boolean checkValidCreation(boolean preview) {
         if (audioCreationList.isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Please transfer at least 1 audio file for creation");
             alert.show();
@@ -657,7 +536,7 @@ public class CreateCreationController implements Initializable {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Please select at least 1 image for creation");
             alert.show();
             return false;
-        } else if (textCreationName.getText().trim().isEmpty()) {
+        } else if (!preview && textCreationName.getText().trim().isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Please type in a creation name");
             alert.show();
             return false;
@@ -696,8 +575,7 @@ public class CreateCreationController implements Initializable {
                 }
                 listForCreation.getItems().clear();
                 listForCreation.setItems(audioCreationList);
-                previewCreationButton.setDisable(true);
-                createButton.setDisable(true);
+                setUI("reSearch");
             } else {
                 return false;
             }
@@ -711,13 +589,11 @@ public class CreateCreationController implements Initializable {
         File file = new File("./" + searchField.getText() + ".txt");
         file.delete();
         searchField.clear();
-        progressBar.setVisible(false);
         String isEmpty = textArea.getText();
         if (isEmpty.equals("")) {
-            disableNodes(true);
-            textArea.setDisable(true);
+            setUI("errorSearchEmpty");
         } else {
-            disableNodes(false);
+            setUI("errorSearch");
         }
     }
 
@@ -733,19 +609,7 @@ public class CreateCreationController implements Initializable {
         }
     }
 
-    private double getAudioDuration(){
-        File audioFile = new File("creations/merged.wav");
-        double audioDuration = 0;
-        try {
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(audioFile);
-            AudioFormat audioFormat = audioInputStream.getFormat();
-            long frames = audioInputStream.getFrameLength();
-            audioDuration = frames / audioFormat.getFrameRate();
-        } catch (UnsupportedAudioFileException | IOException e) {
-            e.printStackTrace();
-        }
-        return audioDuration;
-    }
+
 
     private void goHome(ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader();
@@ -762,5 +626,151 @@ public class CreateCreationController implements Initializable {
         window.show();
         window.setHeight(437);
         window.setWidth(640);
+    }
+
+    private void reset(ActionEvent actionEvent) {
+        //Add updated list to stored data
+        try {
+            FileOutputStream fos = new FileOutputStream("data.tmp");
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(new ArrayList<Creation>(creationObservableList));
+            oos.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        setUI("reset");
+        cleanUp();
+        numberOfImages.setText("0");
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setHeaderText("Successfully created");
+        alert.setContentText("Would you like to return to the menu?");
+        searchTextFinal = "";
+
+        Optional<ButtonType> result = alert.showAndWait();
+
+        if (result.get() == ButtonType.OK) {
+            try {
+                goHome(actionEvent);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            Window window = createButton.getScene().getWindow();
+            window.setHeight(506);
+            window.setWidth(647);
+        }
+    }
+
+    private void playVideo(Media video) {
+        MediaPlayer player = new MediaPlayer(video);
+        player.setAutoPlay(true);
+        MediaView mediaView = new MediaView(player);
+        mediaView.setFitHeight(360);
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("media.fxml"));
+        MediaController mediaController = new MediaController(player, true, "");
+        loader.setController(mediaController);
+        BorderPane root = null;
+        try {
+            root = (BorderPane) loader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        root.setCenter(mediaView);
+        Stage stage = new Stage();
+        stage.setTitle("Preview");
+        stage.setScene(new Scene(root));
+        stage.show();
+        stage.setOnCloseRequest(e -> {
+            new File("creations/tempfile1.mp4").delete();
+            player.stop();
+        });
+    }
+
+    private void setUI(String identifier) {
+        switch (identifier) {
+            case "initial":
+                textArea.setDisable(true);
+                searchButton.setDisable(true);
+                progressBar.setVisible(false);
+                saveAudioButton.setDisable(true);
+                previewButton.setDisable(true);
+                break;
+
+            case "searchStart":
+                progressBar.setVisible(true);
+                break;
+
+            case "searchEnd":
+                progressBar.setVisible(false);
+                textArea.setDisable(false);
+                saveAudioButton.setDisable(false);
+                previewButton.setDisable(false);
+                break;
+
+            case "saveAudioStart":
+                progressBar.setVisible(true);
+                previewButton.setDisable(true);
+                saveAudioButton.setDisable(true);
+                break;
+
+            case "saveAudioEnd":
+                progressBar.setVisible(false);
+                previewButton.setDisable(false);
+                saveAudioButton.setDisable(false);
+                playAudio.setDisable(true);
+                previewCreationButton.setDisable(true);
+                createButton.setDisable(true);
+                break;
+
+            case "previewCreationStart":
+                progressBar.setVisible(true);
+                previewCreationButton.setDisable(true);
+                break;
+
+            case "previewCreationEnd":
+                progressBar.setVisible(false);
+                previewCreationButton.setDisable(false);
+                break;
+
+            case "saveCreationStart":
+                searchButton.setDisable(true);
+                progressBar.setVisible(true);
+                previewCreationButton.setDisable(true);
+                createButton.setDisable(true);
+                previewButton.setDisable(true);
+                saveAudioButton.setDisable(true);
+                selectImagesButton.setDisable(true);
+                break;
+
+            case "reset":
+                progressBar.setVisible(false);
+                textArea.setDisable(true);
+                textArea.clear();
+                textCreationName.clear();
+                searchField.clear();
+                selectImagesButton.setDisable(false);
+                listForCreation.getItems().clear();
+                break;
+
+            case "errorSearch":
+                progressBar.setVisible(false);
+                searchButton.setDisable(true);
+                break;
+
+            case "errorSearchEmpty":
+                progressBar.setVisible(false);
+                searchButton.setDisable(true);
+                textArea.setDisable(true);
+                break;
+
+            case "audioDelete":
+
+            case "reSearch":
+                previewCreationButton.setDisable(true);
+                createButton.setDisable(true);
+                break;
+        }
     }
 }

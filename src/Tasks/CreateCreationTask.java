@@ -1,32 +1,73 @@
 package Tasks;
 
+import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
-public class VideoCreationTask extends Task<String> {
+public class CreateCreationTask extends Task {
 
+    private ObservableList<String> audioCreationList;
     private List<File> images;
     private Integer numImages;
-    private Double audioDuration;
     private String creationName;
     private String searchTerm;
     private String music;
 
-    public VideoCreationTask(List<File> images, Double audioDuration, String creationName, String searchTerm, String music) {
+    public CreateCreationTask(ObservableList<String> audioCreationList, List<File> images, String creationName, String searchTerm, String music) {
+        this.audioCreationList = audioCreationList;
         this.images = images;
         this.numImages = images.size();
-        this.audioDuration = audioDuration;
         this.creationName = creationName;
         this.searchTerm = searchTerm;
         this.music = music;
     }
 
     @Override
-    protected String call() throws Exception {
+    protected Object call() throws Exception {
+        mergeAudio();
+        createVideo(getAudioDuration());
+        return null;
+    }
+
+    public int mergeAudio() throws Exception {
+         /*
+        Setup the ffmpeg command to merge all the given audio files
+         */
+        int count = 0;
+        String command = "ffmpeg ";
+        for(String creation1 : audioCreationList) {
+            String creation = "audioCreation/" + creation1 + ".wav";
+            command += "-i '" + creation + "' ";
+            count++;
+        }
+        command += "-filter_complex '";
+        for (int i = 0; i<count; i++) {
+            command += "[" + i + ":0]";
+        }
+        command += "concat=n=" + count + ":v=0:a=1[out]' -map '[out]' creations/merged.wav";
 
         /*
+        Run the ffmpeg command
+         */
+        ProcessBuilder pb = new ProcessBuilder("bash", "-c", command);
+        Process process = pb.start();
+        int exitStatus = process.waitFor();
+        if (exitStatus == 0) {
+            return 0;
+        } else {
+            return 1;
+        }
+    }
+
+    public void createVideo(Double audioDuration) throws Exception {
+         /*
           Calculate the needed framerate required for all images to take an even amount of time in the full video
          */
         double imageFrameRate = 1 / (audioDuration / numImages);
@@ -41,7 +82,6 @@ public class VideoCreationTask extends Task<String> {
 
         String command = input + filter + " -r 25 -max_muxing_queue_size 1024 -y creations/out.mp4";
         String command2 = "ffmpeg -i creations/out.mp4 " + filter2 + " -y 'creations/" + creationName + ".mp4'";
-
         /*
           Run the bash commands one after the other
          */
@@ -73,7 +113,19 @@ public class VideoCreationTask extends Task<String> {
             File noMusicCreation = new File("creations/" + creationName + ".mp4");
             creation.renameTo(noMusicCreation);
         }
+    }
 
-        return null;
+    private double getAudioDuration(){
+        File audioFile = new File("creations/merged.wav");
+        double audioDuration = 0;
+        try {
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(audioFile);
+            AudioFormat audioFormat = audioInputStream.getFormat();
+            long frames = audioInputStream.getFrameLength();
+            audioDuration = frames / audioFormat.getFrameRate();
+        } catch (UnsupportedAudioFileException | IOException e) {
+            e.printStackTrace();
+        }
+        return audioDuration;
     }
 }
