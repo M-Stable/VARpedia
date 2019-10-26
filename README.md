@@ -23,7 +23,10 @@ User must have Java 13
 
 ### Screenshots
 
-![alt text](MainMenu.png)
-![alt text](FilledCreationUpdated.png)
-![alt text](ReviewUpdated.png)
-![alt text](Media.png)
+![alt text](MainMenu.PNG)
+
+![alt text](FilledCreationUpdated.PNG)
+
+![alt text](ReviewUpdated.PNG)
+
+![alt text](Media.PNG)
