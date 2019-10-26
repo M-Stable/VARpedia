@@ -740,6 +740,7 @@ public class CreateCreationController implements Initializable {
                 searchField.clear();
                 selectImagesButton.setDisable(false);
                 listForCreation.getItems().clear();
+                images.clear();
                 break;
 
             case "errorSearch":
