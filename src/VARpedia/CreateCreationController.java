@@ -488,6 +488,9 @@ public class CreateCreationController implements Initializable {
             if (!images.isEmpty()) {
                 previewCreationButton.setDisable(false);
             }
+            if (!images.isEmpty() && !textCreationName.getText().trim().isEmpty()) {
+                createButton.setDisable(false);
+            }
         });
     }
 
