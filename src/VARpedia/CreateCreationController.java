@@ -331,11 +331,9 @@ public class CreateCreationController implements Initializable {
                     file.delete();
                 }
             }
-            setUI("audioDeleteAll");
             listForCreation.getItems().clear();
             listForCreation.setItems(audioCreationList);
-            previewCreationButton.setDisable(true);
-            createButton.setDisable(true);
+            setUI("audioDelete");
         }
     }
 
@@ -352,8 +350,6 @@ public class CreateCreationController implements Initializable {
 
         if (audioCreationList.isEmpty()) {
             setUI("audioDelete");
-            previewCreationButton.setDisable(true);
-            createButton.setDisable(true);
         }
     }
 
@@ -490,23 +486,6 @@ public class CreateCreationController implements Initializable {
     }
 
     /*
-    Helper method to disable some UI elements
-     */
-    private void disableNodes(boolean b) {
-        previewButton.setDisable(b);
-        saveAudioButton.setDisable(b);
-    }
-
-    /*
-    Helper method to remove text from UI elements
-     */
-    private void clearText() {
-        searchField.clear();
-        textArea.clear();
-        textCreationName.clear();
-    }
-
-    /*
     Helper method to delete all unnecessary files
      */
     private void cleanUp() {
@@ -584,8 +563,7 @@ public class CreateCreationController implements Initializable {
                 }
                 listForCreation.getItems().clear();
                 listForCreation.setItems(audioCreationList);
-                previewCreationButton.setDisable(true);
-                createButton.setDisable(true);
+                setUI("reSearch");
             } else {
                 return false;
             }
@@ -601,14 +579,9 @@ public class CreateCreationController implements Initializable {
         searchField.clear();
         String isEmpty = textArea.getText();
         if (isEmpty.equals("")) {
-            setUI("errorSearch");
-            disableNodes(true);
-            textArea.setDisable(true);
-            progressBar.setVisible(false);
+            setUI("errorSearchEmpty");
         } else {
             setUI("errorSearch");
-            disableNodes(false);
-            progressBar.setVisible(false);
         }
     }
 
@@ -656,8 +629,6 @@ public class CreateCreationController implements Initializable {
 
         setUI("reset");
         cleanUp();
-        //clearText();
-        listForCreation.getItems().clear();
         numberOfImages.setText("0");
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -708,37 +679,31 @@ public class CreateCreationController implements Initializable {
     private void setUI(String identifier) {
         switch (identifier) {
             case "initial":
-                System.out.println(1);
                 textArea.setDisable(true);
                 searchButton.setDisable(true);
                 progressBar.setVisible(false);
                 saveAudioButton.setDisable(true);
                 previewButton.setDisable(true);
                 break;
+
             case "searchStart":
-                System.out.println(2);
                 progressBar.setVisible(true);
                 break;
 
             case "searchEnd":
-                System.out.println(3);
                 progressBar.setVisible(false);
                 textArea.setDisable(false);
                 saveAudioButton.setDisable(false);
                 previewButton.setDisable(false);
                 break;
 
-            case "previewAudio":
-
             case "saveAudioStart":
-                System.out.println(4);
                 progressBar.setVisible(true);
                 previewButton.setDisable(true);
                 saveAudioButton.setDisable(true);
                 break;
 
             case "saveAudioEnd":
-                System.out.println(5);
                 progressBar.setVisible(false);
                 previewButton.setDisable(false);
                 saveAudioButton.setDisable(false);
@@ -748,19 +713,17 @@ public class CreateCreationController implements Initializable {
                 break;
 
             case "previewCreationStart":
-                System.out.println(6);
                 progressBar.setVisible(true);
                 previewCreationButton.setDisable(true);
                 break;
 
             case "previewCreationEnd":
-                System.out.println(7);
                 progressBar.setVisible(false);
                 previewCreationButton.setDisable(false);
                 break;
 
             case "saveCreationStart":
-                System.out.println(8);
+                searchButton.setDisable(true);
                 progressBar.setVisible(true);
                 previewCreationButton.setDisable(true);
                 createButton.setDisable(true);
@@ -770,13 +733,32 @@ public class CreateCreationController implements Initializable {
                 break;
 
             case "reset":
-                System.out.println(9);
+                progressBar.setVisible(false);
+                textArea.setDisable(true);
+                textArea.clear();
+                textCreationName.clear();
+                searchField.clear();
+                selectImagesButton.setDisable(false);
+                listForCreation.getItems().clear();
                 break;
 
+            case "errorSearch":
+                progressBar.setVisible(false);
+                searchButton.setDisable(true);
+                break;
+
+            case "errorSearchEmpty":
+                progressBar.setVisible(false);
+                searchButton.setDisable(true);
+                textArea.setDisable(true);
+                break;
+
+            case "audioDelete":
+
+            case "reSearch":
+                previewCreationButton.setDisable(true);
+                createButton.setDisable(true);
+                break;
         }
-    }
-
-    private void overwriteCreation(String creationName) {
-
     }
 }
