@@ -4,25 +4,22 @@ import javafx.concurrent.Task;
 
 public class PreviewAudioTask extends Task<String> {
 
-    private String comboBoxValue;
+    private String synthesiser;
     private String highlightedText;
-    private Process process;
+    String output = "";
 
-    public PreviewAudioTask(String comboBoxValue, String highlightedText) {
-        this.comboBoxValue = comboBoxValue;
+    public PreviewAudioTask(String synthesiser, String highlightedText) {
+        this.synthesiser = synthesiser;
         this.highlightedText = highlightedText;
     }
 
     @Override
     protected String call() throws Exception {
-        /*
-        Setup the audio creation command depending on which speech synthesiser was selected
-         */
         String command = "";
-        if (comboBoxValue.equals("Deep Voice")) {
-            command = "echo \"" + highlightedText + "\" | festival --tts";
-        } else if (comboBoxValue.equals("Light Voice")) {
-            command = "espeak \"" + highlightedText + "\"";
+        if (synthesiser.equals("Deep Voice")) {
+            command = "echo \"" + highlightedText + "\" | text2wave -o './audioCreation/audioTemp.wav'";
+        } else if (synthesiser.equals("Light Voice")) {
+            command = "espeak \"" + highlightedText + "\" -w './audioCreation/audioTemp.wav'";
         }
 
         /*
@@ -30,20 +27,16 @@ public class PreviewAudioTask extends Task<String> {
          */
         ProcessBuilder pb = new ProcessBuilder("bash", "-c", command);
         try {
-            process = pb.start();
+            Process process = pb.start();
             int exitStatus = process.waitFor();
             if (exitStatus == 0) {
-                return "done";
+                output ="yes";
             } else {
-                return null;
+                output = "no";
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
-    }
-
-    public void stopAudio() {
-        process.destroy();
+        return output;
     }
 }

@@ -146,27 +146,38 @@ public class CreateCreationController implements Initializable {
             if (!checkValidAudio(highlightedText.split("\\s+"), highlightedText)) {
                 return;
             }
-
-            previewButton.setText("Stop");
-
             //Play the selected text using the selected speech synthesizer
             String comboBoxValue = comboBox.getValue().toString();
             previewAudio = new PreviewAudioTask(comboBoxValue, highlightedText);
+            executorService.submit(previewAudio);
             previewAudio.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
                 @Override
                 public void handle(WorkerStateEvent workerStateEvent) {
-                    try {
-                        if (previewAudio.getValue().equals("done")) {
-                            previewButton.setText("Preview");
+                    previewButton.setText("Stop");
+                    String filePath = "audioCreation/audioTemp.wav";
+                    playAudioTask = new PlayAudioTask(filePath);
+                    executorService.submit(playAudioTask);
+                    playAudioTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+                        @Override
+                        public void handle(WorkerStateEvent workerStateEvent) {
+                            try {
+                                if (playAudioTask.getValue().equals("done")) {
+                                    previewButton.setText("Preview");
+                                    File file = new File(filePath);
+                                    file.delete();
+                                }
+                            } catch (Exception ignored) {
+                                //stop button was pressed
+                                File file = new File(filePath);
+                                file.delete();
+                            }
                         }
-                    } catch (Exception ignored) {
-                        //stop button was pressed
-                    }
+                    });
+
                 }
             });
-            executorService.submit(previewAudio);
         } else {
-            previewAudio.stopAudio();
+            playAudioTask.stopAudio();
             previewButton.setText("Preview");
         }
     }
