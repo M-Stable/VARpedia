@@ -74,6 +74,7 @@ public class CreateCreationController implements Initializable {
     public List<File> images = new ArrayList<File>();
     private ObservableList<String> audioCreationList = FXCollections.observableArrayList();
     ObservableList<Creation> creationObservableList = FXCollections.observableArrayList();
+    Creation remove;
 
     public void initData(ObservableList<Creation> creationObservableList){
         this.creationObservableList = creationObservableList;
@@ -319,10 +320,10 @@ public class CreateCreationController implements Initializable {
             if (result.get() == ButtonType.OK) {
                 for (Creation creations : creationObservableList) {
                     if (creations.getName().equals(creationName)) {
-                        creationObservableList.remove(creations);
-                        return;
+                        remove = creations;
                     }
                 }
+                creationObservableList.remove(remove);
                 tmpDir.delete();
             } else {
                 return;
