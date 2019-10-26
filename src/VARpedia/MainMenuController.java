@@ -1,10 +1,13 @@
 package VARpedia;
 
+import Tasks.PdfOpen;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -20,6 +23,7 @@ import javafx.scene.media.MediaView;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import java.awt.*;
 import java.io.*;
 import java.net.URL;
 import java.time.LocalDateTime;
@@ -28,6 +32,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 
 public class MainMenuController implements Initializable {
@@ -43,6 +49,7 @@ public class MainMenuController implements Initializable {
     private File imagesDir;
     private File audioCreationsDir;
     private ObservableList<Creation> creationObservableList = FXCollections.observableArrayList();
+    private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     public void initData(ObservableList<Creation> creationObservableList){
         this.creationObservableList = creationObservableList;
@@ -181,6 +188,13 @@ public class MainMenuController implements Initializable {
     }
 
     public void handleHelpButton(ActionEvent actionEvent) {
+        PdfOpen pdfOpen = new PdfOpen();
+        try {
+            executorService.submit(pdfOpen);
+        } catch (Exception ignored) {
+
+        }
+
     }
 
     public void handlePlayButton(ActionEvent actionEvent) {
