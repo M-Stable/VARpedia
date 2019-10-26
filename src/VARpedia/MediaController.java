@@ -122,8 +122,7 @@ public class MediaController implements Initializable{
         });
 
         if(preview) {
-            parentPane.getChildren().remove(backButton);
-            parentPane.getChildren().remove(backImage);
+            parentPane.getChildren().removeAll(backButton, backImage, timeSlider);
         }
 
     }
