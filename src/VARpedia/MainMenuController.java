@@ -2,12 +2,9 @@ package VARpedia;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -16,7 +13,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -24,6 +20,7 @@ import javafx.scene.media.MediaView;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import java.awt.*;
 import java.io.*;
 import java.net.URL;
 import java.time.LocalDateTime;
@@ -32,6 +29,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 
 public class MainMenuController implements Initializable {
@@ -47,6 +46,7 @@ public class MainMenuController implements Initializable {
     private File imagesDir;
     private File audioCreationsDir;
     private ObservableList<Creation> creationObservableList = FXCollections.observableArrayList();
+    private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     public void initData(ObservableList<Creation> creationObservableList){
         this.creationObservableList = creationObservableList;
@@ -58,7 +58,7 @@ public class MainMenuController implements Initializable {
         Switch scene to the new creation scene
          */
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("createCreation.fxml"));
+        loader.setLocation(getClass().getResource("../FXML/createCreation.fxml"));
         Parent mainParent = loader.load();
 
         Scene newCreationScene = new Scene(mainParent);
@@ -139,7 +139,7 @@ public class MainMenuController implements Initializable {
     public void handleReviewButton(ActionEvent event) throws IOException {
         //Switch to review scene
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("review.fxml"));
+        loader.setLocation(getClass().getResource("../FXML/review.fxml"));
         Parent mainParent = loader.load();
 
         Scene newCreationScene = new Scene(mainParent);
@@ -173,7 +173,7 @@ public class MainMenuController implements Initializable {
 
     public void handleCreditsButton(ActionEvent event) throws IOException {
         //Switch to credits scene
-        Parent creationParent = FXMLLoader.load(getClass().getResource("credits.fxml"));
+        Parent creationParent = FXMLLoader.load(getClass().getResource("../FXML/credits.fxml"));
         Scene newCreationScene = new Scene(creationParent);
 
         Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -185,6 +185,16 @@ public class MainMenuController implements Initializable {
     }
 
     public void handleHelpButton(ActionEvent actionEvent) {
+        if (Desktop.isDesktopSupported()) {
+            new Thread(() -> {
+                try {
+                    File myFile = new File("UserManual.pdf");
+                    Desktop.getDesktop().open(myFile);
+                } catch (Exception ignored) {
+                    // no application registered for PDFs
+                }
+            }).start();
+        }
     }
 
     public void handlePlayButton(ActionEvent actionEvent) {
@@ -214,9 +224,9 @@ public class MainMenuController implements Initializable {
                     mediaView.setFitHeight(360);
 
                     FXMLLoader loader = new FXMLLoader();
-                    loader.setLocation(getClass().getResource("media.fxml"));
+                    loader.setLocation(getClass().getResource("../FXML/media.fxml"));
 
-                    MediaController mediaController = new MediaController(player, false, "mainMenu.fxml");
+                    MediaController mediaController = new MediaController(player, false, "../FXML/mainMenu.fxml");
                     mediaController.initData(creationObservableList);
                     loader.setController(mediaController);
                     BorderPane root = null;

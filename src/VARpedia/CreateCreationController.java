@@ -1,8 +1,6 @@
 package VARpedia;
 
 import Tasks.*;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.WorkerStateEvent;
@@ -28,7 +26,6 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-import javafx.stage.WindowEvent;
 
 import javax.sound.sampled.*;
 import java.io.File;
@@ -77,6 +74,7 @@ public class CreateCreationController implements Initializable {
     public List<File> images = new ArrayList<File>();
     private ObservableList<String> audioCreationList = FXCollections.observableArrayList();
     ObservableList<Creation> creationObservableList = FXCollections.observableArrayList();
+    Creation remove;
 
     public void initData(ObservableList<Creation> creationObservableList){
         this.creationObservableList = creationObservableList;
@@ -86,7 +84,7 @@ public class CreateCreationController implements Initializable {
     public void handleBackButton(MouseEvent event) throws IOException {
         //Switch scene back to the main menu
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("mainMenu.fxml"));
+        loader.setLocation(getClass().getResource("../FXML/mainMenu.fxml"));
         Parent mainParent = loader.load();
 
         Scene mainMenu = new Scene(mainParent);
@@ -147,27 +145,38 @@ public class CreateCreationController implements Initializable {
             if (!checkValidAudio(highlightedText.split("\\s+"), highlightedText)) {
                 return;
             }
-
-            previewButton.setText("Stop");
-
             //Play the selected text using the selected speech synthesizer
             String comboBoxValue = comboBox.getValue().toString();
             previewAudio = new PreviewAudioTask(comboBoxValue, highlightedText);
+            executorService.submit(previewAudio);
             previewAudio.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
                 @Override
                 public void handle(WorkerStateEvent workerStateEvent) {
-                    try {
-                        if (previewAudio.getValue().equals("done")) {
-                            previewButton.setText("Preview");
+                    previewButton.setText("Stop");
+                    String filePath = "audioCreation/audioTemp.wav";
+                    playAudioTask = new PlayAudioTask(filePath);
+                    executorService.submit(playAudioTask);
+                    playAudioTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+                        @Override
+                        public void handle(WorkerStateEvent workerStateEvent) {
+                            try {
+                                if (playAudioTask.getValue().equals("done")) {
+                                    previewButton.setText("Preview");
+                                    File file = new File(filePath);
+                                    file.delete();
+                                }
+                            } catch (Exception ignored) {
+                                //stop button was pressed
+                                File file = new File(filePath);
+                                file.delete();
+                            }
                         }
-                    } catch (Exception ignored) {
-                        //stop button was pressed
-                    }
+                    });
+
                 }
             });
-            executorService.submit(previewAudio);
         } else {
-            previewAudio.stopAudio();
+            playAudioTask.stopAudio();
             previewButton.setText("Preview");
         }
     }
@@ -272,10 +281,10 @@ public class CreateCreationController implements Initializable {
             if (result.get() == ButtonType.OK) {
                 for (Creation creations : creationObservableList) {
                     if (creations.getName().equals(creationName)) {
-                        creationObservableList.remove(creations);
-                        return;
+                        remove = creations;
                     }
                 }
+                creationObservableList.remove(remove);
                 tmpDir.delete();
             } else {
                 return;
@@ -356,7 +365,7 @@ public class CreateCreationController implements Initializable {
     @FXML
     public void handleSelectImagesButton(ActionEvent actionEvent) {
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("selectImages.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("../FXML/selectImages.fxml"));
 
         SelectImagesController selectImagesController = new SelectImagesController(this, searchTextFinal);
         loader.setController(selectImagesController);
@@ -373,13 +382,16 @@ public class CreateCreationController implements Initializable {
         }
 
         secondaryStage.setTitle("Select Images");
-        secondaryStage.setScene(new Scene(root, 1080, 510));
+        secondaryStage.setScene(new Scene(root, 1080, 550));
         secondaryStage.show();
 
         secondaryStage.setOnHiding(e -> {
             numberOfImages.setText(String.valueOf(images.size()));
             if (!images.isEmpty()) {
                 previewCreationButton.setDisable(false);
+            }
+            if (!images.isEmpty() && !textCreationName.getText().trim().isEmpty()) {
+                createButton.setDisable(false);
             }
         });
     }
@@ -601,7 +613,7 @@ public class CreateCreationController implements Initializable {
 
     private void goHome(ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("mainMenu.fxml"));
+        loader.setLocation(getClass().getResource("../FXML/mainMenu.fxml"));
         Parent mainParent = loader.load();
 
         Scene mainMenu = new Scene(mainParent);

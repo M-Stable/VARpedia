@@ -15,7 +15,7 @@ public class PlayAudioTask extends Task<String> {
 
     @Override
     protected String call() throws Exception {
-        String command = "ffplay -nodisp " + file ;
+        String command = "ffplay -nodisp -autoexit " + file ;
         ProcessBuilder pb = new ProcessBuilder("bash", "-c", command);
         try {
             process = pb.start();
