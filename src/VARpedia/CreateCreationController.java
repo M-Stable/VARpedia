@@ -479,7 +479,7 @@ public class CreateCreationController implements Initializable {
         }
 
         secondaryStage.setTitle("Select Images");
-        secondaryStage.setScene(new Scene(root, 1080, 510));
+        secondaryStage.setScene(new Scene(root, 1080, 550));
         secondaryStage.show();
 
         secondaryStage.setOnHiding(e -> {

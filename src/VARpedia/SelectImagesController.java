@@ -31,7 +31,7 @@ public class SelectImagesController implements Initializable {
     @FXML
     private TilePane tilePane;
     @FXML
-    private ProgressBar progressBar;
+    private ImageView loading;
     @FXML
     private Button saveButton;
     @FXML
@@ -89,14 +89,14 @@ public class SelectImagesController implements Initializable {
         });
         tilePane.setHgap(10);
         tilePane.setVgap(10);
-        progressBar.setVisible(true);
+        loading.setVisible(true);
         FlickrTask flickrTask = new FlickrTask(10, imageSearchTerm);
         executorService.submit(flickrTask);
         flickrTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
             @Override
             public void handle(WorkerStateEvent workerStateEvent) {
 
-                    progressBar.setVisible(false);
+                loading.setVisible(false);
 
                     images = flickrTask.getImages();
 
