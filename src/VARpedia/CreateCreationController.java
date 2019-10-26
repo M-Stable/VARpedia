@@ -412,7 +412,7 @@ public class CreateCreationController implements Initializable {
     //Set initial settings for UI elements and enable the user of the enter key instead of some buttons
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        musicDropdown.getItems().setAll("None", "Transmutation");
+        musicDropdown.getItems().setAll("None", "Acoustic", "Folk", "Electro");
         musicDropdown.getSelectionModel().selectFirst();
         comboBox.getItems().setAll("Deep Voice", "Light Voice");
         comboBox.getSelectionModel().selectFirst();
