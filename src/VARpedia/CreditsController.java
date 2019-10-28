@@ -21,7 +21,7 @@ public class CreditsController implements Initializable {
     public TextArea textArea;
 
     public void handleBackButton(MouseEvent actionEvent) throws IOException {
-        Parent mainParent = FXMLLoader.load(getClass().getResource("../FXML/mainMenu.fxml"));
+        Parent mainParent = FXMLLoader.load(getClass().getResource("/FXML/mainMenu.fxml"));
         Scene mainMenu = new Scene(mainParent);
 
         Stage window = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();

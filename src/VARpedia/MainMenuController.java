@@ -58,7 +58,7 @@ public class MainMenuController implements Initializable {
         Switch scene to the new creation scene
          */
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("../FXML/createCreation.fxml"));
+        loader.setLocation(getClass().getResource("/FXML/createCreation.fxml"));
         Parent mainParent = loader.load();
 
         Scene newCreationScene = new Scene(mainParent);
@@ -139,7 +139,7 @@ public class MainMenuController implements Initializable {
     public void handleReviewButton(ActionEvent event) throws IOException {
         //Switch to review scene
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("../FXML/review.fxml"));
+        loader.setLocation(getClass().getResource("/FXML/review.fxml"));
         Parent mainParent = loader.load();
 
         Scene newCreationScene = new Scene(mainParent);
@@ -173,7 +173,7 @@ public class MainMenuController implements Initializable {
 
     public void handleCreditsButton(ActionEvent event) throws IOException {
         //Switch to credits scene
-        Parent creationParent = FXMLLoader.load(getClass().getResource("../FXML/credits.fxml"));
+        Parent creationParent = FXMLLoader.load(getClass().getResource("/FXML/credits.fxml"));
         Scene newCreationScene = new Scene(creationParent);
 
         Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -225,9 +225,9 @@ public class MainMenuController implements Initializable {
                     mediaView.setFitHeight(360);
 
                     FXMLLoader loader = new FXMLLoader();
-                    loader.setLocation(getClass().getResource("../FXML/media.fxml"));
+                    loader.setLocation(getClass().getResource("/FXML/media.fxml"));
 
-                    MediaController mediaController = new MediaController(player, false, "../FXML/mainMenu.fxml");
+                    MediaController mediaController = new MediaController(player, false, "/FXML/mainMenu.fxml");
                     mediaController.initData(creationObservableList);
                     loader.setController(mediaController);
                     BorderPane root = null;
