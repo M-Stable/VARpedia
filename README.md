@@ -7,7 +7,7 @@ video which contains audio snippets of a search term, background images, music, 
 
 ### To run
 
-To be run on Linux (Ubuntu)
+To be run on the Virtual Box image
 
 User must have Java 13
 1. User must install the following command line tools:
@@ -17,9 +17,7 @@ User must have Java 13
 * soxi
 * festival
 * espeak
-2. Clone repository and set up a project.
-3. Import the user lib included in the repo.
-4. Run the code.
+2. Execute run.sh (with executable permissions)
 
 ### Screenshots
 
