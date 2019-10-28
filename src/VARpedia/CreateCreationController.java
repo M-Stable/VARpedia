@@ -204,7 +204,7 @@ public class CreateCreationController implements Initializable {
         comboValue = comboValue.replaceAll("\\s+", "");
 
         //Save audio task
-        AudioTask audioTask = new AudioTask(textArea.getSelectedText(), comboValue , searchTextFinal);
+        AudioTask audioTask = new AudioTask(highlightedText, comboValue , searchTextFinal);
         executorService.submit(audioTask);
         audioTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
             @Override
