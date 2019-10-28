@@ -35,12 +35,12 @@ public class CreditsController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         textArea.setWrapText(true);
         try {
-            Scanner s = new Scanner(new File("credits.txt")).useDelimiter("\\s+");
+            Scanner s = new Scanner(new File("credits.txt")).useDelimiter("\n");
             while (s.hasNext()) {
                 if (s.hasNextInt()) { // check if next token is an int
-                    textArea.appendText(s.nextInt() + " "); // display the found integer
+                    textArea.appendText(s.nextInt() + " " + '\n'); // display the found integer
                 } else {
-                    textArea.appendText(s.next() + " "); // else read the next token
+                    textArea.appendText(s.next() + " " + '\n'); // else read the next token
                 }
             }
         } catch (FileNotFoundException ex) {
