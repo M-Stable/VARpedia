@@ -184,6 +184,7 @@ public class MainMenuController implements Initializable {
         window.setWidth(640);
     }
 
+    //open user manual if help button is pressed
     public void handleHelpButton(ActionEvent actionEvent) {
         if (Desktop.isDesktopSupported()) {
             new Thread(() -> {

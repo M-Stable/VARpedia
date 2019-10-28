@@ -25,6 +25,7 @@ public class AudioTask extends Task<String> {
     protected String call() throws Exception {
         String output = "";
 
+        //method for automatic name generation. Scans through existing audio files to find lowest count available for naming
         while (exists) {
             if (synthesiser.equals("DeepVoice")) {
                 File tmpDir1 = new File("audioCreation/" + fileName + "_" + synthesiser + "_" + festivalCount + ".wav");

@@ -135,6 +135,10 @@ public class CreateCreationController implements Initializable {
         }
     }
 
+    /*
+    Preview button for audio. Once user clicks preview, the button switches text to Stop. When stop is pressed, the prcess
+    is stopped and file is deleted.
+     */
     @FXML
     public void handlePreviewButton(ActionEvent actionEvent) throws IOException {
         if (previewButton.getText().equals("Preview")) {
@@ -156,6 +160,7 @@ public class CreateCreationController implements Initializable {
                     String filePath = "audioCreation/audioTemp.wav";
                     playAudioTask = new PlayAudioTask(filePath);
                     executorService.submit(playAudioTask);
+                    //switch back to preview if the audio text has finished
                     playAudioTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
                         @Override
                         public void handle(WorkerStateEvent workerStateEvent) {
@@ -269,6 +274,7 @@ public class CreateCreationController implements Initializable {
             return;
         }
 
+        //ask user to if they want to overwrite. If yes, the creation is removed from the list and is deleted.
         File tmpDir = new File("creations/" + creationName + ".mp4");
         boolean exists = tmpDir.exists();
         if (exists) {
@@ -307,6 +313,7 @@ public class CreateCreationController implements Initializable {
         });
     }
 
+    //method to reorder the audio files in the list
     @FXML
     public void handleMoveUp(ActionEvent actionEvent) {
         int i = listForCreation.getSelectionModel().getSelectedIndex();
@@ -385,6 +392,7 @@ public class CreateCreationController implements Initializable {
         secondaryStage.setScene(new Scene(root, 1080, 550));
         secondaryStage.show();
 
+        //set the number of images text after saving
         secondaryStage.setOnHiding(e -> {
             numberOfImages.setText(String.valueOf(images.size()));
             if (!images.isEmpty()) {
@@ -396,6 +404,10 @@ public class CreateCreationController implements Initializable {
         });
     }
 
+    /*
+    play existing audio, switch to stop button. switch back to play button if stop button is pressed or audio
+    finished playing.
+     */
     @FXML
     public void handlePlayAudio(MouseEvent mouseEvent){
         if (playAudio.getImage().getUrl().contains("play.png")) {
@@ -559,6 +571,7 @@ public class CreateCreationController implements Initializable {
         return true;
     }
 
+    //if user saved audio files and tries another search, warn user if they want to delete all existing audio files
     private boolean checkReSearch() {
         if (!searchTextFinal.equals("") && !audioCreationList.isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -583,6 +596,7 @@ public class CreateCreationController implements Initializable {
         return true;
     }
 
+    //warn user if the search term brings no results
     private void errorSearch() {
         Alert alert = new Alert(Alert.AlertType.ERROR, "Result not found");
         alert.show();
@@ -597,6 +611,7 @@ public class CreateCreationController implements Initializable {
         }
     }
 
+    //break text into sentences
     private void setTextArea(String wikitValue) {
         textArea.clear();
         BreakIterator iterator = BreakIterator.getSentenceInstance(Locale.US);
