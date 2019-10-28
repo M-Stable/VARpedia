@@ -43,6 +43,7 @@ public class CreditsController implements Initializable {
                     textArea.appendText(s.next() + " " + '\n'); // else read the next token
                 }
             }
+            textArea.setText(textArea.getText().trim());
         } catch (FileNotFoundException ex) {
             System.err.println(ex);
         }
